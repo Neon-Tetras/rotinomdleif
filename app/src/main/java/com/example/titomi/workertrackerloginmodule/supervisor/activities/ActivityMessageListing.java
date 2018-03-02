@@ -89,6 +89,7 @@ public class ActivityMessageListing extends AppCompatActivity implements Adapter
         tabSpec.setContent(R.id.inbox_tab);
         tabSpec.setIndicator("Inbox");
         tabHost.addTab(tabSpec);
+
         tabSpec = tabHost.newTabSpec("Outbox");
         tabSpec.setContent(R.id.outbox_tab);
         tabSpec.setIndicator("Outbox");
@@ -104,6 +105,8 @@ public class ActivityMessageListing extends AppCompatActivity implements Adapter
 
         if(loggedInUser.getRoleId() != User.SUPERVISOR){
             actionButton.setVisibility(View.GONE);
+            tabHost.getTabWidget().removeView(tabHost.getTabWidget().getChildTabViewAt(1));
+
         }
 
 
