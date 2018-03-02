@@ -436,7 +436,7 @@ SimpleDateFormat dtf= new SimpleDateFormat("yyyy/M/dd HH:mm:ss");
 
 
         final AlertDialog alertDialog = new AlertDialog.Builder(cxt).create();
-        alertDialog.setMessage("Are you sure you want to delete this message?id=" +msg.getId());
+        alertDialog.setMessage("Are you sure you want to delete this message?");
         alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE,"No",new DialogInterface.OnClickListener(){
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
