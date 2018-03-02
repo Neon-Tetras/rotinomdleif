@@ -49,7 +49,6 @@
         <activity android:name=".UserProfile.EditProfileActivity" />
         <activity android:name=".InventoryModule.InventoryActivity" />
         <activity android:name=".AttendanceModule.AttendanceSubMenu.AttendanceActivity" />
-        <activity android:name=".Task.TaskActivity" />
         <activity android:name=".Task.TaskDetailsActivity" />
         <activity android:name=".ReportModule.ReportMainActivity" />
         <activity android:name=".AttendanceModule.AttendanceMainActivity" />
