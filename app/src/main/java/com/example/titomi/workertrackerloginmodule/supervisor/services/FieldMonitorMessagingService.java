@@ -23,6 +23,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import com.example.titomi.workertrackerloginmodule.R;
+import com.example.titomi.workertrackerloginmodule.SharedPrefManager.SharedPrefManager;
 import com.example.titomi.workertrackerloginmodule.supervisor.DatabaseAdapter;
 import com.example.titomi.workertrackerloginmodule.supervisor.Messages;
 
@@ -72,6 +73,8 @@ public class FieldMonitorMessagingService extends Service {
 
     @SuppressLint("StaticFieldLeak")
     private void getInboxMessages(){
+        SharedPrefManager sharedPrefManager = new SharedPrefManager(this);
+        User user = sharedPrefManager.getLoggedInUser();
 
         new android.os.AsyncTask<String,Void,String>(){
             @Override
@@ -140,7 +143,7 @@ public class FieldMonitorMessagingService extends Service {
                 }
 
             }
-        }.execute(getString(R.string.api_url)+getString(R.string.view_message_url)+"?key="+getString(R.string.field_worker_api_key)+"&msg_type=inbox&user_id="+5);
+        }.execute(getString(R.string.api_url)+getString(R.string.view_message_url)+"?key="+getString(R.string.field_worker_api_key)+"&msg_type=inbox&user_id="+user.getId());
 
     }
 

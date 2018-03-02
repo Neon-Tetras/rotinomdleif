@@ -193,11 +193,23 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
         clockInText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(cxt,ReportActivity.class);
-                i.putExtra("task",task);
-                i.putExtra(getString(R.string.loggedInUser),loggedInUser);
-                startActivity(i);
-                alertDialog.dismiss();
+                //TODO: call loadTask(); on clockin and clockout success
+                if(v.getTag().toString().equals(getString(R.string.clockIn))){
+                    alertDialog.dismiss();
+                    //TODO: implement clockin action here;
+                    //TODO: clocking only when geofencing works
+                    //TODO:show clockin error when geofencing fails
+                    //TODO: send alert when geofencing fails
+
+
+                }else if(v.getTag().toString().equals(getString(R.string.clockOut))){
+
+                    Intent i = new Intent(cxt, ReportActivity.class);
+                    i.putExtra("task", task);
+                    i.putExtra(getString(R.string.loggedInUser), loggedInUser);
+                    startActivity(i);
+                    alertDialog.dismiss();
+                }
             }
         });
          viewReport.setOnClickListener(new View.OnClickListener() {

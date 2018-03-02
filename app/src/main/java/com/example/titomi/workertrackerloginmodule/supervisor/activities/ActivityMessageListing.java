@@ -416,7 +416,10 @@ SimpleDateFormat dtf= new SimpleDateFormat("yyyy/M/dd HH:mm:ss");
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.actionButton:
-            startActivity(ActivityAdminNewMessage.class);
+                Intent i = new Intent(cxt,ActivityAdminNewMessage.class);
+                i.putExtra(getString(R.string.loggedInUser),loggedInUser);
+                startActivity(i);
+           // startActivity(ActivityAdminNewMessage.class);
                 break;
         }
     }
