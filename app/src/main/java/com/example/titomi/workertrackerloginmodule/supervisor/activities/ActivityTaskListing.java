@@ -129,7 +129,7 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
 
         switch (view.getId()){
             case R.id.newTaskButton:
-                startActivity(new Intent(this,ActivityAssignTask.class));
+                startActivity(new Intent(this,ActivityAssignTask.class).putExtra(getString(R.string.loggedInUser),loggedInUser));
                 break;
 
         }
