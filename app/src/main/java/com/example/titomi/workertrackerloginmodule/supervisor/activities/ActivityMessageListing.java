@@ -80,7 +80,10 @@ public class ActivityMessageListing extends AppCompatActivity implements Adapter
         messageOutboxList = findViewById(R.id.messageOutboxList);
 
         tabHost.setup();
-
+        Bundle extras = getIntent().getExtras();
+        if(extras != null){
+            loggedInUser = (User)extras.getSerializable(getString(R.string.loggedInUser));
+        }
 
         tabSpec = tabHost.newTabSpec("Inbox");
         tabSpec.setContent(R.id.inbox_tab);
@@ -99,6 +102,9 @@ public class ActivityMessageListing extends AppCompatActivity implements Adapter
         getInboxMessages();
         getOutBoxMessages();
 
+        if(loggedInUser.getRoleId() != User.SUPERVISOR){
+            actionButton.setVisibility(View.GONE);
+        }
 
 
     }
