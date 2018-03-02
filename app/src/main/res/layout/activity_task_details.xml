@@ -2,14 +2,12 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/coordinator"
     tools:context="com.example.titomi.workertrackerloginmodule.Task.TaskDetailsActivity">
 
-        <include
-            layout="@layout/main_toolbar"
-            />
+    <include layout="@layout/main_toolbar" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -23,9 +21,9 @@
             android:padding="16dp">
 
             <RelativeLayout
-                android:layout_marginTop="20dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp">
 
                 <Button
                     android:id="@+id/inClock"
@@ -42,9 +40,9 @@
             </RelativeLayout>
 
             <TextView
-                android:layout_marginTop="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
                 android:text="Date"
                 android:textSize="18sp" />
 
@@ -69,6 +67,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
+                android:enabled="false"
                 android:hint="@string/required"
                 android:inputType="none" />
 
@@ -83,6 +82,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
+                android:enabled="false"
                 android:hint="@string/required"
                 android:inputType="textMultiLine" />
 
@@ -97,6 +97,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
+                android:enabled="false"
                 android:hint="@string/required"
                 android:inputType="text" />
 
@@ -111,6 +112,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
+                android:enabled="false"
                 android:hint="@string/required"
                 android:inputType="text" />
 
@@ -125,6 +127,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
+                android:enabled="false"
                 android:hint="@string/required"
                 android:inputType="number" />
 
@@ -139,6 +142,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="15dp"
+                android:enabled="false"
                 android:hint="@string/optional"
                 android:inputType="number" />
 
@@ -153,6 +157,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="15dp"
+                android:enabled="false"
                 android:hint="@string/optional"
                 android:inputType="number" />
 
@@ -167,6 +172,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="15dp"
+                android:enabled="false"
                 android:hint="@string/optional"
                 android:inputType="number" />
 
@@ -181,6 +187,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="15dp"
+                android:enabled="false"
                 android:hint="@string/optional"
                 android:inputType="number" />
 
@@ -195,6 +202,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="15dp"
+                android:enabled="false"
                 android:hint="@string/optional"
                 android:inputType="number" />
 
@@ -209,6 +217,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="15dp"
+                android:enabled="false"
                 android:hint="@string/optional"
                 android:inputType="number" />
 
@@ -223,6 +232,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="15dp"
+                android:enabled="false"
                 android:hint="@string/optional"
                 android:inputType="number" />
 
@@ -248,11 +258,12 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
-        app:menu_fab_size="normal"
+        android:enabled="false"
         app:layout_behavior="com.example.titomi.workertrackerloginmodule.FloatingActionMenuBehavior"
         app:menu_backgroundColor="@android:color/transparent"
         app:menu_colorNormal="@color/colorPrimaryLight"
         app:menu_fab_label=""
+        app:menu_fab_size="normal"
         app:menu_labels_textColor="@color/colorfabText"
         app:menu_openDirection="up"
         app:menu_showShadow="true">
@@ -264,6 +275,7 @@
             android:overScrollMode="always"
             android:visibility="gone"
             app:fabSize="mini"
+            app:fab_label="Remove Photo"
             app:srcCompat="@drawable/remove_photo" />
 
         <com.github.clans.fab.FloatingActionButton
@@ -271,6 +283,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:fabSize="mini"
+            app:fab_label="Photo"
             app:srcCompat="@drawable/ic_photo_camera" />
 
         <com.github.clans.fab.FloatingActionButton
@@ -278,6 +291,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:fabSize="mini"
+            app:fab_label="Record"
             app:srcCompat="@drawable/ic_mic" />
 
         <com.github.clans.fab.FloatingActionButton
@@ -285,6 +299,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:fabSize="mini"
+            app:fab_label="Submit"
             app:srcCompat="@drawable/ic_send" />
     </com.github.clans.fab.FloatingActionMenu>
 

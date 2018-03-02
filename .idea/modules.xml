@@ -2,8 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Worker_Tracker_Project.iml" filepath="$PROJECT_DIR$/Worker_Tracker_Project.iml" />
+      <module fileurl="file://C:\GitHub\rotinomdleif\Worker_Tracker_Project.iml" filepath="C:\GitHub\rotinomdleif\Worker_Tracker_Project.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://C:\GitHub\rotinomdleif\app\app.iml" filepath="C:\GitHub\rotinomdleif\app\app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rotinomdleif.iml" filepath="$PROJECT_DIR$/rotinomdleif.iml" />
     </modules>
   </component>
 </project>
