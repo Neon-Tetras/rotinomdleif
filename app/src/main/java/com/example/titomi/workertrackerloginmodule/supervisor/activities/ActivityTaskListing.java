@@ -39,18 +39,12 @@ import java.util.Locale;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import com.example.titomi.workertrackerloginmodule.R;
-import com.example.titomi.workertrackerloginmodule.supervisor.DatabaseAdapter;
-import com.example.titomi.workertrackerloginmodule.supervisor.Entity;
 
 import com.example.titomi.workertrackerloginmodule.supervisor.User;
 import com.example.titomi.workertrackerloginmodule.supervisor.Task;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.DrawableManager;
-import com.example.titomi.workertrackerloginmodule.supervisor.util.InputValidator;
-import com.example.titomi.workertrackerloginmodule.supervisor.util.DateTimeUtil;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.Network;
-import com.example.titomi.workertrackerloginmodule.supervisor.util.NetworkChecker;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.Util;
-import static com.example.titomi.workertrackerloginmodule.supervisor.util.Network.backgroundTask;
 
 /**
  * Created by NeonTetras on 24-Feb-18.
@@ -164,7 +158,7 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
                  break;
 
              case Task.PENDING_APPROVAL:
-             case Task.COMPLETEED:
+             case Task.COMPLETED:
                  viewReport.setVisibility(View.VISIBLE);
                  break;
          }

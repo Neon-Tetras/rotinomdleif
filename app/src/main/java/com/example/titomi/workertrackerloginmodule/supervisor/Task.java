@@ -236,7 +236,7 @@ public class Task extends Entity {
     public static final int PENDING = 0;
     public static final int ONGOING = 1;
     public static final int PENDING_APPROVAL = 2;
-    public static final int COMPLETEED = 3;
+    public static final int COMPLETED = 3;
     public int inventoryBalance;
     public int quantitySold;
     private int participants;

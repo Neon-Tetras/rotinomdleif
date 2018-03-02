@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import com.example.titomi.workertrackerloginmodule.supervisor.Entity;
-import com.example.titomi.workertrackerloginmodule.supervisor.Task;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.DrawableManager;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.ExcelExporter;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.ImageUtils;
@@ -109,7 +108,7 @@ public class ActivityViewReport extends AppCompatActivity implements View.OnClic
         balanceText.setText(numberFormat.format(task.getInventoryBalance()));
         participantsText.setText(numberFormat.format(task.getParticipants()));
 
-        if(selectedTask.getStatus() == Task.COMPLETEED){
+        if(selectedTask.getStatus() == Task.COMPLETED){
             approveText.setVisibility(View.GONE);
         }
 
