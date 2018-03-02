@@ -9,11 +9,14 @@ import android.view.View;
 
 import com.example.titomi.workertrackerloginmodule.R;
 import com.example.titomi.workertrackerloginmodule.ReportModule.ReportActivity;
+import com.example.titomi.workertrackerloginmodule.supervisor.User;
+import com.example.titomi.workertrackerloginmodule.supervisor.activities.ActivityTaskListing;
 
 public class TaskActivity extends AppCompatActivity implements View.OnClickListener {
 
     Toolbar toolbar;
     CardView assignTask,submit_sche,task_history;
+    private User loggedInUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +31,11 @@ public class TaskActivity extends AppCompatActivity implements View.OnClickListe
         assignTask = findViewById(R.id.assign_task);
         submit_sche = findViewById(R.id.submit_schedule);
         task_history = findViewById(R.id.task_history);
+
+        Bundle extras = getIntent().getExtras();
+        if(extras != null){
+            loggedInUser = (User)extras.getSerializable(getString(R.string.loggedInUser));
+        }
 
         assignTask.setOnClickListener(this);
         submit_sche.setOnClickListener(this);
@@ -45,7 +53,8 @@ public class TaskActivity extends AppCompatActivity implements View.OnClickListe
         Intent i;
         switch (v.getId()) {
             case R.id.assign_task:
-                i = new Intent(this, RoutePlanActivity.class);
+                i = new Intent(this, ActivityTaskListing.class);
+                i.putExtra(getString(R.string.loggedInUser),loggedInUser);
                 startActivity(i);
                 break;
             case R.id.submit_schedule:

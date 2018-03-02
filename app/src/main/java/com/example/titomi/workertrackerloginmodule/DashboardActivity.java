@@ -265,7 +265,9 @@ public class DashboardActivity extends AppCompatActivity {
                             intent = new Intent(cxt, UserProfileActivity.class);
                             break;
                         case 2:
-                            intent = new Intent(cxt, TaskActivity.class);
+
+                            intent = new Intent(cxt, ActivityTaskListing.class);
+                            intent.putExtra(getString(R.string.loggedInUser),loggedInUser);
                             break;
                         case 3:
                             intent = new Intent(cxt, InventoryActivity.class);

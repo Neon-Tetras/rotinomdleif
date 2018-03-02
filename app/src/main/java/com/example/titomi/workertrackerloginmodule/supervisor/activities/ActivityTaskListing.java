@@ -155,6 +155,7 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
          //TextView approveReport = promptView.findViewById(R.id.approveReport);
          TextView editTask = promptView.findViewById(R.id.editTask);
 
+
          /*
          * if user has uploaded images, then the task has been done
          *So the task cannot be deleted or edited*/
@@ -170,6 +171,11 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
                  viewReport.setVisibility(View.VISIBLE);
                  break;
          }
+
+        if(loggedInUser.getRoleId() != User.SUPERVISOR){
+            editTask.setVisibility(View.GONE);
+            deleteTask.setVisibility(View.GONE);
+        }
 
 
          viewReport.setOnClickListener(new View.OnClickListener() {
