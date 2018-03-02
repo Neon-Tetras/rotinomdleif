@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.titomi.workertrackerloginmodule">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/app_logo"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <!-- The API key for Google Maps-based APIs. -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
+        <activity
+            android:name=".HomeSplashActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".UsersLoginTrivalActivity" />
+        <activity android:name=".DashboardActivity" />
+        <activity android:name=".TabActivity" />
+        <activity
+            android:name=".ReportModule.ReportActivity"
+            android:label="@string/title_activity_report"
+            android:theme="@style/AppTheme" />
+        <activity android:name=".UserProfile.UserProfileActivity" />
+        <activity android:name=".UserProfile.EditProfileActivity" />
+        <activity android:name=".InventoryModule.InventoryActivity" />
+        <activity android:name=".AttendanceModule.AttendanceSubMenu.AttendanceActivity" />
+        <activity android:name=".Task.TaskActivity" />
+        <activity android:name=".Task.TaskDetailsActivity" />
+        <activity android:name=".ReportModule.ReportMainActivity" />
+        <activity android:name=".AttendanceModule.AttendanceMainActivity" />
+        <activity android:name=".AlertManager.AlertMainActivity" />
+        <activity android:name=".SupervisorManager.SupervisorMainActivity" />
+        <activity android:name=".InventoryModule.InventorySubMenu.ProductRequestActivity" />
+        <activity android:name=".InventoryModule.InventorySubMenu.ReceivedInventoryActivity" />
+        <activity android:name=".InventoryModule.InventorySubMenu.RemittanceRecordsActivity" />
+        <activity android:name=".InventoryModule.InventorySubMenu.InventoryReportActivity" />
+        <activity android:name=".InventoryModule.InventorySubMenu.SalesReportActivity" />
+        <activity android:name=".ReportModule.TaskReportListActivity" />
+        <activity android:name=".ReportModule.SingleReportActivity" />
+        <activity android:name=".AttendanceModule.AttendanceSubMenu.AttendanceReportActivity" />
+        <activity android:name=".AttendanceModule.AttendanceSubMenu.LeaveRequestActivity" />
+        <activity android:name=".AttendanceModule.AttendanceSubMenu.LeaveHistoryActivity" />
+        <activity android:name=".AlertManager.AlertSubMenu.GeofencingActivity" />
+        <activity android:name=".AlertManager.AlertSubMenu.LowStockActivity" />
+        <activity android:name=".AlertManager.AlertSubMenu.AbsentActivity" />
+        <activity android:name=".AlertManager.AlertSubMenu.LowBatteryActivity" />
+        <activity android:name=".UserLoginActivity" />
+        <activity android:name=".Task.RoutePlanActivity" />
+        <activity android:name=".Message_and_Notice.MessagesActivity"/>
+
+
+         <activity android:name=".supervisor.activities.MainActivity" />
+        <activity android:name=".supervisor.activities.ActivityAdminNewMessage"
+            android:label="New Message"
+            android:theme="@style/AppTheme.DarkActionBar"/>
+        <activity android:name=".supervisor.activities.ActivityMessageListing"
+            android:theme="@style/AppTheme.DarkActionBar"/>
+        <activity android:name=".supervisor.activities.ActivityViewMessage"
+            android:theme="@style/AppTheme.DarkActionBar"
+            android:label="View Message"/>
+        <activity android:name=".supervisor.activities.ActivityMessageMenu"
+            android:theme="@style/AppTheme.DarkActionBar"
+            />
+        <activity android:name=".supervisor.activities.ActivityInventoryRequestsListing"
+            android:theme="@style/AppTheme.DarkActionBar"
+            android:label="Requests"/>
+        <activity android:name=".supervisor.activities.ActivityAssignTask"
+            android:theme="@style/AppTheme.DarkActionBar"
+            android:label="Assign Task"/>
+        <activity android:name=".supervisor.activities.ActivityViewReport"
+            android:theme="@style/AppTheme.DarkActionBar"
+            android:label="View Report"/>
+        <activity android:name=".supervisor.activities.ActivityReportListing"
+            android:theme="@style/AppTheme.DarkActionBar"
+            android:label="Reports"/>
+        <activity android:name=".supervisor.activities.ActivityChallenges"
+            android:theme="@style/AppTheme.DarkActionBar"
+            android:label="Challenges"/>
+        <activity android:name=".supervisor.activities.ActivityLeaveApplication"
+            android:theme="@style/AppTheme.DarkActionBar"
+            android:label="Leave Application"/>
+        <activity android:name=".supervisor.activities.ActivityAttendanceReport"/>
+        <activity android:name=".supervisor.activities.ActivityTaskListing"
+            android:theme="@style/AppTheme.DarkActionBar"
+            android:label="Task Listing"/>
+        <activity android:name=".LoginActivity"
+            android:label="Login"/>
+        <activity android:name=".supervisor.activities.ActivityInventoryRequest"
+            android:label="Inventory Request"
+            android:theme="@style/AppTheme.DarkActionBar"/>
+
+
+    </application>
+
+</manifest>
