@@ -57,7 +57,7 @@ public class ActivityViewMessage extends AppCompatActivity implements View.OnCli
         if(getIntent() != null){
             Bundle extras = getIntent().getExtras();
 
-            user = (User)extras.getSerializable(getString(R.string.user));
+            user = (User)extras.getSerializable(getString(R.string.loggedInUser));
             message = (Messages)extras.getSerializable(getString(R.string.message));
 
         }

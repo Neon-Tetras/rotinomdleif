@@ -55,13 +55,12 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
         SwipeRefreshLayout.OnRefreshListener, AdapterView.OnItemLongClickListener {
 
     private static ListView taskListView;
-    private TextView taskTitleText,taskDescriptionText,
-            locationText,taskTypeText,contactPersonText,
-            quantityText,statusText,usernameText,dateTimeText;
+
     private static TextView noTaskNotif;
     private CircleImageView userImage;
     private static SwipeRefreshLayout swipeRefreshLayout;
     static Context cxt;
+    private User loggedInUser;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,6 +68,15 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
         cxt = this;
         initComponents();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        Bundle extras = getIntent().getExtras();
+        if(extras != null){
+            loggedInUser = (User)extras.getSerializable(getString(R.string.loggedInUser));
+        }
+
+        if(loggedInUser != null && loggedInUser.getRoleId() != User.SUPERVISOR){
+            findViewById(R.id.newTaskButton).setVisibility(View.GONE);
+        }
 
     }
 
@@ -112,7 +120,7 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
     }
 
     private void loadTasks() {
-        new AssignedTaskNetwork().execute(getString(R.string.api_url)+getString(R.string.task_url)+"?view=supervisor&key="+getString(R.string.field_worker_api_key)+"&id="+Task.TEST_USER_ID);
+        new AssignedTaskNetwork().execute(getString(R.string.api_url)+getString(R.string.task_url)+"?view=supervisor&key="+getString(R.string.field_worker_api_key)+"&id="+loggedInUser.getId());
 
     }
 

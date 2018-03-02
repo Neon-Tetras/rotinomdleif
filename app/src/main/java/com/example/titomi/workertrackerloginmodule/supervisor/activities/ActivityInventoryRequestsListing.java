@@ -69,6 +69,10 @@ public class ActivityInventoryRequestsListing extends AppCompatActivity implemen
         if(getIntent().getExtras() != null){
             loggedInUser = (User)getIntent().getExtras().getSerializable(getString(R.string.loggedInUser));
 
+            if(loggedInUser != null && loggedInUser.getRoleId() != User.SUPERVISOR){
+                actionButton.setVisibility(View.GONE);
+            }
+
         }
     }
 

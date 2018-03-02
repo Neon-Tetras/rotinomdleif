@@ -55,6 +55,8 @@ public class ActivityReportListing extends AppCompatActivity implements AdapterV
     static Context cxt;
     private static MenuItem exportItem;
 
+    private static User loggedInUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,12 +68,19 @@ public class ActivityReportListing extends AppCompatActivity implements AdapterV
         progressBar = findViewById(R.id.progressBar);
         reportList = findViewById(R.id.reportList);
         reportList.setOnItemClickListener(this);
+
+        Bundle extras = getIntent().getExtras();
+        if(extras != null){
+            loggedInUser = (User)extras.getSerializable(getString(R.string.loggedInUser));
+        }
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
               getNewReports();
             }
         });
+
+
     }
 
     @Override
@@ -85,7 +94,7 @@ public class ActivityReportListing extends AppCompatActivity implements AdapterV
         try {
             String from = Network.encodeUrl(dtf.format(new Date()));
             new ReportNetwork().execute(cxt.getString(R.string.api_url)+cxt.getString(R.string.task_url)+"?view=supervisor_get_report&from="+from
-                    +"&key="+cxt.getString(R.string.field_worker_api_key)+"&id="+ Entity.TEST_USER_ID);
+                    +"&key="+cxt.getString(R.string.field_worker_api_key)+"&id="+ loggedInUser.getId());
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -337,6 +346,6 @@ public class ActivityReportListing extends AppCompatActivity implements AdapterV
 
     private  void searchAction(String fromDate,String toDate){
         new ReportNetwork().execute(cxt.getString(R.string.api_url)+cxt.getString(R.string.task_url)+"?view=supervisor_get_report&from="+fromDate+"&to="+toDate
-                +"&key="+cxt.getString(R.string.field_worker_api_key)+"&id="+ Entity.TEST_USER_ID);
+                +"&key="+cxt.getString(R.string.field_worker_api_key)+"&id="+ loggedInUser.getId());
     }
 }

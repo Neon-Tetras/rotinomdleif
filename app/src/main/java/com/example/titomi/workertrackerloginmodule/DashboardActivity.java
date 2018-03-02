@@ -2,6 +2,7 @@ package com.example.titomi.workertrackerloginmodule;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -31,6 +32,7 @@ import com.example.titomi.workertrackerloginmodule.supervisor.activities.Activit
 import com.example.titomi.workertrackerloginmodule.supervisor.activities.ActivityMessageListing;
 import com.example.titomi.workertrackerloginmodule.supervisor.activities.ActivityReportListing;
 import com.example.titomi.workertrackerloginmodule.supervisor.activities.ActivityTaskListing;
+import com.example.titomi.workertrackerloginmodule.supervisor.util.ImageUtils;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -121,12 +123,30 @@ public class DashboardActivity extends AppCompatActivity {
         final String userLastName = getIntent().getStringExtra("UserLastName");
         final String userEmail = getIntent().getStringExtra("UserEmail");
 
+        ImageUtils.ImageStorage storage = new ImageUtils.ImageStorage(loggedInUser);
+        String imageUrl = getString(R.string.server_url)+loggedInUser.getFeaturedImage();
+        String imageName = ImageUtils.getImageNameFromUrlWithExtension(imageUrl);
+        Drawable imageDrawable = null;
+
+        if(storage.imageExists(imageName)){
+             String imagePath = storage.getImage(imageName).getAbsolutePath();
+             imageDrawable = Drawable.createFromPath(imagePath);
+
+         }else{
+            ImageUtils.GetImages getImages = new ImageUtils.GetImages(loggedInUser,imageUrl,imageName);
+
+            getImages.execute();
+        }
+
+         if(imageDrawable == null){
+            imageDrawable = getResources().getDrawable(R.drawable.profile);
+         }
         // Create the AccountHeader
         AccountHeader headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
                 .withHeaderBackground(R.drawable.header)
                 .addProfiles(
-                        new ProfileDrawerItem().withName(loggedInUser.getFullName()).withEmail(loggedInUser.getEmail()).withIcon(getResources().getDrawable(R.drawable.profile))
+                        new ProfileDrawerItem().withName(loggedInUser.getFullName()).withEmail(loggedInUser.getEmail()).withIcon(imageDrawable)
                 )
                 .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
                     @Override

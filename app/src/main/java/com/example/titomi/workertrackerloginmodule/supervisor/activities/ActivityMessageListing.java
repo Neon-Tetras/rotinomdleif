@@ -133,7 +133,7 @@ public class ActivityMessageListing extends AppCompatActivity implements Adapter
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Messages message = (Messages) parent.getItemAtPosition(position);
         Intent i = new Intent(cxt,ActivityViewMessage.class);
-
+            i.putExtra(getString(R.string.loggedInUser),loggedInUser);
          i.putExtra(getString(R.string.message),message);
         startActivity(i);
     }
