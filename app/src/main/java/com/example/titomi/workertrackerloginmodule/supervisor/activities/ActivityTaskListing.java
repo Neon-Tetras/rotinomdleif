@@ -40,6 +40,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 import com.example.titomi.workertrackerloginmodule.R;
 
+import com.example.titomi.workertrackerloginmodule.ReportModule.ReportActivity;
 import com.example.titomi.workertrackerloginmodule.supervisor.User;
 import com.example.titomi.workertrackerloginmodule.supervisor.Task;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.DrawableManager;
@@ -154,6 +155,7 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
          final TextView deleteTask = promptView.findViewById(R.id.deleteTask);
          //TextView approveReport = promptView.findViewById(R.id.approveReport);
          TextView editTask = promptView.findViewById(R.id.editTask);
+         TextView clockInText = promptView.findViewById(R.id.clock_in);
 
 
          /*
@@ -175,9 +177,29 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
         if(loggedInUser.getRoleId() != User.SUPERVISOR){
             editTask.setVisibility(View.GONE);
             deleteTask.setVisibility(View.GONE);
+            switch (task.getStatus()){
+                case Task.PENDING:
+                clockInText.setVisibility(View.VISIBLE);
+                clockInText.setTag(getString(R.string.clockIn));
+                break;
+                case Task.ONGOING:
+                    clockInText.setVisibility(View.VISIBLE);
+                    clockInText.setText(getString(R.string.clockOut));
+                    clockInText.setTag(getString(R.string.clockOut));
+            }
         }
 
 
+        clockInText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(cxt,ReportActivity.class);
+                i.putExtra("task",task);
+                i.putExtra(getString(R.string.loggedInUser),loggedInUser);
+                startActivity(i);
+                alertDialog.dismiss();
+            }
+        });
          viewReport.setOnClickListener(new View.OnClickListener() {
              @Override
              public void onClick(View view) {

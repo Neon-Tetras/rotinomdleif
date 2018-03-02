@@ -98,7 +98,9 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
         if(getIntent().getExtras() != null){
             loggedInUser = (User)getIntent().getExtras().getSerializable(getString(R.string.loggedInUser));
             selectedTask = (Task)getIntent().getExtras().getSerializable("task");
-            setupView(selectedTask);
+            if(selectedTask != null) {
+                setupView(selectedTask);
+            }
         }
 
     }
@@ -347,7 +349,7 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
 
     private void assignTask(String api_url){
         try {
-            taskData.put(getString(R.string.supervisor_id),""+5);
+            taskData.put(getString(R.string.supervisor_id),""+loggedInUser.getId());
             taskData.put(getString(R.string.worker_id),""+
                     workerIds.get(InputValidator.validateSpinner(workerSpinner,-1)));
             taskData.put(getString(R.string._task_type),taskTypeSpinner.getSelectedItem().toString());
