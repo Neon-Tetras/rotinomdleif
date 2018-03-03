@@ -103,8 +103,10 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
 
             if(selectedTask != null) {
                 setupView(selectedTask);
+            }else{
+                loadWorkerSpinner();
             }
-            //loadWorkerSpinner();
+
         }
 
 
@@ -443,7 +445,7 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
                         clearAllFields();
                     }else{
                         AlertDialog alertDialog = new AlertDialog.Builder(cxt).create();
-                        alertDialog.setMessage(obj.getString(getString(R.string.message)));
+                        alertDialog.setMessage(obj.getString("message"));
                         alertDialog.show();
                       //  Toast.makeText(cxt,e.getMessage(),Toast.LENGTH_LONG).show();
 

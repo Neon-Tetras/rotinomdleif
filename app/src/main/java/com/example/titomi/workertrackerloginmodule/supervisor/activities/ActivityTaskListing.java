@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.accessibility.AccessibilityManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -29,6 +32,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -39,14 +44,22 @@ import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.titomi.workertrackerloginmodule.R;
 
 import com.example.titomi.workertrackerloginmodule.ReportModule.ReportActivity;
+import com.example.titomi.workertrackerloginmodule.supervisor.Entity;
 import com.example.titomi.workertrackerloginmodule.supervisor.User;
 import com.example.titomi.workertrackerloginmodule.supervisor.Task;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.DrawableManager;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.Network;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.Util;
+import com.google.android.gms.maps.model.LatLng;
 
 /**
  * Created by NeonTetras on 24-Feb-18.
@@ -209,11 +222,8 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
 
                     alertDialog.dismiss();
 
+                    getLocation(task);
 
-                    //TODO: implement clockin action here;
-                    //TODO: clocking only when geofencing works
-                    //TODO:show clockin error when geofencing fails
-                    //TODO: send alert when geofencing fails
 
 
                 }else if(v.getTag().toString().equals(getString(R.string.clockOut))){
@@ -307,10 +317,12 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
              }
          });
 
+        if(loggedInUser.getRoleId() == User.SUPERVISOR && task.getStatus() == Task.ONGOING) {
+           return false;
+        }
 
-         if(task.getStatus() != Task.ONGOING) {
-             alertDialog.show();
-         }
+        alertDialog.show();
+
         return false;
     }
 
@@ -482,4 +494,131 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
         static ArrayAdapter<Task> taskArrayAdapter;
     }
 
+
+    private void getLocation(final Task task) {
+        LocationManager mLocationManager;
+        final ProgressDialog pg = new ProgressDialog(this);
+        pg.setCancelable(false);
+        pg.setMessage(getString(R.string.please_wait));
+        pg.show();
+        try {
+            mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            if (mLocationManager != null) {
+                mLocationManager.requestSingleUpdate(LocationManager.NETWORK_PROVIDER, new LocationListener() {
+                    @Override
+                    public void onLocationChanged(Location location) {
+                        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                        if(pg.isShowing()){
+                            pg.dismiss();
+                        }
+                       final AlertDialog alertDialog = new AlertDialog.Builder(cxt).create();
+                        if (isWithinClockInRange(task.getLatitude(), task.getLongitude(), latLng.latitude, latLng.longitude)) {
+
+                            RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+                            Date date = new Date(location.getTime());
+                            SimpleDateFormat dtf = new SimpleDateFormat("yyyy/M/dd HH:mm:ss");
+                            String formatedTime = null;
+                            try {
+                                formatedTime = URLEncoder.encode(dtf.format(date),"UTF-8");
+                            } catch (UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                            }
+                            String uri = null;
+
+                                uri =String.format("%s%s?key=%s",
+                                        getString(R.string.api_url),
+                                        getString(R.string.clockInUrl),
+                                        getString(R.string.field_worker_api_key)) +
+                                        "&start_longitude=" + latLng.longitude +
+                                        "&start_latitude=" +
+                                        latLng.latitude + "&user_id=" +
+                                        loggedInUser.getId() + "&task_id=" +
+                                        task.getId() + "&start_time=" +
+                                        formatedTime;
+
+
+                            StringRequest stringRequest = new StringRequest(Request.Method.GET, uri, new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
+                                    if(response ==null) return;
+
+                                    try {
+                                        JSONObject obj = new JSONObject(response);
+                                        if(obj.getInt("statusCode") == Entity.STATUS_OK){
+
+                                            alertDialog.setMessage("Clock-in successful");
+                                            alertDialog.show();
+
+                                            loadTasks();
+
+                                        }else{
+                                            Toast.makeText(cxt,obj.getString("message"),Toast.LENGTH_LONG).show();
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                        System.err.println(response);
+                                    }
+                                }
+                            }, new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+
+                                }
+                            });
+                            queue.add(stringRequest);
+
+                        }else{
+
+                                //Report clock-in mismatch
+                            new android.os.AsyncTask<String,Void,String>(){
+                                @Override
+                                protected String doInBackground(String... strings) {
+                                    return Network.backgroundTask(null,strings[0]);
+                                }
+
+                                @Override
+                                protected void onPostExecute(String s) {
+                                    super.onPostExecute(s);
+                                }
+                            }.execute(getString(R.string.api_url)+getString(R.string.alert_api)+"?key="+getString(R.string.field_worker_api_key)+"&task_id="+task.getId()+"&longitude="+latLng.longitude+"&latitude="+latLng.latitude+"&alert_type=0");
+
+                             alertDialog.setMessage("Clock-in failed!\nPlease report at your place of assignment to clock-in");
+                             alertDialog.show();
+
+
+                        }
+
+                       // Toast.makeText(cxt, "" + latLng, Toast.LENGTH_SHORT).show();
+
+                    }
+
+                    @Override
+                    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+                    }
+
+                    @Override
+                    public void onProviderEnabled(String provider) {
+
+                    }
+
+                    @Override
+                    public void onProviderDisabled(String provider) {
+
+                    }
+                }, null);
+            }
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public boolean isWithinClockInRange(Double taskLat, Double taskLng, Double nurseLat, Double nurseLng) {
+        Location.distanceBetween(taskLat, taskLng, nurseLat, nurseLng, results);
+        return results[0] <= 200;
+    }
+
+
+    float results[] = new float[3];
 }
