@@ -426,8 +426,8 @@ SimpleDateFormat dtf= new SimpleDateFormat("yyyy/M/dd HH:mm:ss");
 
     private void startActivity(Class<?> activity){
         startActivity(new Intent(this,activity));
-
     }
+
     DatabaseAdapter db;
 
     @Override

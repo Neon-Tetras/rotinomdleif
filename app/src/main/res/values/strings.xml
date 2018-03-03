@@ -185,5 +185,7 @@
     <string name="server_url">http://fieldmonitor.co/</string>
     <string name="product_id">product_id</string>
     <string name="products_url">products/view.php</string>
+    <string name="latitude">latitude</string>
+    <string name="longitude">longitude</string>
 
 </resources>

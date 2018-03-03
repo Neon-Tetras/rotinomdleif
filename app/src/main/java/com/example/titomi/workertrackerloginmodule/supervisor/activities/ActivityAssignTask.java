@@ -30,6 +30,7 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Locale;
 
 import com.example.titomi.workertrackerloginmodule.R;
 import com.example.titomi.workertrackerloginmodule.supervisor.DatabaseAdapter;
@@ -43,6 +44,8 @@ import com.example.titomi.workertrackerloginmodule.supervisor.util.DateTimeUtil;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.Network;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.NetworkChecker;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.Util;
+import com.google.android.gms.maps.model.LatLng;
+
 import static com.example.titomi.workertrackerloginmodule.supervisor.util.Network.backgroundTask;
 
 public class ActivityAssignTask extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener{
@@ -165,6 +168,7 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
                 if(data == null) return;
                 Place place = PlacePicker.getPlace(this, data);
                 locationEdit.setText(place.getAddress());
+               taskCoordinates = place.getLatLng();
                 break;
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -368,6 +372,9 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
             taskData.put(getString(R.string.institution_name),InputValidator.validateText(institutionNameEdit,2));
             taskData.put(getString(R.string.contact_number),InputValidator.validateText(contactNumberEdit,11));
 
+            taskData.put(getString(R.string.latitude),String.format("%f",taskCoordinates.latitude));
+            taskData.put(getString(R.string.longitude),String.format("%f",taskCoordinates.longitude));
+
             sendToNework(taskData,api_url);
         } catch (InputValidator.InvalidInputException e) {
             Toast.makeText(cxt,e.getMessage(),Toast.LENGTH_LONG).show();
@@ -450,4 +457,5 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
     HashMap<String,String> taskData = new HashMap<>();
     public static final String update = "update";
     final String assign = "assign";
+    private LatLng taskCoordinates;
 }

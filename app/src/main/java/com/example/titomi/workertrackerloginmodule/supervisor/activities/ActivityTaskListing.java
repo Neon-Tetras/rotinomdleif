@@ -376,6 +376,15 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
                             obj.getInt("quantitySold"),
                             obj.getInt("participants"),
                             obj.getInt("status"));
+                    task.setLatitude(obj.getDouble("latitude"));
+                    task.setLongitude(obj.getDouble("longitude"));
+                    /*if(obj.getDouble("startLongitude") != 0.0 && obj.getDouble("startLatitude") != 0.0 &&
+                            obj.getDouble("stopLongitude") != 0.0 && obj.getDouble("stopLatitude") != 0.0)*/
+                    task.setStartLatitude(obj.getDouble("startLatitude"));
+                    task.setStopLatitude(obj.getDouble("stopLatitude"));
+                    task.setStartLongitude(obj.getDouble("startLongitude"));
+                    task.setStopLongitude(obj.getDouble("stopLongitude"));
+
 
 
                     taskList.add(task);

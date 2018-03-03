@@ -4,6 +4,7 @@ import java.util.Date;
 
 import com.example.titomi.workertrackerloginmodule.supervisor.Entity;
 import com.example.titomi.workertrackerloginmodule.supervisor.User;
+import com.google.android.gms.maps.model.LatLng;
 
 /**
  * Created by NeonTetras on 22-Feb-18.
@@ -213,6 +214,54 @@ public class Task extends Entity {
         this.images = images;
     }
 
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+
+    public Double getStartLatitude() {
+        return startLatitude;
+    }
+
+    public void setStartLatitude(Double startLatitude) {
+        this.startLatitude = startLatitude;
+    }
+
+    public Double getStopLatitude() {
+        return stopLatitude;
+    }
+
+    public void setStopLatitude(Double stopLatitude) {
+        this.stopLatitude = stopLatitude;
+    }
+
+    public Double getStartLongitude() {
+        return startLongitude;
+    }
+
+    public void setStartLongitude(Double startLongitude) {
+        this.startLongitude = startLongitude;
+    }
+
+    public Double getStopLongitude() {
+        return stopLongitude;
+    }
+
+    public void setStopLongitude(Double stopLongitude) {
+        this.stopLongitude = stopLongitude;
+    }
+
     private User supervisor;
     private User worker;
     public Date dateGiven;
@@ -223,6 +272,12 @@ public class Task extends Entity {
     public String contactName;
     public String contactNumber;
     public String institution_name;
+    public Double latitude;
+    public Double longitude;
+    public Double startLatitude;
+    public Double stopLatitude;
+    public Double startLongitude;
+    public Double stopLongitude;
     public int status;
 
     public String location;
