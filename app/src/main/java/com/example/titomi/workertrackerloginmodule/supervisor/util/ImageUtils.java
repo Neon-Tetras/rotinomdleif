@@ -238,7 +238,7 @@ public class ImageUtils {
 
     public static void loadImage(Context cxt, Entity entity, final ImageView imageView){
       ImageStorage  imageStorage = new ImageUtils.ImageStorage(entity);
-        String server_url = cxt.getString(R.string.api_url);
+        String server_url = cxt.getString(R.string.server_url);
         String imageUrl = server_url + entity.getFeaturedImage();
         String imageName = ImageUtils.getImageNameFromUrlWithExtension(imageUrl);
         if(imageStorage.imageExists(imageName)){
@@ -253,6 +253,7 @@ public class ImageUtils {
                 @Override
                 protected void onPostExecute(Object obj) {
                     super.onPostExecute(obj);
+                    if(obj != null)
                     imageView.setImageBitmap((Bitmap)obj);
                 }
             };

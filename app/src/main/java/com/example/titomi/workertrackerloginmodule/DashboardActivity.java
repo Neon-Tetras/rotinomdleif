@@ -230,32 +230,6 @@ public class DashboardActivity extends AppCompatActivity {
                 );
                 break;
         }
-        /*
-        drawerBuilder.addDrawerItems(
-                mProfile,
-                new DividerDrawerItem(),
-                mTask,
-                new DividerDrawerItem(),
-                mInventory,
-                new DividerDrawerItem(),
-                mAttendance,
-                new DividerDrawerItem(),
-                mWorkerTrack,
-                new DividerDrawerItem(),
-                mSupervisorManager,
-                new DividerDrawerItem(),
-                mMessage,
-                new DividerDrawerItem(),
-                mAlert,
-                new DividerDrawerItem(),
-                mLiveChat,
-                new DividerDrawerItem(),
-                mReport,
-                new SectionDrawerItem(),
-                mSettings,
-                new DividerDrawerItem(),
-                mLogout
-        );*/
         drawerBuilder.withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
             @Override
             public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
@@ -266,6 +240,7 @@ public class DashboardActivity extends AppCompatActivity {
                     switch (identifier.intValue()){
                         case 1:
                             intent = new Intent(cxt, UserProfileActivity.class);
+                            intent.putExtra(getString(R.string.loggedInUser),loggedInUser);
                             break;
                         case 2:
 

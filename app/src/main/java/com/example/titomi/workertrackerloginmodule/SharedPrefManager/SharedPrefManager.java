@@ -26,7 +26,7 @@ public class SharedPrefManager {
     private static final String KEY_USER_ACTIVE = "active";
     private static final String KEY_USER_FIRST_NAME = "first_name";
     private static final String KEY_USER_LAST_NAME = "last_name";
-    private static final String KEY_USER_ADDRESS = "user_address";
+
     private static final String KEY_USER_CITY = "user_city";
     private static final String KEY_USER_STATE = "user_state";
     private static final String KEY_USER_COUNTRY = "user_country";
@@ -36,6 +36,7 @@ public class SharedPrefManager {
     private static final String KEY_USER_ROLE = "role";
     private static final String KEY_USER_ACTIVATION = "activation";
     private static final String KEY_USER_STATUS = "status";
+    private static final String KEY_USER_ADDRESS = "user_address";
     private static final String KEY_USER_REMEMBER = "remember";
     private static final String KEY_USER_LAST_LOGIN = "last_login";
     private static final String KEY_USER_IP_ADDRESS = "ip_address";
@@ -179,6 +180,8 @@ public class SharedPrefManager {
         user.setRole(getSavedRole());
         user.setFullName(getSavedFullName());
         user.setEmail(getSavedEmail());
+        user.setAddress(getSavedAddress());
+        user.setPhoneNumber(getSavedPhoneNumber());
         return user;
     }
 
@@ -256,4 +259,14 @@ public class SharedPrefManager {
     editor.putInt(KEY_USER_ID,id);
         editor.apply();
     }
+
+    public void setSavedAddress(String address){
+        editor.putString(KEY_USER_ADDRESS,address);
+                editor.apply();
+    }
+
+    public String getSavedAddress(){
+        return pref.getString(KEY_USER_ADDRESS, "");
+    }
+
 }
