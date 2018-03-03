@@ -231,6 +231,7 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
             public void onClick(View view) {
                 Intent i = new Intent(cxt,ActivityAssignTask.class);
                 i.putExtra("task",task);
+                i.putExtra(getString(R.string.loggedInUser),loggedInUser);
                 startActivity(i);
                 alertDialog.dismiss();
             }
