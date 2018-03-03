@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -195,7 +196,10 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
             public void onClick(View v) {
                 //TODO: call loadTask(); on clockin and clockout success
                 if(v.getTag().toString().equals(getString(R.string.clockIn))){
+
                     alertDialog.dismiss();
+
+
                     //TODO: implement clockin action here;
                     //TODO: clocking only when geofencing works
                     //TODO:show clockin error when geofencing fails
@@ -384,6 +388,7 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
                     task.setStopLatitude(obj.getDouble("stopLatitude"));
                     task.setStartLongitude(obj.getDouble("startLongitude"));
                     task.setStopLongitude(obj.getDouble("stopLongitude"));
+
 
 
 
