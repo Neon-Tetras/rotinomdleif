@@ -187,5 +187,6 @@
     <string name="products_url">products/view.php</string>
     <string name="latitude">latitude</string>
     <string name="longitude">longitude</string>
+    <string name="clockInUrl">task/clockin.php</string>
 
 </resources>
