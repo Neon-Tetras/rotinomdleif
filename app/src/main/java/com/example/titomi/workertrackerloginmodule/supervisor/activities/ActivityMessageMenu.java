@@ -35,7 +35,7 @@ public class ActivityMessageMenu extends AppCompatActivity implements View.OnCli
         findViewById(R.id.leaveApplication).setOnClickListener(this);
         findViewById(R.id.attendanceReport).setOnClickListener(this);
 
-        startService(new Intent(cxt, FieldMonitorMessagingService.class));
+
 
     }
 

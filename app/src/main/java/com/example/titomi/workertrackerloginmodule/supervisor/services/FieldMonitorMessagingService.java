@@ -160,7 +160,7 @@ public class FieldMonitorMessagingService extends Service {
 
 
             //    Toast.makeText(cxt,"Message does not exists so save",Toast.LENGTH_SHORT).show();
-            if(db.saveInBox(msg.getPoster().getId(),msg.getId(),msg.getTitle(),msg.getBody(),msg.getPoster().getName(),msg.getPoster().getFeaturedImage(),msg.getPriority()) != -1){
+            if(db.saveInBox(msg.getPoster().getId(),msg.getReceiver().getId(),msg.getId(),msg.getTitle(),msg.getBody(),msg.getPoster().getName(),msg.getPoster().getFeaturedImage(),msg.getPriority()) != -1){
                 NotificationCompat.Builder notifBuilder =
                         new NotificationCompat
                                 .Builder(cxt,getString(R.string.new_message))

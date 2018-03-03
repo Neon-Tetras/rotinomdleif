@@ -259,7 +259,7 @@ public class ActivityMessageListing extends AppCompatActivity implements Adapter
 
     private void getInboxFromDb() {
         db = DatabaseAdapter.getInstance(cxt);
-        Cursor c = db.fetchInboxMessages();
+        Cursor c = db.fetchInboxMessages(loggedInUser.getId());
             inboxMessages.clear();
         if(c.moveToFirst()){
           //c.moveToNext();

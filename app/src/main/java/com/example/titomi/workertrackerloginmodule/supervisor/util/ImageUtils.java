@@ -167,7 +167,7 @@ public class ImageUtils {
         public  boolean imageExists(String imageName){
             Bitmap b = null;
             File file = getImage(String.format("/%s%s",imageName,imageName.endsWith(".jpg") ? "" : ".jpg"));
-            //if(file == null) return false;
+            if(file == null) return false;
             String path = file.getAbsolutePath();
 
             b = BitmapFactory.decodeFile(path);
