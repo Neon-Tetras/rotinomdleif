@@ -10,7 +10,9 @@ import android.widget.TextView;
 import com.example.titomi.workertrackerloginmodule.APIs.model.leaveModel.LeaveModel;
 import com.example.titomi.workertrackerloginmodule.R;
 
+import java.text.DateFormat;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Titomi on 2/24/2018.
@@ -39,7 +41,9 @@ private     Context mContext;
 
         holder.leave_reason.setText(leaveModel.getReason());
         holder.leave_status.setText(leaveModel.getStatus());
-        holder.dateSubmitted.setText("10-2-2018");
+        DateFormat dtf = DateFormat.getDateInstance(DateFormat.SHORT,Locale.getDefault());
+
+        holder.dateSubmitted.setText(dtf.format(leaveModel.getDate()));
     }
 
     @Override

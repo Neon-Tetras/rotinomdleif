@@ -79,6 +79,7 @@
             android:label="New Message"
             android:theme="@style/AppTheme.DarkActionBar"/>
         <activity android:name=".supervisor.activities.ActivityMessageListing"
+            android:label="Messages"
             android:theme="@style/AppTheme.DarkActionBar"/>
         <activity android:name=".supervisor.activities.ActivityViewMessage"
             android:label="View Message"

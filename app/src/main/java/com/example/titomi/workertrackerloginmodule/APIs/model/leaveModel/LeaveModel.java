@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class LeaveModel implements Serializable
 {
@@ -28,7 +29,7 @@ public class LeaveModel implements Serializable
     private String reason;
     @SerializedName("date")
     @Expose
-    private Object date;
+    private Date date;
     @SerializedName("comment")
     @Expose
     private String comment;
@@ -88,7 +89,7 @@ public class LeaveModel implements Serializable
      * @param applicant
      * @param comment
      */
-    public LeaveModel(String userId, String approvedBy, Applicant applicant, String fromDate, String toDate, String reason, Object date, String comment, Integer numDays, Integer statusCode, Object message, Object created, Object updated, String status, Object name, Object description, String id) {
+    public LeaveModel(String userId, String approvedBy, Applicant applicant, String fromDate, String toDate, String reason, Date date, String comment, Integer numDays, Integer statusCode, String message, Date created, String updated, String status, String name, String description, String id) {
         super();
         this.userId = userId;
         this.approvedBy = approvedBy;
@@ -157,11 +158,11 @@ public class LeaveModel implements Serializable
         this.reason = reason;
     }
 
-    public Object getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(Object date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 

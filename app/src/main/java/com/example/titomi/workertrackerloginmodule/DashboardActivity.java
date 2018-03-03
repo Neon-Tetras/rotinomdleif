@@ -240,12 +240,12 @@ public class DashboardActivity extends AppCompatActivity {
                     switch (identifier.intValue()){
                         case 1:
                             intent = new Intent(cxt, UserProfileActivity.class);
-                            intent.putExtra(getString(R.string.loggedInUser),loggedInUser);
+
                             break;
                         case 2:
 
                             intent = new Intent(cxt, ActivityTaskListing.class);
-                            intent.putExtra(getString(R.string.loggedInUser),loggedInUser);
+
                             break;
                         case 3:
                             intent = new Intent(cxt, InventoryActivity.class);
@@ -260,44 +260,48 @@ public class DashboardActivity extends AppCompatActivity {
                             break;
                         case 7:
                             intent = new Intent(cxt, ActivityMessageListing.class);
-                            intent.putExtra(getString(R.string.loggedInUser),loggedInUser);
+
                             break;
                         case 8:
                             intent = new Intent(cxt, AlertMainActivity.class);
+
                             break;
                         case 9:
                             intent = new Intent(cxt, ReportMainActivity.class);
+
                             break;
                         case 10:
                             break;
                         case 12:
                             sharedPrefManager.clearSession();
+                            sharedPrefManager.logout();
                             startActivity(new Intent(cxt, UsersLoginTrivalActivity.class));
                             finish();
                             break;
                         case 13:
                             intent = new Intent(cxt, ActivityInventoryRequestsListing.class);
-                            intent.putExtra(getString(R.string.loggedInUser),loggedInUser);
+
                            // startActivity(intent);
                             break;
                         case 14:
                             intent = new Intent(cxt, ActivityReportListing.class);
-                            intent.putExtra(getString(R.string.loggedInUser),loggedInUser);
+
                           //  startActivity(intent);
                             break;
                         case 15:
                             intent = new Intent(cxt, ActivityTaskListing.class);
-                            intent.putExtra(getString(R.string.loggedInUser),loggedInUser);
+
                          //   startActivity(intent);
                             break;
                         case 16:
                             intent = new Intent(cxt, ActivityLeaveApplication.class);
-                            intent.putExtra(getString(R.string.loggedInUser),loggedInUser);
+
                            // startActivity(intent);
                             break;
                     }
 
                     if (intent != null) {
+                        intent.putExtra(getString(R.string.loggedInUser),loggedInUser);
                         intent.putExtra("UserFirstName", firstNameUser);
                         intent.putExtra("UserLastName", lastNameUser);
                         intent.putExtra("UserEmail", emailUser);

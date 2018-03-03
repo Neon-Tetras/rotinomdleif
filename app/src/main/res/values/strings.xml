@@ -188,5 +188,6 @@
     <string name="latitude">latitude</string>
     <string name="longitude">longitude</string>
     <string name="clockInUrl">task/clockin.php</string>
+    <string name="alert_api">alert/add.php</string>
 
 </resources>

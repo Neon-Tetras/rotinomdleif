@@ -187,10 +187,10 @@ public class ActivityViewMessage extends AppCompatActivity implements View.OnCli
 
         if(!message.isRead()) {
             DatabaseAdapter db = DatabaseAdapter.getInstance(cxt);
-           // Toast.makeText(cxt,""+message.getId(),Toast.LENGTH_SHORT).show();
-           if(db.readMessage(message.getId())){
-               //Toast.makeText(cxt,"Message read",Toast.LENGTH_SHORT).show();
-           }
+
+        db.readMessage(message.getId());
+
+
         }
 
     }

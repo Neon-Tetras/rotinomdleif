@@ -2,7 +2,6 @@ package com.example.titomi.workertrackerloginmodule.supervisor.activities;
 
 import android.content.Context;
 import android.content.Intent;
-import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -28,18 +27,16 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Locale;
 
 import com.example.titomi.workertrackerloginmodule.R;
-import com.example.titomi.workertrackerloginmodule.supervisor.DatabaseAdapter;
 import com.example.titomi.workertrackerloginmodule.supervisor.Entity;
 
 import com.example.titomi.workertrackerloginmodule.supervisor.User;
 import com.example.titomi.workertrackerloginmodule.supervisor.Task;
-import com.example.titomi.workertrackerloginmodule.supervisor.util.DrawableManager;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.InputValidator;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.DateTimeUtil;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.Network;
@@ -99,13 +96,19 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+
         if(getIntent().getExtras() != null){
             loggedInUser = (User)getIntent().getExtras().getSerializable(getString(R.string.loggedInUser));
             selectedTask = (Task)getIntent().getExtras().getSerializable("task");
+
             if(selectedTask != null) {
                 setupView(selectedTask);
+            }else{
+                loadWorkerSpinner();
             }
+
         }
+
 
     }
 
@@ -124,7 +127,7 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
                 break;
             case R.id.assignTaskBut:
                 if(!NetworkChecker.haveNetworkConnection(cxt))return;
-                if(assignTaskBut.getTag().equals("update")){
+                if(assignTaskBut.getTag().toString().equalsIgnoreCase("update")){
                     assignTask(getString(R.string.api_url)+getString(R.string.edit_task_url)+"?key="+getString(R.string.field_worker_api_key));
                 }else{
                     assignTask(getString(R.string.api_url)+getString(R.string.add_task_url)+"?key="+getString(R.string.field_worker_api_key));
@@ -136,13 +139,16 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
 
     private void setupView(Task task){
        // workerIds
-        DateFormat dtf = DateFormat.getDateInstance();
+        SimpleDateFormat dtf= new SimpleDateFormat("yyyy/MM/dd");
         dateEditText.setText(dtf.format(task.getDateGiven()));
         timeEditText.setText(task.getTimeGiven());
         //workerSpinner.set
-        stateSpinner.setSelection(Arrays.asList(states.toArray()).indexOf(task.getState()));
-        lgaSpinner.setSelection(Arrays.asList(lgas.toArray()).indexOf(task.getLga()));
-        workerSpinner.setSelection(Arrays.asList(workerIds.toArray()).indexOf(task.getWorker().getId()));
+
+        String taskTypes[] =  getResources().getStringArray(R.array.taskType);
+        taskTypeSpinner.setSelection(Arrays.asList(taskTypes).indexOf(task.getWorkType()));
+        String states[] = getResources().getStringArray(R.array.states);
+        stateSpinner.setSelection(Arrays.asList(states).indexOf(selectedTask.getState()));
+
 
         taskTitleEdit.setText(task.getName());
         taskDescriptionEdit.setText(task.getDescription());
@@ -155,8 +161,11 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
 
         locationEdit.setText(task.getLocation());
 
-        assignTaskBut.setTag("Update");
+        assignTaskBut.setTag("update");
         assignTaskBut.setText("Update");
+        loadWorkerSpinner();
+
+        taskCoordinates = new LatLng(task.getLatitude(),task.getLongitude());
 
     }
 
@@ -178,7 +187,7 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
     @Override
     protected void onResume() {
         super.onResume();
-        loadWorkerSpinner();
+
 
         //loadLgaSpinner();
     }
@@ -287,6 +296,10 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
     private void setupLgaSpinner(){
         ArrayAdapter<String> lgaAdapter = new ArrayAdapter<>(cxt, android.R.layout.simple_spinner_dropdown_item, lgas);
         lgaSpinner.setAdapter(lgaAdapter);
+
+        if(selectedTask !=null) {
+            lgaSpinner.setSelection(Arrays.asList(lgas.toArray()).indexOf(selectedTask.getLga()));
+        }
     }
 
     private void loadLgaSpinner(String state) throws UnsupportedEncodingException {
@@ -350,10 +363,18 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
 
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(cxt,android.R.layout.simple_spinner_dropdown_item,workerNames);
         workerSpinner.setAdapter(spinnerAdapter);
+
+        if(selectedTask != null){
+
+            workerSpinner.setSelection(Arrays.asList(workerIds.toArray()).indexOf(selectedTask.getWorker().getId()));
+        }
     }
 
     private void assignTask(String api_url){
         try {
+            if(selectedTask != null) {
+                taskData.put(getString(R.string.id), "" + selectedTask.getId());
+            }
             taskData.put(getString(R.string.supervisor_id),""+loggedInUser.getId());
             taskData.put(getString(R.string.worker_id),""+
                     workerIds.get(InputValidator.validateSpinner(workerSpinner,-1)));
@@ -376,7 +397,7 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
             taskData.put(getString(R.string.latitude),String.format("%f",taskCoordinates.latitude));
             taskData.put(getString(R.string.longitude),String.format("%f",taskCoordinates.longitude));
 
-            sendToNework(taskData,api_url);
+            sendToNetwork(taskData,api_url);
         } catch (InputValidator.InvalidInputException e) {
             Toast.makeText(cxt,e.getMessage(),Toast.LENGTH_LONG).show();
         }
@@ -385,7 +406,7 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
 
     }
 
-    private void sendToNework(final HashMap<String, String> taskData,String api_url) {
+    private void sendToNetwork(final HashMap<String, String> taskData, String api_url) {
         new android.os.AsyncTask<String,Void,String>(){
 
             @Override
@@ -409,18 +430,22 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
                 }
 
                 try {
-                    JSONArray jsonArray = new JSONArray(s);
-                    JSONObject obj = jsonArray.getJSONObject(0);
+
+                    JSONObject obj = new JSONObject(s);
                     if(obj.getInt(getString(R.string.statusCode)) == Entity.STATUS_OK){
                         AlertDialog alertDialog = new AlertDialog.Builder(cxt).create();
-                        alertDialog.setMessage("Task Added Successfully");
+                        if(selectedTask == null) {
+                            alertDialog.setMessage("Task Added Successfully");
+                        }else{
+                            alertDialog.setMessage("Task Edited Successfully");
+                        }
                         alertDialog.show();
 
                         //Toast.makeText(cxt,"Task Added Successfully",Toast.LENGTH_LONG).show();
                         clearAllFields();
                     }else{
                         AlertDialog alertDialog = new AlertDialog.Builder(cxt).create();
-                        alertDialog.setMessage(obj.getString(getString(R.string.message)));
+                        alertDialog.setMessage(obj.getString("message"));
                         alertDialog.show();
                       //  Toast.makeText(cxt,e.getMessage(),Toast.LENGTH_LONG).show();
 

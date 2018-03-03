@@ -18,7 +18,7 @@ public class LeaveRequestActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setTitle("Inventory Manager");
+        getSupportActionBar().setTitle("Leave Requests");
     }
 
 

@@ -12,11 +12,14 @@ import com.example.titomi.workertrackerloginmodule.AttendanceModule.AttendanceSu
 import com.example.titomi.workertrackerloginmodule.AttendanceModule.AttendanceSubMenu.LeaveHistoryActivity;
 import com.example.titomi.workertrackerloginmodule.AttendanceModule.AttendanceSubMenu.LeaveRequestActivity;
 import com.example.titomi.workertrackerloginmodule.R;
+import com.example.titomi.workertrackerloginmodule.supervisor.User;
+import com.example.titomi.workertrackerloginmodule.supervisor.activities.ActivityLeaveApplication;
 
 public class AttendanceMainActivity extends AppCompatActivity implements View.OnClickListener {
 
     Toolbar toolbar;
     CardView clock, attendance, leave, approvedLeave;
+    private User loggedInUser;
 
 
     @Override
@@ -35,6 +38,9 @@ public class AttendanceMainActivity extends AppCompatActivity implements View.On
         leave = findViewById(R.id.leave_request);
         approvedLeave = findViewById(R.id.leave_approved);
 
+        if(getIntent().getExtras() != null) {
+            loggedInUser = (User) getIntent().getExtras().getSerializable(getString(R.string.loggedInUser));
+        }
         clock.setOnClickListener(this);
         attendance.setOnClickListener(this);
         leave.setOnClickListener(this);
@@ -73,19 +79,14 @@ public class AttendanceMainActivity extends AppCompatActivity implements View.On
                 startActivity(i);
                 break;
             case R.id.leave_request:
-                i = new Intent(this, LeaveRequestActivity.class);
-                i.putExtra("UserFirstName", userFirstName);
-                i.putExtra("UserLastName", userLastName);
-                i.putExtra("UserEmail", userEmail);
-                i.putExtra("UserId", userId);
+                i = new Intent(this, ActivityLeaveApplication.class);
+                i.putExtra(getString(R.string.loggedInUser),loggedInUser);
+
                 startActivity(i);
                 break;
             case R.id.leave_approved:
                 i = new Intent(this, LeaveHistoryActivity.class);
-                i.putExtra("UserFirstName", userFirstName);
-                i.putExtra("UserLastName", userLastName);
-                i.putExtra("UserEmail", userEmail);
-                i.putExtra("UserId", userId);
+                i.putExtra(getString(R.string.loggedInUser),loggedInUser);
                 startActivity(i);
                 break;
             default:

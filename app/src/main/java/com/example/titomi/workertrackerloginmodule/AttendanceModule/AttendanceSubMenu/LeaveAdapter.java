@@ -8,7 +8,9 @@ import android.view.ViewGroup;
 import com.example.titomi.workertrackerloginmodule.APIs.model.leaveModel.LeaveModel;
 import com.example.titomi.workertrackerloginmodule.R;
 
+import java.text.DateFormat;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Titomi on 2/22/2018.
@@ -32,7 +34,8 @@ public class LeaveAdapter extends RecyclerView.Adapter<LeaveRecyclerViewHolder> 
 
     @Override
     public void onBindViewHolder(LeaveRecyclerViewHolder holder, int position) {
-        holder.dateSubmitted.setText((Integer) leaveModelList.get(position).getDate());
+        DateFormat dtf = DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault());
+        holder.dateSubmitted.setText(dtf.format(leaveModelList.get(position).getDate()));
         holder.leave_status.setText(leaveModelList.get(position).getStatus());
         holder.leave_reason.setText(leaveModelList.get(position).getReason());
     }

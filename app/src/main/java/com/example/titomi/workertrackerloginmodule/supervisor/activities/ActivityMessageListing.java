@@ -260,13 +260,14 @@ public class ActivityMessageListing extends AppCompatActivity implements Adapter
     private void getInboxFromDb() {
         db = DatabaseAdapter.getInstance(cxt);
         Cursor c = db.fetchInboxMessages(loggedInUser.getId());
-            inboxMessages.clear();
+
         if(c.moveToFirst()){
+            inboxMessages.clear();
           //c.moveToNext();
          //   Toast.makeText(cxt,c.getColumnIndex(DatabaseAdapter.MSG_BODY),Toast.LENGTH_SHORT).show();
             for(int i = 0; i<c.getCount(); i++){
                 Messages msg = new Messages();
-                msg.setId(c.getInt(c.getColumnIndex(DatabaseAdapter.KEY_ID)));
+                msg.setId(c.getInt(c.getColumnIndex(DatabaseAdapter.MSG_ID)));
                 msg.setBody(c.getString(c.getColumnIndex(DatabaseAdapter.MSG_BODY)));
                 msg.setTitle(c.getString(c.getColumnIndex(DatabaseAdapter.SUBJECT)));
 
@@ -292,7 +293,7 @@ public class ActivityMessageListing extends AppCompatActivity implements Adapter
             }
             populateMessage(inboxMessages,messageInboxList);
         }else{
-            Toast.makeText(cxt,"No saved message",Toast.LENGTH_SHORT).show();
+            Toast.makeText(cxt,"No messages",Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -301,13 +302,7 @@ public class ActivityMessageListing extends AppCompatActivity implements Adapter
         //inboxLinearLayout.removeAllViews();
 
         ArrayAdapter<Messages> msgAdapter = new ArrayAdapter<Messages>(cxt,R.layout.messages_single_item_layout,msgList){
-            @Override
-            public void add(@Nullable Messages object) {
-                if(!msgList.contains(object)) {
-                    super.add(object);
-                }
 
-            }
 
             @NonNull
             @Override
@@ -352,7 +347,6 @@ public class ActivityMessageListing extends AppCompatActivity implements Adapter
                 if(msg.isRead()){
                     newMessage.setVisibility(View.GONE);
 
-                    //Toast.makeText(cxt,"Message has been read",Toast.LENGTH_SHORT).show();
                 }
                 if(!msg.getPriority().equalsIgnoreCase("high")){
                     priorityImage.setVisibility(View.GONE);

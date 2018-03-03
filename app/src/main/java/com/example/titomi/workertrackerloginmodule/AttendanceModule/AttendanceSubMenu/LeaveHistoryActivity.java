@@ -18,6 +18,7 @@ import com.example.titomi.workertrackerloginmodule.APIs.model.leaveModel.LeaveCo
 import com.example.titomi.workertrackerloginmodule.APIs.model.leaveModel.LeaveModel;
 import com.example.titomi.workertrackerloginmodule.R;
 import com.example.titomi.workertrackerloginmodule.SharedPrefManager.SharedPrefManager;
+import com.example.titomi.workertrackerloginmodule.supervisor.User;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,7 +31,7 @@ public class LeaveHistoryActivity extends AppCompatActivity {
 
     private static final String TAG = "LeaveCommunicator";
     private static final String API_KEY = "98SY.4T1nXhPI";
-    private static final String SERVER_URL = "https://chemotropic-partiti.000webhostapp.com/fieldworker_api/leave/view.php?key=a66Zo3osEyV7o&view=user_requests&user_id=";
+    private static String requestURL;
     final String view = "by_id";
     final String api_view = "by_id";
     LeaveAdapter adapter;
@@ -45,6 +46,7 @@ public class LeaveHistoryActivity extends AppCompatActivity {
     private LinearLayoutManager  linearLayoutManager;
     private DividerItemDecoration dividerItemDecoration;
     private RecyclerView.Adapter adapter2;
+    private User loggedInUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +64,10 @@ public class LeaveHistoryActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(adapter2);
 
+        if(getIntent().getExtras() != null) {
+            loggedInUser = (User) getIntent().getExtras().getSerializable(getString(R.string.loggedInUser));
+        }
+        requestURL = getString(R.string.api_url)+"leave/view.php?key="+getString(R.string.field_worker_api_key)+"&view=user_requests&user_id="+loggedInUser.getId();
         getData();
 
         /*recyclerView = findViewById(R.id.leave_history);
@@ -82,7 +88,7 @@ public class LeaveHistoryActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setTitle("Inventory Manager");
+        getSupportActionBar().setTitle("Leave Requests");
     }
 
     private void getData() {
@@ -92,7 +98,7 @@ public class LeaveHistoryActivity extends AppCompatActivity {
         progressDialog.setMessage("Loading...");
         progressDialog.show();
 
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(SERVER_URL + "" + userId, new com.android.volley.Response.Listener<JSONArray>() {
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(requestURL, new com.android.volley.Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 Log.e(TAG, "success");
