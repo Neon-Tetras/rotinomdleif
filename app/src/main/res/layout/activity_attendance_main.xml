@@ -160,7 +160,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:text="Approved Leave History"
+                        android:text="Leave History"
                         android:textAlignment="center"
                         android:textSize="15sp"
                         android:textStyle="bold" />

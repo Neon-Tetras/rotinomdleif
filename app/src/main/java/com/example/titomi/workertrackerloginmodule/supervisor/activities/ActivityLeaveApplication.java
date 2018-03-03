@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.example.titomi.workertrackerloginmodule.R;
 import com.example.titomi.workertrackerloginmodule.supervisor.Entity;
+import com.example.titomi.workertrackerloginmodule.supervisor.User;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.DateTimeUtil;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.InputValidator;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.Network;
@@ -27,6 +28,7 @@ public class ActivityLeaveApplication extends AppCompatActivity implements View.
     private EditText fromDate,toDate,reasonEditText;
     private Context cxt;
     private Button submitButton;
+    private User loggedInUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +45,9 @@ public class ActivityLeaveApplication extends AppCompatActivity implements View.
         fromDate.setOnClickListener(this);
         toDate.setOnClickListener(this);
         submitButton.setOnClickListener(this);
+        if(getIntent().getExtras() != null) {
+            loggedInUser = (User) getIntent().getExtras().getSerializable(getString(R.string.loggedInUser));
+        }
 
     }
 
@@ -119,7 +124,7 @@ public class ActivityLeaveApplication extends AppCompatActivity implements View.
             leaveData.put("from_date", InputValidator.validateText(fromDate,10));
             leaveData.put("to_date", InputValidator.validateText(toDate,10));
             leaveData.put("reason", InputValidator.validateText(reasonEditText,5));
-            leaveData.put("user_id", ""+Entity.TEST_USER_ID);
+            leaveData.put("user_id", ""+loggedInUser.getId());
         } catch (InputValidator.InvalidInputException e) {
             Toast.makeText(cxt,e.getMessage(),Toast.LENGTH_SHORT).show();
         }

@@ -20,6 +20,9 @@ import com.example.titomi.workertrackerloginmodule.supervisor.util.Network;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 /**
  * Created by NeonTetras on 01-Mar-18.
  */
@@ -47,9 +50,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         progressBar.setVisibility(View.VISIBLE);
         try {
-            new LoginNetworkTask().execute(getString(R.string.api_url)+getString(R.string.login_url)+"?key="+getString(R.string.field_worker_api_key)+"&username="+ InputValidator.validateText(lineIdEdit,6));
-        } catch (InputValidator.InvalidInputException e) {
-            Toast.makeText(cxt,e.getMessage(),Toast.LENGTH_LONG).show();
+            new LoginNetworkTask().execute(getString(R.string.api_url)+getString(R.string.login_url)+"?key="+getString(R.string.field_worker_api_key)+"&username="+ URLEncoder.encode(InputValidator.validateText(lineIdEdit,6),"UTF-8"));
+        } catch (InputValidator.InvalidInputException | UnsupportedEncodingException e) {
+            Toast.makeText(cxt,""+getClass().getName()+"\n"+e.getMessage(),Toast.LENGTH_LONG).show();
             e.printStackTrace();
 
         }
@@ -72,6 +75,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 return;
             }
 
+            System.err.println(s);
             try {
                 JSONObject obj = new JSONObject(s);
                 if(obj.getInt("statusCode") == User.STATUS_OK){

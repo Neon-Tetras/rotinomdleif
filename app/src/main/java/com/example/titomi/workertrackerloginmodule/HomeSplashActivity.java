@@ -31,8 +31,10 @@ public class HomeSplashActivity extends AppCompatActivity {
                     sleep(3000);
                     if (user== null || user.getId() == 0){
                         Intent i = new Intent(HomeSplashActivity.this, LoginActivity.class);
+
                         startActivity(i);
                         finish();
+
                     }else{
                         Intent inta = new Intent(HomeSplashActivity.this, DashboardActivity.class);
                         inta.putExtra(getString(R.string.loggedInUser),user);

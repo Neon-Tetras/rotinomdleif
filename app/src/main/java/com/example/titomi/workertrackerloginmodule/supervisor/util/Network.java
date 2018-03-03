@@ -94,7 +94,7 @@ public class Network {
             URLConnection conn = new URL(params[0]).openConnection();
             conn.setDoInput(true);
             conn.setDoOutput(true);
-            conn.setUseCaches(true);
+            conn.setUseCaches(false);
 
 
             ObjectOutputStream objOut = new ObjectOutputStream(conn.getOutputStream());
