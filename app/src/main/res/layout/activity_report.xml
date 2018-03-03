@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/coordinator"
-    tools:context="com.example.titomi.workertrackerloginmodule.ReportModule.ReportActivity">
+    tools:context="com.example.titomi.workertrackerloginmodule.ReportModule.ReportActivity"
+    android:orientation="vertical">
 
     <include
         layout="@layout/main_toolbar"
@@ -13,214 +14,322 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
             android:orientation="vertical"
-            android:padding="16dp">
-
-
-
-            <TextView
-                android:layout_marginTop="5dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Date"
-                android:textSize="18sp" />
+            android:padding="5dp"
+            android:descendantFocusability="beforeDescendants"
+            android:focusableInTouchMode="true">
 
             <TextView
-                android:id="@+id/report_date"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:gravity="center"
-                android:text="Date"
-                android:textSize="18sp" />
-
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="State"
-                android:textSize="18sp" />
+                android:layout_marginBottom="10dp"
+                android:text="@string/task_type"
+                android:textColor="@color/black"
+                android:textSize="12sp" />
 
             <EditText
-                android:id="@+id/report_state"
+                android:id="@+id/taskType"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:hint="@string/required"
-                android:inputType="none" />
+                android:layout_marginBottom="10dp"
+                android:editable="false"
+                android:inputType="none"
+                 />
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Town"
-                android:textSize="18sp" />
+                android:layout_marginBottom="10dp"
+                android:text="Task Title:"
+                android:textColor="@color/black"
+                android:textSize="12sp" />
 
             <EditText
-                android:id="@+id/report_town"
+                android:id="@+id/taskTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:hint="@string/required"
-                android:inputType="textMultiLine" />
+                android:layout_marginBottom="10dp"
+                android:inputType="none"
+                android:editable="false"
+
+                android:singleLine="true" />
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Name of Hospital/School"
-                android:textSize="18sp" />
+                android:layout_marginBottom="10dp"
+                android:text="Task Description:"
+                android:textColor="@color/black"
+                android:textSize="12sp" />
 
             <EditText
-                android:id="@+id/report_institution"
+                android:id="@+id/description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:hint="@string/required"
-                android:inputType="text" />
+                android:layout_marginBottom="10dp"
+                android:inputType="none"
+                android:singleLine="true"
+                android:editable="false"/>
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Contact Person"
-                android:textSize="18sp" />
+                android:layout_marginBottom="10dp"
+                android:text="Institution Name:"
+                android:textColor="@color/black"
+                android:textSize="12sp" />
 
             <EditText
-                android:id="@+id/contact_person"
+                android:id="@+id/institution"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:hint="@string/required"
-                android:inputType="text" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Phone No"
-                android:textSize="18sp" />
-
-            <EditText
-                android:id="@+id/product_sold"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:hint="@string/required"
-                android:inputType="number" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Sales"
-                android:textSize="18sp" />
-
-            <EditText
-                android:id="@+id/message"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
-                android:hint="@string/optional"
-                android:inputType="number" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="MUM Presents"
-                android:textSize="18sp" />
-
-            <EditText
-                android:id="@+id/mum_presents"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
-                android:hint="@string/optional"
-                android:inputType="number" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Classes Sampled (JSS1 &amp; JSS2)"
-                android:textSize="18sp" />
-
-            <EditText
-                android:id="@+id/classes_sampled"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
-                android:hint="@string/optional"
-                android:inputType="number" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Total"
-                android:textSize="18sp" />
-
-            <EditText
-                android:id="@+id/report_total"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
-                android:hint="@string/optional"
-                android:inputType="number" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Demo"
-                android:textSize="18sp" />
-
-            <EditText
-                android:id="@+id/report_demo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
-                android:hint="@string/optional"
-                android:inputType="number" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="School Type"
-                android:textSize="18sp" />
-
-            <EditText
-                android:id="@+id/school_type"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
-                android:hint="@string/optional"
-                android:inputType="number" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Sex"
-                android:textSize="18sp" />
-
-            <EditText
-                android:id="@+id/sex"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
-                android:hint="@string/optional"
-                android:inputType="number" />
+                android:layout_marginBottom="10dp"
+                android:inputType="none"
+                android:singleLine="true"
+                android:editable="false"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <ImageView
-                    android:id="@+id/field_image"
-                    android:layout_width="180dp"
-                    android:layout_height="200dp"
-                    android:layout_gravity="center_vertical"
-                    android:background="#d2d1d1" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:text="@string/location"
+                    android:textColor="@color/black"
+                    android:textSize="12sp" />
+
             </LinearLayout>
+
+
+            <EditText
+                android:id="@+id/location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:inputType=""
+                android:enabled="false"
+                android:editable="false"
+
+                android:singleLine="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:text="Full Address:"
+                android:textColor="@color/black"
+                android:textSize="12sp" />
+
+            <EditText
+                android:id="@+id/fullAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:inputType="none"
+                android:singleLine="true"
+                android:editable="false"/>
+
+
+            <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:columnCount="3"
+                android:rowCount="2"
+                android:alignmentMode="alignBounds"
+
+                android:useDefaultMargins="true"
+                android:layout_marginBottom="10dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:text="State:"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"
+                    />
+                <ProgressBar
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:id="@+id/lgaLoading"
+
+                    android:visibility="invisible"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:text="LGA:"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"
+                    />
+                <EditText
+                    android:id="@+id/state"
+                    android:layout_width="130dp"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    android:editable="false"
+
+                    />
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/view"
+                    android:text=""
+                    android:visibility="invisible"
+                    />
+
+
+                <EditText
+                    android:id="@+id/lga"
+                    android:layout_width="130dp"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    android:editable="false"
+
+                    />
+
+
+            </GridLayout>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:text="Quantity Given:"
+                android:textColor="@color/black"
+                android:textSize="12sp" />
+
+            <EditText
+                android:id="@+id/quantity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:inputType="none"
+                android:singleLine="true"
+                android:editable="false"/>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:text="Contact Full name:"
+                android:textColor="@color/black"
+                android:textSize="12sp" />
+
+            <EditText
+                android:id="@+id/contactFullName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:inputType="none"
+                android:editable="false"
+                android:singleLine="true" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:text="Contact Number:"
+                android:textColor="@color/black"
+
+                android:textSize="12sp" />
+
+            <EditText
+                android:id="@+id/contactPhone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:inputType="none"
+                android:editable="false"
+                android:singleLine="true" />
+
+            <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:rowCount="2"
+                android:columnCount="2"
+                android:alignmentMode="alignBounds"
+                android:layout_marginBottom="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:text="Date assigned:"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"
+
+
+                    android:layout_gravity="top|start"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:text="Time:"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"
+                    android:layout_gravity="top|center"/>
+
+                <EditText
+                    android:id="@+id/dateText"
+                    android:layout_width="130dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:drawableEnd="@android:drawable/arrow_down_float"
+                    android:hint="@string/date_format"
+                    android:editable="false"
+                    android:focusable="false"
+                    android:inputType="none"
+                    android:layout_gravity="bottom|start"/>
+
+
+
+                <EditText
+                    android:id="@+id/timeText"
+                    android:layout_width="130dp"
+                    android:layout_height="wrap_content"
+
+                    android:drawableEnd="@android:drawable/arrow_down_float"
+                    android:editable="false"
+                    android:gravity="center_horizontal"
+                    android:hint="@string/date_format"
+                    android:focusable="false"
+                    android:inputType="none"
+
+                    android:layout_gravity="center|bottom"/>
+
+            </GridLayout>
+
+
+
+            <Button
+                android:id="@+id/clockOutBut"
+
+                android:background="@color/colorPrimary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="10dp"
+                android:padding="2dp"
+                android:textColor="@color/white"
+                android:elevation="@dimen/cardview_default_elevation"
+                android:tag="add"
+                android:text="@string/clockOut" />
         </LinearLayout>
     </ScrollView>
 
@@ -272,4 +381,4 @@
     </com.github.clans.fab.FloatingActionMenu>
 
 
-</android.support.design.widget.CoordinatorLayout>
+</LinearLayout>
