@@ -166,7 +166,7 @@ public class ActivityMessageListing extends AppCompatActivity implements Adapter
 
 
         //    Toast.makeText(cxt,"Message does not exists so save",Toast.LENGTH_SHORT).show();
-            if(db.saveInBox(msg.getPoster().getId(),msg.getId(),msg.getTitle(),msg.getBody(),msg.getPoster().getName(),msg.getPoster().getFeaturedImage(),msg.getPriority()) != -1){
+            if(db.saveInBox(msg.getPoster().getId(),msg.getReceiver().getId(),msg.getId(),msg.getTitle(),msg.getBody(),msg.getPoster().getName(),msg.getPoster().getFeaturedImage(),msg.getPriority()) != -1){
              //   Toast.makeText(cxt,"Message saved",Toast.LENGTH_SHORT).show();
             }//else Toast.makeText(cxt,"Message  not saved",Toast.LENGTH_SHORT).show();
         }
@@ -259,7 +259,7 @@ public class ActivityMessageListing extends AppCompatActivity implements Adapter
 
     private void getInboxFromDb() {
         db = DatabaseAdapter.getInstance(cxt);
-        Cursor c = db.fetchInboxMessages();
+        Cursor c = db.fetchInboxMessages(loggedInUser.getId());
             inboxMessages.clear();
         if(c.moveToFirst()){
           //c.moveToNext();

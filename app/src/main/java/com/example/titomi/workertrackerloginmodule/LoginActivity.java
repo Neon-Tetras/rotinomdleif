@@ -79,7 +79,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                     user.setId(obj.getInt("id"));
                     user.setEmail(obj.getString("email"));
-                    user.setEmail(obj.getString("role"));
+                    user.setRole(obj.getString("role"));
                     user.setRoleId(obj.getInt("roleId"));
                     user.setUsername(obj.getString("username"));
                     user.setLineId(obj.getString("line_id"));
@@ -99,6 +99,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     SharedPrefManager sharedPrefManager = new SharedPrefManager(cxt);
                     sharedPrefManager.setSavedCity(user.getCity());
                     sharedPrefManager.setSavedEmail(user.getEmail());
+                    sharedPrefManager.setSavedAddress(user.getAddress());
                     sharedPrefManager.setUserFullname(user.getFullName());
                     sharedPrefManager.setSavedLineId(user.getLineId());
                     sharedPrefManager.setSavedPhoneNumber(user.getPhoneNumber());

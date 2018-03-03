@@ -15,7 +15,7 @@ public class DatabaseAdapter {
 
 	public static final String OUTBOX_TABLE = "outbox_table";
 	public static final String INBOX_TABLE = "inbox_table";
-	private static final int DATABASE_VERSION = 11;
+	private static final int DATABASE_VERSION = 12;
 	
 	//Table info for contact groups
 	public static final String KEY_ID = "_id";
@@ -26,6 +26,7 @@ public class DatabaseAdapter {
 	
 	//Table info for sent sms
 	public static final String SENDER_ID = "_sender_id";
+	public static final String RECIPIENT_ID = "_recipient_id";
 	public static final String MSG_BODY = "_msg";
 	public static final String SUBJECT = "_subject";
 	public static final String DATE_TIME = "_date_time";
@@ -54,6 +55,7 @@ public class DatabaseAdapter {
 			INBOX_TABLE +" ("+KEY_ID+
 			" integer primary key autoincrement," +
 			SENDER_ID+" integer(11) not null," +
+			RECIPIENT_ID+" integer(11) not null," +
 			MSG_BODY+" text(1000) not null," +
 			MSG_ID+" integer(10) not null," +
 			SENDER+" text(1000) not null," +
@@ -119,7 +121,7 @@ public class DatabaseAdapter {
 	  return   mDb.update(INBOX_TABLE,val,MSG_ID +" = "+messageId,null) != 0;
 
     }
-	public long saveInBox(long senderId,long msg_id,String subject, String msg_body, String senderName,String senderPic,String priority){
+	public long saveInBox(long senderId,long recipientId,long msg_id,String subject, String msg_body, String senderName,String senderPic,String priority){
 		//Create a new row of values to insert
 		
 		ContentValues newValues = new ContentValues();
@@ -127,6 +129,7 @@ public class DatabaseAdapter {
 		//Assign value for each row
 		
 		newValues.put(SENDER_ID, senderId);
+		newValues.put(RECIPIENT_ID, recipientId);
 		newValues.put(MSG_ID, msg_id);
 		newValues.put(MSG_BODY, msg_body);
 		newValues.put(SUBJECT,subject);
@@ -165,8 +168,8 @@ public class DatabaseAdapter {
 	return true;
 	}
 	*/
-	public Cursor fetchInboxMessages(){
-		return mDb.query(INBOX_TABLE, new String[]{"*"}, null, null, null, null, KEY_ID+" DESC");
+	public Cursor fetchInboxMessages(long userId){
+		return mDb.query(INBOX_TABLE, new String[]{"*"}, RECIPIENT_ID+" = "+userId, null, null, null, KEY_ID+" DESC");
 		
 	}
 

@@ -31,6 +31,7 @@ import com.example.titomi.workertrackerloginmodule.supervisor.activities.Activit
 import com.example.titomi.workertrackerloginmodule.supervisor.activities.ActivityMessageListing;
 import com.example.titomi.workertrackerloginmodule.supervisor.activities.ActivityReportListing;
 import com.example.titomi.workertrackerloginmodule.supervisor.activities.ActivityTaskListing;
+import com.example.titomi.workertrackerloginmodule.supervisor.services.FieldMonitorMessagingService;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.ImageUtils;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
@@ -93,6 +94,7 @@ public class DashboardActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         toolbar.setTitle("Dashboard");
         cxt = this;
+        startService(new Intent(cxt, FieldMonitorMessagingService.class));
 
         //Get the user serializable sent from the login activity
         Bundle extras =getIntent().getExtras();
@@ -210,6 +212,8 @@ public class DashboardActivity extends AppCompatActivity {
             case User.SUPERVISOR:
 
                 drawerBuilder.addDrawerItems(
+                        mProfile,
+                        new DividerDrawerItem(),
                         mMessage,
                         new DividerDrawerItem(),
                         supervisorInventoryRequest,
@@ -226,32 +230,6 @@ public class DashboardActivity extends AppCompatActivity {
                 );
                 break;
         }
-        /*
-        drawerBuilder.addDrawerItems(
-                mProfile,
-                new DividerDrawerItem(),
-                mTask,
-                new DividerDrawerItem(),
-                mInventory,
-                new DividerDrawerItem(),
-                mAttendance,
-                new DividerDrawerItem(),
-                mWorkerTrack,
-                new DividerDrawerItem(),
-                mSupervisorManager,
-                new DividerDrawerItem(),
-                mMessage,
-                new DividerDrawerItem(),
-                mAlert,
-                new DividerDrawerItem(),
-                mLiveChat,
-                new DividerDrawerItem(),
-                mReport,
-                new SectionDrawerItem(),
-                mSettings,
-                new DividerDrawerItem(),
-                mLogout
-        );*/
         drawerBuilder.withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
             @Override
             public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
@@ -262,6 +240,7 @@ public class DashboardActivity extends AppCompatActivity {
                     switch (identifier.intValue()){
                         case 1:
                             intent = new Intent(cxt, UserProfileActivity.class);
+                            intent.putExtra(getString(R.string.loggedInUser),loggedInUser);
                             break;
                         case 2:
 

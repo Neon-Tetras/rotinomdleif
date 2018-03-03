@@ -130,8 +130,8 @@
     </string-array>
 
     <string-array name="taskType">
-        <item>School</item>
-        <item>Hospital</item>
+        <item>Always School Program</item>
+        <item>Pampers Hospital Program</item>
     </string-array>
 
     <string-array name="states">
