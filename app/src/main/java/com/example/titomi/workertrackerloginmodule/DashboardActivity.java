@@ -159,7 +159,7 @@ public class DashboardActivity extends AppCompatActivity {
 
 
         mProfile = new PrimaryDrawerItem().withIdentifier(1).withName("My Profile");
-        mTask = new PrimaryDrawerItem().withIdentifier(2).withName("Task Manager");
+        mTask = new PrimaryDrawerItem().withIdentifier(2).withName("Tasks");
         mInventory = new PrimaryDrawerItem().withIdentifier(3).withName("Inventory Manager");
         mAttendance = new PrimaryDrawerItem().withIdentifier(4).withName("Attendance Report");
         mWorkerTrack = new PrimaryDrawerItem().withIdentifier(5).withName("Worker Tracking");
@@ -192,20 +192,19 @@ public class DashboardActivity extends AppCompatActivity {
                         new DividerDrawerItem(),
                         mAttendance,
                         new DividerDrawerItem(),
-                        mWorkerTrack,
-                        new DividerDrawerItem(),
+                       /* mWorkerTrack,
+                        new DividerDrawerItem(),*/
                         mSupervisorManager,
                         new DividerDrawerItem(),
                         mMessage,
                         new DividerDrawerItem(),
-                        mAlert,
-                        new DividerDrawerItem(),
+                     /*   mAlert,
+                        new DividerDrawerItem(),*/
                         mLiveChat,
                         new DividerDrawerItem(),
-                        mReport,
-                        new SectionDrawerItem(),
-                        mSettings,
-                        new DividerDrawerItem(),
+
+                      /*  mSettings,
+                        new DividerDrawerItem(),*/
                         mLogout
                 );
                 break;
@@ -223,6 +222,8 @@ public class DashboardActivity extends AppCompatActivity {
                         supervisorTasks,
                         new DividerDrawerItem(),
                         leaveApplication,
+                        new SectionDrawerItem(),
+                        mReport,
                         new SectionDrawerItem(),
                         mSettings,
                         new DividerDrawerItem(),
@@ -254,9 +255,10 @@ public class DashboardActivity extends AppCompatActivity {
                             intent = new Intent(cxt, AttendanceMainActivity.class);
                             break;
                         case 5:
-                            intent = new Intent(cxt, SupervisorMainActivity.class);
+
                             break;
                             case 6:
+                                intent = new Intent(cxt, SupervisorMainActivity.class);
                             break;
                         case 7:
                             intent = new Intent(cxt, ActivityMessageListing.class);
@@ -267,15 +269,16 @@ public class DashboardActivity extends AppCompatActivity {
 
                             break;
                         case 9:
-                            intent = new Intent(cxt, ReportMainActivity.class);
+
 
                             break;
                         case 10:
+                            intent = new Intent(cxt, ReportMainActivity.class);
                             break;
                         case 12:
                             sharedPrefManager.clearSession();
                             sharedPrefManager.logout();
-                            startActivity(new Intent(cxt, UsersLoginTrivalActivity.class));
+                            startActivity(new Intent(cxt, LoginActivity.class));
                             finish();
                             break;
                         case 13:

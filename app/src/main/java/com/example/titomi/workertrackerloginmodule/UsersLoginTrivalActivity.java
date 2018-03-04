@@ -144,7 +144,7 @@ public class UsersLoginTrivalActivity extends AppCompatActivity {
 
     @Subscribe
     public void onErrorEvent(ErrorEvent errorEvent) {
-        Toast.makeText(this, "" + errorEvent.getErrorMsg(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Hello" + errorEvent.getErrorMsg(), Toast.LENGTH_SHORT).show();
     }
 
     private void checkIfEditTextisEmpty() {

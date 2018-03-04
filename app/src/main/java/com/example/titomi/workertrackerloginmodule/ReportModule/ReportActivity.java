@@ -96,7 +96,7 @@ public class ReportActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         floatingActionMenu = findViewById(R.id.floatingActionMenu);
-        classes_sampled = findViewById(R.id.classes_sampled);
+      /*  classes_sampled = findViewById(R.id.classes_sampled);
         report_total = findViewById(R.id.report_total);
         product_sold = findViewById(R.id.product_sold);
         report_demo = findViewById(R.id.report_demo);
@@ -115,7 +115,7 @@ public class ReportActivity extends AppCompatActivity {
         fab_send = findViewById(R.id.fab_send);
         fab_remove_photo = findViewById(R.id.fab_remove_photo);
         field_image = findViewById(R.id.field_image);
-
+*/
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             fab_photo.setEnabled(false);
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);

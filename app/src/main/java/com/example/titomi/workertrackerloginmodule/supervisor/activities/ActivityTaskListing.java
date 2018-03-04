@@ -1,16 +1,22 @@
 package com.example.titomi.workertrackerloginmodule.supervisor.activities;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -18,7 +24,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.accessibility.AccessibilityManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -60,6 +65,7 @@ import com.example.titomi.workertrackerloginmodule.supervisor.util.DrawableManag
 import com.example.titomi.workertrackerloginmodule.supervisor.util.Network;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.Util;
 import com.google.android.gms.maps.model.LatLng;
+import android.os.Handler;
 
 /**
  * Created by NeonTetras on 24-Feb-18.
@@ -76,6 +82,9 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
     private static SwipeRefreshLayout swipeRefreshLayout;
     static Context cxt;
     private User loggedInUser;
+    private Task selectedTask;
+    private TextView clockInText;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -169,7 +178,7 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
         ListAdapter listAdapter = taskListView.getAdapter();
 
-        final Task task = (Task)listAdapter.getItem(i);
+        selectedTask = (Task)listAdapter.getItem(i);
 
         final AlertDialog alertDialog = new AlertDialog.Builder(cxt).create();
         View promptView = View.inflate(cxt,R.layout.task_listing_long_click_menu_layout,null);
@@ -179,13 +188,13 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
          final TextView deleteTask = promptView.findViewById(R.id.deleteTask);
          //TextView approveReport = promptView.findViewById(R.id.approveReport);
          TextView editTask = promptView.findViewById(R.id.editTask);
-         TextView clockInText = promptView.findViewById(R.id.clock_in);
+         clockInText = promptView.findViewById(R.id.clock_in);
 
 
          /*
-         * if user has uploaded images, then the task has been done
-         *So the task cannot be deleted or edited*/
-         switch (task.getStatus()){
+         * if user has uploaded images, then the selectedTask has been done
+         *So the selectedTask cannot be deleted or edited*/
+         switch (selectedTask.getStatus()){
              case Task.PENDING:
 
                  editTask.setVisibility(View.VISIBLE);
@@ -201,7 +210,7 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
         if(loggedInUser.getRoleId() != User.SUPERVISOR){
             editTask.setVisibility(View.GONE);
             deleteTask.setVisibility(View.GONE);
-            switch (task.getStatus()){
+            switch (selectedTask.getStatus()){
                 case Task.PENDING:
                 clockInText.setVisibility(View.VISIBLE);
                 clockInText.setTag(getString(R.string.clockIn));
@@ -214,33 +223,46 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
         }
 
 
+
         clockInText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //TODO: call loadTask(); on clockin and clockout success
-                if(v.getTag().toString().equals(getString(R.string.clockIn))){
+
 
                     alertDialog.dismiss();
 
-                    getLocation(task);
 
+                if (ContextCompat.checkSelfPermission(cxt,
+                        android.Manifest.permission.ACCESS_FINE_LOCATION)
+                        == PackageManager.PERMISSION_GRANTED) {
+                    pg = new ProgressDialog(cxt);
+                    pg.setCancelable(false);
+                    pg.setMessage(getString(R.string.please_wait));
+                    pg.show();
+                    getLocation(selectedTask);
 
-
-                }else if(v.getTag().toString().equals(getString(R.string.clockOut))){
-
-                    Intent i = new Intent(cxt, ReportActivity.class);
-                    i.putExtra("task", task);
-                    i.putExtra(getString(R.string.loggedInUser), loggedInUser);
-                    startActivity(i);
-                    alertDialog.dismiss();
                 }
-            }
+                else{
+                    ActivityCompat.requestPermissions(((Activity)cxt),
+                            new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                            PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+                }
+
+
+
+
+
+
+
+                }
+
         });
          viewReport.setOnClickListener(new View.OnClickListener() {
              @Override
              public void onClick(View view) {
                  Intent i = new Intent(cxt,ActivityViewReport.class);
-                 i.putExtra("task",task);
+                 i.putExtra("task", selectedTask);
                  startActivity(i);
                  alertDialog.dismiss();
              }
@@ -250,7 +272,7 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(cxt,ActivityAssignTask.class);
-                i.putExtra("task",task);
+                i.putExtra("task", selectedTask);
                 i.putExtra(getString(R.string.loggedInUser),loggedInUser);
                 startActivity(i);
                 alertDialog.dismiss();
@@ -273,7 +295,7 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
                       }
                   });
 
-                  confirm.setMessage("Are you sure you want to delete this task?");
+                  confirm.setMessage("Are you sure you want to delete this Task?");
                   confirm.show();
 
              }
@@ -287,7 +309,7 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
                     protected void onPreExecute() {
                         super.onPreExecute();
                         progressDialog =new ProgressDialog(cxt);
-                        progressDialog.setMessage("Deleting task.\nPlease wait...");
+                        progressDialog.setMessage("Deleting Task.\nPlease wait...");
                     }
 
                     @Override
@@ -313,11 +335,11 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
                         }
 
                     }
-                }.execute(getString(R.string.api_url)+getString(R.string.delete_task_url)+"?key="+getString(R.string.field_worker_api_key)+"&id="+task.getId());
+                }.execute(getString(R.string.api_url)+getString(R.string.delete_task_url)+"?key="+getString(R.string.field_worker_api_key)+"&id="+ selectedTask.getId());
              }
          });
 
-        if(loggedInUser.getRoleId() == User.SUPERVISOR && task.getStatus() == Task.ONGOING) {
+        if(loggedInUser.getRoleId() == User.SUPERVISOR && selectedTask.getStatus() == Task.ONGOING) {
            return false;
         }
 
@@ -454,9 +476,9 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
 
 
                         /*
-                        * If the worker has not uploaded images, then the task is pending
+                        * If the worker has not uploaded images, then the selectedTask is pending
                         * if images have been uploaded then status is pending approval
-                        * if the supervisor has approved the task done, then the status is completed */
+                        * if the supervisor has approved the selectedTask done, then the status is completed */
 
 
                         String status = cxt.getResources().getStringArray(R.array.task_status)[task.getStatus()];
@@ -496,24 +518,52 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
 
 
     private void getLocation(final Task task) {
-        LocationManager mLocationManager;
-        final ProgressDialog pg = new ProgressDialog(this);
-        pg.setCancelable(false);
-        pg.setMessage(getString(R.string.please_wait));
-        pg.show();
+        final LocationManager mLocationManager;
+
         try {
+
+            Criteria criteria = new Criteria();
+
+            criteria.setAccuracy(Criteria.ACCURACY_COARSE);
+            criteria.setPowerRequirement(Criteria.POWER_LOW);
+            criteria.setAltitudeRequired(false);
+            criteria.setBearingRequired(false);
+            criteria.setSpeedRequired(true);
+            criteria.setCostAllowed(true);
+            criteria.setHorizontalAccuracy(Criteria.ACCURACY_HIGH);
+            criteria.setVerticalAccuracy(Criteria.ACCURACY_MEDIUM);
+            criteria.setBearingAccuracy(Criteria.ACCURACY_LOW);
+            criteria.setSpeedAccuracy(Criteria.ACCURACY_HIGH);
+
             mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+
+
+
             if (mLocationManager != null) {
-                mLocationManager.requestSingleUpdate(LocationManager.NETWORK_PROVIDER, new LocationListener() {
+               final String bestProvider = mLocationManager.getBestProvider(criteria, true);
+              //Toast.makeText(cxt,bestProvider,Toast.LENGTH_LONG).show();
+                final LocationListener locationListener = new LocationListener() {
+
                     @Override
                     public void onLocationChanged(Location location) {
                         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
                         if(pg.isShowing()){
                             pg.dismiss();
                         }
-                       final AlertDialog alertDialog = new AlertDialog.Builder(cxt).create();
+                        final AlertDialog alertDialog = new AlertDialog.Builder(cxt).create();
                         if (isWithinClockInRange(task.getLatitude(), task.getLongitude(), latLng.latitude, latLng.longitude)) {
+                            if(clockInText == null){
+                                return;
+                            }
 
+                            if(clockInText.getTag().toString().equalsIgnoreCase(getString(R.string.clockOut))){
+                                Intent i =  new Intent(cxt,ReportActivity.class);
+                                i.putExtra("task",selectedTask);
+                                i.putExtra(getString(R.string.loggedInUser),loggedInUser);
+                                startActivity(i);
+                                return;
+                            }
                             RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
                             Date date = new Date(location.getTime());
                             SimpleDateFormat dtf = new SimpleDateFormat("yyyy/M/dd HH:mm:ss");
@@ -525,16 +575,16 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
                             }
                             String uri = null;
 
-                                uri =String.format("%s%s?key=%s",
-                                        getString(R.string.api_url),
-                                        getString(R.string.clockInUrl),
-                                        getString(R.string.field_worker_api_key)) +
-                                        "&start_longitude=" + latLng.longitude +
-                                        "&start_latitude=" +
-                                        latLng.latitude + "&user_id=" +
-                                        loggedInUser.getId() + "&task_id=" +
-                                        task.getId() + "&start_time=" +
-                                        formatedTime;
+                            uri =String.format("%s%s?key=%s",
+                                    getString(R.string.api_url),
+                                    getString(R.string.clockInUrl),
+                                    getString(R.string.field_worker_api_key)) +
+                                    "&start_longitude=" + latLng.longitude +
+                                    "&start_latitude=" +
+                                    latLng.latitude + "&user_id=" +
+                                    loggedInUser.getId() + "&task_id=" +
+                                    task.getId() + "&start_time=" +
+                                    formatedTime;
 
 
                             StringRequest stringRequest = new StringRequest(Request.Method.GET, uri, new Response.Listener<String>() {
@@ -569,7 +619,7 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
 
                         }else{
 
-                                //Report clock-in mismatch
+                            //Report clock-in mismatch
                             new android.os.AsyncTask<String,Void,String>(){
                                 @Override
                                 protected String doInBackground(String... strings) {
@@ -582,19 +632,46 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
                                 }
                             }.execute(getString(R.string.api_url)+getString(R.string.alert_api)+"?key="+getString(R.string.field_worker_api_key)+"&task_id="+task.getId()+"&longitude="+latLng.longitude+"&latitude="+latLng.latitude+"&alert_type=0");
 
-                             alertDialog.setMessage("Clock-in failed!\nPlease report at your place of assignment to clock-in");
-                             alertDialog.show();
+                            alertDialog.setMessage("Clock-in/Clock out failed!\nPlease report at your place of assignment to clock-in/Clock-out");
+                            alertDialog.show();
 
 
                         }
 
-                       // Toast.makeText(cxt, "" + latLng, Toast.LENGTH_SHORT).show();
+
 
                     }
 
                     @Override
                     public void onStatusChanged(String provider, int status, Bundle extras) {
+                       /* pg.dismiss();
+                        switch (bestProvider){
+                            case LocationManager.GPS_PROVIDER:
+                                switch (status){
+                                    case LocationProvider.TEMPORARILY_UNAVAILABLE:
+                                    case LocationProvider.OUT_OF_SERVICE:
+                                        mLocationManager.requestSingleUpdate(LocationManager.NETWORK_PROVIDER,this,null);
+                                        break;
+                                        case LocationProvider.AVAILABLE:
+                                            mLocationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER,this,null);
+                                            break;
 
+                                }
+                                break;
+                            case LocationManager.NETWORK_PROVIDER:
+                                switch (status){
+                                    case LocationProvider.TEMPORARILY_UNAVAILABLE:
+                                    case LocationProvider.OUT_OF_SERVICE:
+                                        mLocationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER,this,null);
+                                        break;
+                                    case LocationProvider.AVAILABLE:
+                                        mLocationManager.requestSingleUpdate(LocationManager.NETWORK_PROVIDER,this,null);
+                                        break;
+
+                                }
+                                break;
+                        }
+*/
                     }
 
                     @Override
@@ -606,13 +683,27 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
                     public void onProviderDisabled(String provider) {
 
                     }
-                }, null);
+                };
+
+                mLocationManager.requestSingleUpdate(bestProvider,locationListener , null);
+
+                Handler handler = new Handler();
+                 handler.postDelayed(new Runnable() {
+                     @Override
+                     public void run() {
+                            mLocationManager.removeUpdates(locationListener);
+                            Toast.makeText(cxt,"Sorry we could not detect your location.\nPlease try again",Toast.LENGTH_LONG).show();
+                            pg.dismiss();
+                     }
+                 },30000);
             }
         } catch (SecurityException e) {
             e.printStackTrace();
+            pg.dismiss();
         }
 
     }
+
 
     public boolean isWithinClockInRange(Double taskLat, Double taskLng, Double nurseLat, Double nurseLng) {
         Location.distanceBetween(taskLat, taskLng, nurseLat, nurseLng, results);
@@ -620,5 +711,25 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
     }
 
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (grantResults.length > 0
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+
+
+
+        }else{
+            Toast.makeText(cxt,"You need to grant location permission",Toast.LENGTH_LONG).show();
+            if(pg.isShowing()) {
+                pg.dismiss();
+            }
+        }
+    }
+
+
+    ProgressDialog pg;
     float results[] = new float[3];
+    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
 }
