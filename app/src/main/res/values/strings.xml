@@ -58,7 +58,9 @@
     <string name="delete_task_url">task/delete.php</string>
     <string name="you_have_a_new_message">You have a new message</string>
     <string name="noInventory">No inventory requests at this time</string>
+    <string name="noLeave">No Leave requests at this time</string>
     <string name="inventory_view_requests_url">inventory/view.php</string>
+    <string name="leave_view_requests_url">leave/view.php</string>
     <string name="approve_task_url">task/approve.php</string>
     <!--<string name="server_url">http://fieldmonitor.co/</string>-->
     <string name="edit_task_url">task/edit.php</string>
@@ -189,5 +191,6 @@
     <string name="longitude">longitude</string>
     <string name="clockInUrl">task/clockin.php</string>
     <string name="alert_api">alert/add.php</string>
+    <string name="leave">Leave</string>
 
 </resources>
