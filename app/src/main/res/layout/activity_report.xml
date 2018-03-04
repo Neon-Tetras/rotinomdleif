@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -316,6 +317,59 @@
             </GridLayout>
 
 
+            <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:rowCount="2"
+                android:columnCount="2"
+                android:alignmentMode="alignBounds">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:text="Participants"
+                    android:textColor="@color/black"
+
+                    android:textSize="12sp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:text="Quantity distributed/sold"
+                    android:textColor="@color/black"
+
+                    android:textSize="12sp"
+                    android:layout_gravity="top|end"/>
+
+                <EditText
+                    android:id="@+id/participantsEdit"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:inputType="number"
+
+                    android:singleLine="true" />
+
+                <EditText
+                    android:id="@+id/quantityDistributedEdit"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:inputType="number"
+                    android:layout_gravity="bottom|end"
+                    android:singleLine="true" />
+            </GridLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Media"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                android:background="@drawable/line"/>
+
+
+
 
             <Button
                 android:id="@+id/clockOutBut"
@@ -339,6 +393,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
+
         android:layout_margin="16dp"
         app:menu_fab_size="normal"
         app:layout_behavior="com.example.titomi.workertrackerloginmodule.FloatingActionMenuBehavior"
@@ -381,4 +436,4 @@
     </com.github.clans.fab.FloatingActionMenu>
 
 
-</LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

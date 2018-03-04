@@ -80,8 +80,8 @@ public class DashboardActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.toolbar_menu, menu);
+       /* MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.toolbar_menu, menu);*/
 
         return true;
     }
@@ -142,6 +142,7 @@ public class DashboardActivity extends AppCompatActivity {
          if(imageDrawable == null){
             imageDrawable = getResources().getDrawable(R.drawable.profile);
          }
+
         // Create the AccountHeader
         AccountHeader headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
@@ -156,6 +157,7 @@ public class DashboardActivity extends AppCompatActivity {
                     }
                 })
                 .build();
+
 
 
         mProfile = new PrimaryDrawerItem().withIdentifier(1).withName("My Profile");
@@ -225,8 +227,8 @@ public class DashboardActivity extends AppCompatActivity {
                         new SectionDrawerItem(),
                         mReport,
                         new SectionDrawerItem(),
-                        mSettings,
-                        new DividerDrawerItem(),
+                       /* mSettings,
+                        new DividerDrawerItem(),*/
                         mLogout
                 );
                 break;

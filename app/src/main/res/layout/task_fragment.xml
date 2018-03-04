@@ -5,15 +5,26 @@
     android:layout_height="match_parent"
     tools:context="com.example.titomi.workertrackerloginmodule.DashboardFragments.FragmentTask">
 
+
+
     <RelativeLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/progressBar"
+            android:visibility="gone"
+
+            />
 
         <com.github.mikephil.charting.charts.PieChart
             android:id="@+id/piechart"
             android:layout_width="match_parent"
-            android:layout_height="450dp"></com.github.mikephil.charting.charts.PieChart>
+            android:layout_height="450dp"
+            android:layout_below="@id/progressBar"/>
 
         <TableLayout
             android:id="@+id/small_task_table"
@@ -37,7 +48,8 @@
                     android:text="1000"
                     android:padding="3dp"
                     android:gravity="end"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:id="@+id/taskAssignedCount"/>
             </TableRow>
 
             <TableRow
@@ -54,7 +66,8 @@
                     android:padding="3dp"
                     android:text="820"
                     android:gravity="end"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:id="@+id/executedTaskCount"/>
             </TableRow>
 
             <TableRow
@@ -71,7 +84,8 @@
                     android:padding="3dp"
                     android:gravity="end"
                     android:text="180"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:id="@+id/unexecutedTasksCount"/>
             </TableRow>
         </TableLayout>
 
