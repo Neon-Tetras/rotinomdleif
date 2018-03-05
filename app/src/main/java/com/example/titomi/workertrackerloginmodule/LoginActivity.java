@@ -2,8 +2,8 @@ package com.example.titomi.workertrackerloginmodule;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -28,10 +28,17 @@ import java.net.URLEncoder;
  */
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
-   private static EditText lineIdEdit;
+    private static EditText lineIdEdit;
     private static Button loginButton;
     private static ProgressBar progressBar;
     private static Context cxt;
+
+    private static void goToDashBoard(User user) {
+        Intent i = new Intent(cxt, DashboardActivity.class);
+        i.putExtra(cxt.getString(R.string.loggedInUser), user);
+        cxt.startActivity(i);
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,26 +51,25 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         loginButton.setOnClickListener(this);
     }
 
-
     @Override
     public void onClick(View v) {
 
         progressBar.setVisibility(View.VISIBLE);
         try {
-            new LoginNetworkTask().execute(getString(R.string.api_url)+getString(R.string.login_url)+"?key="+getString(R.string.field_worker_api_key)+"&username="+ URLEncoder.encode(InputValidator.validateText(lineIdEdit,6),"UTF-8"));
+            new LoginNetworkTask().execute(getString(R.string.api_url) + getString(R.string.login_url) + "?key=" + getString(R.string.field_worker_api_key) + "&username=" + URLEncoder.encode(InputValidator.validateText(lineIdEdit, 6), "UTF-8"));
         } catch (InputValidator.InvalidInputException | UnsupportedEncodingException e) {
-            Toast.makeText(cxt,""+getClass().getName()+"\n"+e.getMessage(),Toast.LENGTH_LONG).show();
+            Toast.makeText(cxt, "" + getClass().getName() + "\n" + e.getMessage(), Toast.LENGTH_LONG).show();
             e.printStackTrace();
 
         }
     }
 
-    private static final class LoginNetworkTask extends AsyncTask<String,Void,String>{
+    private static final class LoginNetworkTask extends AsyncTask<String, Void, String> {
 
 
         @Override
         protected java.lang.String doInBackground(java.lang.String[] strings) {
-            return Network.backgroundTask(null,strings[0]);
+            return Network.backgroundTask(null, strings[0]);
         }
 
         @Override
@@ -71,14 +77,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             super.onPostExecute(s);
             progressBar.setVisibility(View.GONE);
 
-            if(s == null) {
+            if (s == null) {
                 return;
             }
 
             System.err.println(s);
             try {
                 JSONObject obj = new JSONObject(s);
-                if(obj.getInt("statusCode") == User.STATUS_OK){
+                if (obj.getInt("statusCode") == User.STATUS_OK) {
                     User user = new User();
 
                     user.setId(obj.getInt("id"));
@@ -88,12 +94,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     user.setUsername(obj.getString("username"));
                     user.setLineId(obj.getString("line_id"));
                     user.setSupervisorId(obj.getLong("supervisor_id"));
-                    user.setActive(obj.getInt("active") !=0);
-                    user.setFullName(String.format("%s %s",obj.getString("last_name"),obj.getString("first_name")));
+                    user.setActive(obj.getInt("active") != 0);
+                    user.setFullName(String.format("%s %s", obj.getString("last_name"), obj.getString("first_name")));
                     user.setAddress(obj.getString("user_address"));
                     user.setCity(obj.getString("user_city"));
-                   user.setState(obj.getString("user_state"));
-                   user.setCountry(obj.getString("user_country"));
+                    user.setState(obj.getString("user_state"));
+                    user.setCountry(obj.getString("user_country"));
                     user.setWorkType(obj.getString("work_type"));
                     user.setPhoneNumber(obj.getString("phone_number"));
                     user.setFeaturedImage(obj.getString("photo"));
@@ -114,7 +120,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     sharedPrefManager.setSavedRoleId(user.getRoleId());
 
 
-
                     goToDashBoard(user);
 
                 }
@@ -124,11 +129,5 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
 
         }
-    }
-
-    private static void goToDashBoard(User user){
-        Intent i = new Intent(cxt,DashboardActivity.class);
-         i.putExtra(cxt.getString(R.string.loggedInUser),user);
-         cxt.startActivity(i);
     }
 }

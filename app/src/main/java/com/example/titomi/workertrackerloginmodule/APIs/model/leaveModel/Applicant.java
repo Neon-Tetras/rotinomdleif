@@ -8,6 +8,7 @@ import java.io.Serializable;
 public class Applicant implements Serializable
 {
 
+    private final static long serialVersionUID = -3398890361468804782L;
     @SerializedName("email")
     @Expose
     private String email;
@@ -40,7 +41,7 @@ public class Applicant implements Serializable
     private String lineId;
     @SerializedName("supervisor_id")
     @Expose
-    private Object supervisorId;
+    private String supervisorId;
     @SerializedName("salt")
     @Expose
     private Object salt;
@@ -131,7 +132,6 @@ public class Applicant implements Serializable
     @SerializedName("id")
     @Expose
     private String id;
-    private final static long serialVersionUID = -3398890361468804782L;
 
     /**
      * No args constructor for use in serialization
@@ -184,7 +184,7 @@ public class Applicant implements Serializable
      * @param active
      * @param salt
      */
-    public Applicant(String email, Object verificationCode, String role, Object roleId, String password, Connection connection, Object sql, Object ipAddress, String username, String lineId, Object supervisorId, Object salt, Object activationCode, Object forgotPasswordCode, Object forgotPasswordTime, Object rememberCode, Object createdOn, Object lastLoginOld, Object active, String firstName, String lastName, String userAddress, String userCity, String userState, String userCountry, String workType, Object company, String phoneNumber, String photo, Object activation, String status, String remember, String lastLogin, String userLeave, Integer statusCode, Object message, String created, Object updated, Object name, Object description, String id) {
+    public Applicant(String email, Object verificationCode, String role, Object roleId, String password, Connection connection, Object sql, Object ipAddress, String username, String lineId, String supervisorId, Object salt, Object activationCode, Object forgotPasswordCode, Object forgotPasswordTime, Object rememberCode, Object createdOn, Object lastLoginOld, Object active, String firstName, String lastName, String userAddress, String userCity, String userState, String userCountry, String workType, Object company, String phoneNumber, String photo, Object activation, String status, String remember, String lastLogin, String userLeave, Integer statusCode, Object message, String created, Object updated, Object name, Object description, String id) {
         super();
         this.email = email;
         this.verificationCode = verificationCode;
@@ -309,11 +309,11 @@ public class Applicant implements Serializable
         this.lineId = lineId;
     }
 
-    public Object getSupervisorId() {
+    public String getSupervisorId() {
         return supervisorId;
     }
 
-    public void setSupervisorId(Object supervisorId) {
+    public void setSupervisorId(String supervisorId) {
         this.supervisorId = supervisorId;
     }
 

@@ -18,6 +18,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.ImageView;
 
+import com.example.titomi.workertrackerloginmodule.R;
+import com.example.titomi.workertrackerloginmodule.supervisor.Entity;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -25,9 +28,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
-
-import com.example.titomi.workertrackerloginmodule.R;
-import com.example.titomi.workertrackerloginmodule.supervisor.Entity;
 
 
 
@@ -60,135 +60,6 @@ public class ImageUtils {
             }
         }
     }
-   /* public static void updateImage(Context cxt, User user, String imageUri){
-
-        ImageCompressor imageCompressor = new ImageCompressor(cxt,user);
-        String compressedImage = imageCompressor.compressImage(imageUri);
-        File selectedImgFile = new File(compressedImage);
-        //File selectedImgFile = new File(ImageUtils.getRealPathFromURI(this,imageUri.toString()));
-
-        user.setFeaturedImage(selectedImgFile.getName());
-        String imageUploadApi = cxt.getString(R.string.server_url)+
-                cxt.getString(R.string.user_image_update_servlet);
-        ImageUploader imageUploader = new ImageUploader(cxt,imageUploadApi,user);
-
-        imageUploader.execute(selectedImgFile.getAbsolutePath());
-
-
-    }*/
-    public static class GetImages extends AsyncTask<Object,Object,Object> {
-
-        private String requestUrl, imageName;
-        private ImageView view;
-        private Bitmap bitmap;
-        private FileOutputStream fos;
-        private Entity entity;
-
-        /**@param requestUrl
-         * @param imageName
-         * @param entity */
-        public  GetImages(Entity entity, String requestUrl, String imageName){
-            this.requestUrl = requestUrl;
-            this.entity = entity;
-            this.imageName = imageName;
-
-        }
-
-        @Override
-        protected Object doInBackground(Object... params) {
-            try{
-                URL url = new URL((requestUrl));
-                URLConnection conn = url.openConnection();
-                conn.setDoOutput(true);
-                conn.setDoOutput(true);
-                bitmap = BitmapFactory.decodeStream(conn.getInputStream());
-
-
-            }catch (Exception e){
-                return null;
-            }
-            return bitmap;
-        }
-
-        @Override
-        protected void onPreExecute() {
-
-            super.onPreExecute();
-        }
-
-        @Override
-        protected void onPostExecute(Object obj){
-            if(obj == null) return;
-            ImageStorage imageStorage = new ImageStorage(entity);
-            if(!imageStorage.imageExists(imageName)){
-                imageStorage.saveToSdCard((Bitmap)obj,imageName);
-            }
-        }
-
-
-    }
-
-    public static class ImageStorage{
-        private static Entity entity;
-        private static Context cxt;
-        public ImageStorage(Entity entity){
-            this.entity  = entity;
-
-        }
-        public String saveToSdCard(Bitmap bitmap, String fileName){
-            String stored = null;
-            File folder = getStorageDirectory(entity);
-
-            File file =  new File(folder.getAbsoluteFile(),fileName.endsWith(".jpg") ? fileName : fileName+".jpg");
-            if(file.exists()) return stored;
-
-            try{
-                FileOutputStream out = new FileOutputStream(file);
-               bitmap.compress(Bitmap.CompressFormat.JPEG,90,out);
-                out.flush();
-                out.close();
-                stored = "success";
-            }catch (Exception e){ e.printStackTrace();}
-            return stored;
-        }
-
-        public File getImage(String imageName){
-            File mediaImage = null;
-            try{
-                File myDir = getStorageDirectory(entity);
-
-                if(!myDir.exists()) return null;
-
-                mediaImage = new File(myDir.getPath()+"/"+imageName);
-            }catch (Exception e){e.printStackTrace();}
-            return mediaImage;
-        }
-
-        public  boolean imageExists(String imageName){
-            Bitmap b = null;
-            File file = getImage(String.format("/%s%s",imageName,imageName.endsWith(".jpg") ? "" : ".jpg"));
-            if(file == null) return false;
-            String path = file.getAbsolutePath();
-
-            b = BitmapFactory.decodeFile(path);
-            if(b == null || b.equals("")){
-                return  false;
-            }
-            return  true;
-        }
-
-        public static <T extends Entity> File getStorageDirectory(T t){
-
-            File directory = new File(Environment
-                    .getExternalStorageDirectory()
-                    .getPath(),
-                    String.format(".FieldMonitor/Images/%s/",
-                            t.getClass().getSimpleName()).toLowerCase());
-            if(!directory.exists()) directory.mkdirs();
-
-            return directory;
-        }
-    }
 
     public static String getImageNameFromUrlWithOutExtension(String imageUrl){
         return imageUrl.substring(imageUrl.lastIndexOf("/") + 1, imageUrl.lastIndexOf("."));
@@ -197,7 +68,6 @@ public class ImageUtils {
     public static String getImageNameFromUrlWithExtension(String imageUrl){
         return imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
     }
-
 
     /**
      * This method compresses an image if only it does not alread exist in the directory
@@ -238,7 +108,7 @@ public class ImageUtils {
 
     public static void loadImage(Context cxt, Entity entity, final ImageView imageView){
       ImageStorage  imageStorage = new ImageUtils.ImageStorage(entity);
-        String server_url = cxt.getString(R.string.server_url);
+        String server_url = cxt.getString(R.string.api_url);
         String imageUrl = server_url + entity.getFeaturedImage();
         String imageName = ImageUtils.getImageNameFromUrlWithExtension(imageUrl);
         if(imageStorage.imageExists(imageName)){
@@ -253,7 +123,6 @@ public class ImageUtils {
                 @Override
                 protected void onPostExecute(Object obj) {
                     super.onPostExecute(obj);
-                    if(obj != null)
                     imageView.setImageBitmap((Bitmap)obj);
                 }
             };
@@ -295,6 +164,7 @@ public class ImageUtils {
             getImages.execute();
         }
     }
+
     /**
      * Download images supplied in the Arraylist
      * @param entity The entity whose image is to be downloaaded.
@@ -340,6 +210,144 @@ public class ImageUtils {
             }
         }
 
+    }
+
+    /* public static void updateImage(Context cxt, User user, String imageUri){
+
+         ImageCompressor imageCompressor = new ImageCompressor(cxt,user);
+         String compressedImage = imageCompressor.compressImage(imageUri);
+         File selectedImgFile = new File(compressedImage);
+         //File selectedImgFile = new File(ImageUtils.getRealPathFromURI(this,imageUri.toString()));
+
+         user.setFeaturedImage(selectedImgFile.getName());
+         String imageUploadApi = cxt.getString(R.string.server_url)+
+                 cxt.getString(R.string.user_image_update_servlet);
+         ImageUploader imageUploader = new ImageUploader(cxt,imageUploadApi,user);
+
+         imageUploader.execute(selectedImgFile.getAbsolutePath());
+
+
+     }*/
+    public static class GetImages extends AsyncTask<Object, Object, Object> {
+
+        private String requestUrl, imageName;
+        private ImageView view;
+        private Bitmap bitmap;
+        private FileOutputStream fos;
+        private Entity entity;
+
+        /**
+         * @param requestUrl
+         * @param imageName
+         * @param entity
+         */
+        public GetImages(Entity entity, String requestUrl, String imageName) {
+            this.requestUrl = requestUrl;
+            this.entity = entity;
+            this.imageName = imageName;
+
+        }
+
+        @Override
+        protected Object doInBackground(Object... params) {
+            try {
+                URL url = new URL((requestUrl));
+                URLConnection conn = url.openConnection();
+                conn.setDoOutput(true);
+                conn.setDoOutput(true);
+                bitmap = BitmapFactory.decodeStream(conn.getInputStream());
+
+
+            } catch (Exception e) {
+                return null;
+            }
+            return bitmap;
+        }
+
+        @Override
+        protected void onPreExecute() {
+
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(Object obj) {
+            if (obj == null) return;
+            ImageStorage imageStorage = new ImageStorage(entity);
+            if (!imageStorage.imageExists(imageName)) {
+                imageStorage.saveToSdCard((Bitmap) obj, imageName);
+            }
+        }
+
+
+    }
+
+    public static class ImageStorage {
+        private static Entity entity;
+        private static Context cxt;
+
+        public ImageStorage(Entity entity) {
+            this.entity = entity;
+
+        }
+
+        public static <T extends Entity> File getStorageDirectory(T t) {
+
+            File directory = new File(Environment
+                    .getExternalStorageDirectory()
+                    .getPath(),
+                    String.format(".FieldMonitor/Images/%s/",
+                            t.getClass().getSimpleName()).toLowerCase());
+            if (!directory.exists()) directory.mkdirs();
+
+            return directory;
+        }
+
+        public String saveToSdCard(Bitmap bitmap, String fileName) {
+            String stored = null;
+            File folder = getStorageDirectory(entity);
+
+            File file = new File(folder.getAbsoluteFile(), fileName.endsWith(".jpg") ? fileName : fileName + ".jpg");
+            if (file.exists()) return stored;
+
+            try {
+                FileOutputStream out = new FileOutputStream(file);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+                out.flush();
+                out.close();
+                stored = "success";
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return stored;
+        }
+
+        public File getImage(String imageName) {
+            File mediaImage = null;
+            try {
+                File myDir = getStorageDirectory(entity);
+
+                if (!myDir.exists()) return null;
+
+                mediaImage = new File(myDir.getPath() + "/" + imageName);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return mediaImage;
+        }
+
+        public boolean imageExists(String imageName) {
+            Bitmap b = null;
+            File file = getImage(String.format("/%s%s", imageName, imageName.endsWith(".jpg") ? "" : ".jpg"));
+            if (file == null) return false;
+            String path = file.getAbsolutePath();
+
+            b = BitmapFactory.decodeFile(path);
+            if (b == null || b.equals("")) {
+                return false;
+            }
+            return true;
+        }
     }
 
     static class ImageCompressor extends AppCompatActivity {
