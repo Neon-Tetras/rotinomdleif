@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -13,31 +13,32 @@
         <com.github.mikephil.charting.charts.BarChart
             android:id="@+id/barChart"
             android:layout_width="match_parent"
+            android:layout_height="200dp"
             android:layout_below="@id/small_task_table"
-            android:layout_height="450dp"></com.github.mikephil.charting.charts.BarChart>
+            android:layout_marginTop="20dp"></com.github.mikephil.charting.charts.BarChart>
 
         <TableLayout
             android:id="@+id/small_task_table"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:stretchColumns="1"
             android:layout_below="@id/piechart"
-            android:showDividers="beginning">
+            android:showDividers="beginning"
+            android:stretchColumns="1">
 
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
                 <TextView
-                    android:padding="3dp"
                     android:layout_column="1"
+                    android:padding="3dp"
                     android:text="Total Assigned Task "
                     android:textStyle="bold" />
 
                 <TextView
-                    android:text="1000"
-                    android:padding="3dp"
                     android:gravity="end"
+                    android:padding="3dp"
+                    android:text="1000"
                     android:textStyle="bold" />
             </TableRow>
 
@@ -46,15 +47,15 @@
                 android:layout_height="match_parent">
 
                 <TextView
-                    android:padding="3dp"
                     android:layout_column="1"
+                    android:padding="3dp"
                     android:text="Total Executed Task"
                     android:textStyle="bold" />
 
                 <TextView
+                    android:gravity="end"
                     android:padding="3dp"
                     android:text="820"
-                    android:gravity="end"
                     android:textStyle="bold" />
             </TableRow>
 
@@ -63,14 +64,14 @@
                 android:layout_height="match_parent">
 
                 <TextView
-                    android:padding="3dp"
                     android:layout_column="1"
+                    android:padding="3dp"
                     android:text="Unexecuted Task"
                     android:textStyle="bold" />
 
                 <TextView
-                    android:padding="3dp"
                     android:gravity="end"
+                    android:padding="3dp"
                     android:text="180"
                     android:textStyle="bold" />
             </TableRow>
@@ -78,4 +79,4 @@
 
     </RelativeLayout>
 
-</ScrollView>
+</android.support.v4.widget.SwipeRefreshLayout>

@@ -36,7 +36,8 @@ public class FragmentAttendance extends Fragment {
         barChart = view.findViewById(R.id.barChart);
         barChart.getDescription().setEnabled(false);
 
-        setData(10);
+
+        setData(3);
         barChart.setFitBars(true);
 
         return view;
@@ -45,14 +46,19 @@ public class FragmentAttendance extends Fragment {
     private void setData(int count) {
         ArrayList<BarEntry> yVals = new ArrayList<>();
 
+        //looping through the number of bars set
         for (int i = 0; i < count; i++) {
+            //creating random values of data
             float value = (float) (Math.random()*100);
+
+            //placing data on chart, i for postion and y for the actual value
             yVals.add(new BarEntry(i, (int) value));
         }
 
-        BarDataSet set = new BarDataSet(yVals, "Data Set");
+        BarDataSet set = new BarDataSet(yVals, "Attendance");
         set.setColors(ColorTemplate.MATERIAL_COLORS);
         set.setDrawValues(true);
+
 
         BarData data = new BarData(set);
 
