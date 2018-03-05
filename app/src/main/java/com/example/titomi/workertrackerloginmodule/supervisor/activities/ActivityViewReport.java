@@ -140,6 +140,7 @@ public class ActivityViewReport extends AppCompatActivity implements View.OnClic
                     //Toast.makeText(cxt,imageName,Toast.LENGTH_LONG).show();
                     final ImageUtils.ImageStorage storage = new ImageUtils.ImageStorage(task);
                     if(storage.imageExists(imageName)){
+                        if(storage.getImage(imageName) == null) return;
                         reportImage.setImageURI(Uri.parse(storage.getImage(imageName).getAbsolutePath()));
                         imageList.add(storage.getImage(imageName).getAbsolutePath());
                     }else {
@@ -148,6 +149,8 @@ public class ActivityViewReport extends AppCompatActivity implements View.OnClic
                             @Override
                             protected void onPostExecute(Object obj) {
                                 super.onPostExecute(obj);
+
+                                if(storage.getImage(imageName) == null) return;
 
                                 imageList.add(storage.getImage(imageName).getAbsolutePath());
                                 reportImage.setImageBitmap((Bitmap) obj);

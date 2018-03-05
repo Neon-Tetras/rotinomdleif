@@ -249,12 +249,6 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
                             PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
                 }
 
-
-
-
-
-
-
                 }
 
         });
@@ -262,6 +256,7 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
              @Override
              public void onClick(View view) {
                  Intent i = new Intent(cxt,ActivityViewReport.class);
+                 i.putExtra(getString(R.string.loggedInUser),loggedInUser);
                  i.putExtra("task", selectedTask);
                  startActivity(i);
                  alertDialog.dismiss();
