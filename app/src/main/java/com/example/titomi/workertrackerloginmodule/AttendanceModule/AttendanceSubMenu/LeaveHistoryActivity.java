@@ -1,6 +1,7 @@
 package com.example.titomi.workertrackerloginmodule.AttendanceModule.AttendanceSubMenu;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -21,15 +21,14 @@ import com.example.titomi.workertrackerloginmodule.APIs.model.leaveModel.LeaveMo
 import com.example.titomi.workertrackerloginmodule.R;
 import com.example.titomi.workertrackerloginmodule.supervisor.User;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.Network;
+import com.example.titomi.workertrackerloginmodule.supervisor.util.Util;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Objects;
 
 public class LeaveHistoryActivity extends AppCompatActivity {
 
@@ -128,16 +127,10 @@ public class LeaveHistoryActivity extends AppCompatActivity {
                     JSONObject obj = jsonArray.getJSONObject(i);
                     JSONObject applicantObj = obj.getJSONObject("applicant");
 
-
-                    SimpleDateFormat dtf = new SimpleDateFormat("yyyy/M/dd H:m:s");
-                    Date created = dtf.parse(obj.getString("fromDate").replaceAll("-", "/"));
-                    SimpleDateFormat dft2 = new SimpleDateFormat("yyyy/M/dd");
-                    Date fromDate = dft2.parse(obj.getString("fromDate").replaceAll("-", "/"));
-                    Date toDate = dft2.parse(obj.getString("toDate").replaceAll("-", "/"));
-                    applicant.setSupervisorId(applicantObj.getLong("supervisor"));
+//                    applicant.setSupervisorId(applicantObj.getLong("supervisor"));
 
 
-                    LeaveModel leaveModel = new LeaveModel(obj.getString("id"), obj.getString("approvedBy"), applicant, fromDate, toDate, obj.getString("reason"), created, obj.getString("comment"), obj.getInt("numDays"), obj.getInt("statusCode"), obj.getString("message"), created, created, obj.getString("status"), obj.getString("name"), obj.getString("description"), obj.getString("id"));
+                    LeaveModel leaveModel = new LeaveModel(obj.getString("id"), obj.getString("approvedBy"), obj.getString("fromDate"), obj.getString("toDate"), obj.getString("reason"), obj.getString("date"), obj.getString("comment"), obj.getInt("numDays"), obj.getString("status"), obj.getString("id"));
 
                     modelArrayList.add(leaveModel);
                 }
@@ -155,41 +148,54 @@ public class LeaveHistoryActivity extends AppCompatActivity {
 
                         LeaveModel model = modelArrayList.get(position);
                         TextView leaveReasonText = convertView.findViewById(R.id.leaveReasonText);
-                        TextView supervisorText = convertView.findViewById(R.id.supervisorText);
-                        TextView numDaysText = convertView.findViewById(R.id.numDaysText);
+                        TextView numDays = convertView.findViewById(R.id.numDaysText1);
+                        TextView approvedBy = convertView.findViewById(R.id.approvedByText);
                         TextView leaveCommentText = convertView.findViewById(R.id.leaveCommentText);
                         TextView fromDate = convertView.findViewById(R.id.fromDate);
                         TextView toDate = convertView.findViewById(R.id.toDate);
                         TextView dateTimeText = convertView.findViewById(R.id.dateTimeText1);
                         TextView status = convertView.findViewById(R.id.inventoryStatusText1);
 
-                        LinearLayout messagesLinearLayout = convertView.findViewById(R.id.messagesLinearLayout1);
-                        TextView messageText = convertView.findViewById(R.id.messageText1);
-
+                        if (approvedBy != null) {
+                            approvedBy.setText(model.getApprovedBy());
+                        }
                         leaveReasonText.setText(model.getReason());
-                        numDaysText.setText(model.getNumDays());
-                        leaveCommentText.setText(model.getComment());
-                        fromDate.setText(DateFormat.getDateInstance().format(model.getFromDate()));
-                        toDate.setText(DateFormat.getDateInstance().format(model.getToDate()));
-                        supervisorText.setText((int) applicant.getSupervisorId());
-                        dateTimeText.setText(DateFormat.getDateTimeInstance().format(model.getCreated()));
-                        status.setText(model.getStatus());
+                        if (numDays != null) {
+                            numDays.setText("" + model.getNumDays() + " days");
+                        }
+                        if (leaveCommentText != null || !Objects.equals(leaveCommentText, "null")) {
+                            leaveCommentText.setText(model.getComment());
+                        }
+//                        fromDate.setText(DateFormat.getDateInstance().format(model.getFromDate()));
+                        fromDate.setText(model.getFromDate());
+//                        toDate.setText(DateFormat.getDateInstance().format(model.getToDate()));
+                        toDate.setText(model.getToDate());
+                        if (dateTimeText != null) {
+                            dateTimeText.setText(model.getDate().replaceAll("-", "/"));
+                        }
+                        if (status != null) {
+                            status.setText(Util.toSentenceCase(model.getStatus()));
+                            switch (model.getStatus()) {
+                                case LeaveModel.PENDING:
+                                    status.setTextColor(Color.RED);
+                                    approvedBy.setVisibility(View.GONE);
+                                    leaveCommentText.setVisibility(View.GONE);
+                                    break;
+                                case LeaveModel.COMPLETED:
+                                    status.setTextColor(Color.GREEN);
+                                    break;
+                            }
+                        }
 
                         return convertView;
                     }
                 };
                 mListView.setAdapter(leaveListAdapter);
-
             } catch (JSONException e) {
                 e.printStackTrace();
                 System.err.println(s);
                 Log.d(getClass().getSimpleName(), e.getMessage());
-            } catch (java.text.ParseException e) {
-                e.printStackTrace();
-                System.err.println(s);
             }
-
-
         }
 
     /*private void getLeaveList() {

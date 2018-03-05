@@ -37,7 +37,7 @@
 
 
                 <TextView
-                    android:id="@+id/inventoryStatusText"
+                    android:id="@+id/inventoryStatusText1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
@@ -82,21 +82,20 @@
                 android:padding="2dp"
                 android:paddingEnd="2dp"
                 android:paddingStart="5dp"
-                android:text="Supervisor"
+                android:text="Approved By"
                 android:textColor="@color/colorPrimary"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
 
             <TextView
-                android:id="@+id/supervisorText"
+                android:id="@+id/approvedByText"
                 android:layout_width="match_parent"
-
                 android:layout_height="wrap_content"
                 android:background="@drawable/line"
                 android:paddingEnd="2dp"
                 android:paddingStart="5dp"
-                android:text="Chyjane"
+                android:text="Yet to be approved"
                 android:textColor="@color/black"
                 android:textSize="12sp"
                 android:textStyle="normal" />
@@ -122,7 +121,7 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/quantityText"
+                    android:id="@+id/numDaysText1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
@@ -153,7 +152,7 @@
                 android:paddingEnd="2dp"
                 android:paddingStart="5dp"
                 android:paddingTop="1dp"
-                android:text="I need them quickly"
+                android:text="No Comments From Supervisor"
                 android:textColor="@color/black"
                 android:textSize="12sp"
                 android:textStyle="normal" />
@@ -220,44 +219,6 @@
                     android:textStyle="normal" />
             </LinearLayout>
 
-
-            <LinearLayout
-                android:id="@+id/messagesLinearLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="gone">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white"
-                    android:paddingEnd="2dp"
-                    android:paddingStart="5dp"
-                    android:paddingTop="5dp"
-                    android:text="Message"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-
-                    />
-
-                <TextView
-                    android:id="@+id/messageText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/line"
-                    android:paddingEnd="2dp"
-                    android:paddingStart="5dp"
-                    android:paddingTop="1dp"
-                    android:text="I need them quickly"
-                    android:textColor="@color/black"
-                    android:textSize="12sp"
-                    android:textStyle="normal" />
-
-            </LinearLayout>
-
-
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -270,7 +231,7 @@
                 android:textStyle="normal" />
 
             <TextView
-                android:id="@+id/dateTimeText"
+                android:id="@+id/dateTimeText1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="end"

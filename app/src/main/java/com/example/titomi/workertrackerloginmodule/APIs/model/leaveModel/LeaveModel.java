@@ -5,11 +5,12 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
-import java.util.Date;
 
 public class LeaveModel implements Serializable
 {
 
+    public static final String PENDING = "Pending";
+    public static final String COMPLETED = "approved";
     private final static long serialVersionUID = -6305727652654605707L;
     @SerializedName("userId")
     @Expose
@@ -22,16 +23,16 @@ public class LeaveModel implements Serializable
     private User applicant;
     @SerializedName("fromDate")
     @Expose
-    private Date fromDate;
+    private String fromDate;
     @SerializedName("toDate")
     @Expose
-    private Date toDate;
+    private String toDate;
     @SerializedName("reason")
     @Expose
     private String reason;
     @SerializedName("date")
     @Expose
-    private Date date;
+    private String date;
     @SerializedName("comment")
     @Expose
     private String comment;
@@ -46,10 +47,10 @@ public class LeaveModel implements Serializable
     private String message;
     @SerializedName("created")
     @Expose
-    private Date created;
+    private String created;
     @SerializedName("updated")
     @Expose
-    private Date updated;
+    private String updated;
     @SerializedName("status")
     @Expose
     private String status;
@@ -68,6 +69,33 @@ public class LeaveModel implements Serializable
      *
      */
     public LeaveModel() {
+    }
+
+    /**
+     * @param userId
+     * @param approvedBy
+     * @param fromDate
+     * @param toDate
+     * @param reason
+     * @param date
+     * @param comment
+     * @param numDays
+     * @param status
+     * @param id
+     */
+
+    public LeaveModel(String userId, String approvedBy, String fromDate, String toDate, String reason, String date, String comment, Integer numDays, String status, String id) {
+        super();
+        this.userId = userId;
+        this.approvedBy = approvedBy;
+        this.fromDate = fromDate;
+        this.toDate = toDate;
+        this.reason = reason;
+        this.date = date;
+        this.comment = comment;
+        this.numDays = numDays;
+        this.status = status;
+        this.id = id;
     }
 
     /**
@@ -90,7 +118,7 @@ public class LeaveModel implements Serializable
      * @param applicant
      * @param comment
      */
-    public LeaveModel(String userId, String approvedBy, User applicant, Date fromDate, Date toDate, String reason, Date date, String comment, Integer numDays, Integer statusCode, String message, Date created, Date updated, String status, String name, String description, String id) {
+    public LeaveModel(String userId, String approvedBy, User applicant, String fromDate, String toDate, String reason, String date, String comment, Integer numDays, Integer statusCode, String message, String created, String updated, String status, String name, String description, String id) {
         super();
         this.userId = userId;
         this.approvedBy = approvedBy;
@@ -135,19 +163,19 @@ public class LeaveModel implements Serializable
         this.applicant = applicant;
     }
 
-    public Date getFromDate() {
+    public String getFromDate() {
         return fromDate;
     }
 
-    public void setFromDate(Date fromDate) {
+    public void setFromDate(String fromDate) {
         this.fromDate = fromDate;
     }
 
-    public Date getToDate() {
+    public String getToDate() {
         return toDate;
     }
 
-    public void setToDate(Date toDate) {
+    public void setToDate(String toDate) {
         this.toDate = toDate;
     }
 
@@ -159,11 +187,11 @@ public class LeaveModel implements Serializable
         this.reason = reason;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
@@ -203,7 +231,7 @@ public class LeaveModel implements Serializable
         return created;
     }
 
-    public void setCreated(Date created) {
+    public void setCreated(String created) {
         this.created = created;
     }
 
@@ -211,7 +239,7 @@ public class LeaveModel implements Serializable
         return updated;
     }
 
-    public void setUpdated(Date updated) {
+    public void setUpdated(String updated) {
         this.updated = updated;
     }
 
@@ -246,5 +274,4 @@ public class LeaveModel implements Serializable
     public void setId(String id) {
         this.id = id;
     }
-
 }

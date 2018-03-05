@@ -45,7 +45,7 @@ public class FragmentAttendance extends Fragment {
     private void setData(int count) {
         ArrayList<BarEntry> yVals = new ArrayList<>();
 
-        for(int i =0; i<count; i++){
+        for (int i = 0; i < count; i++) {
             float value = (float) (Math.random()*100);
             yVals.add(new BarEntry(i, (int) value));
         }
@@ -59,6 +59,11 @@ public class FragmentAttendance extends Fragment {
         barChart.setData(data);
         barChart.invalidate();
         barChart.animateY(500);
+
+        loadData();
+    }
+
+    private void loadData() {
 
     }
 }
