@@ -233,7 +233,7 @@ public class FragmentTask extends Fragment{
                             obj.getInt("inventoryBalance"),
                             obj.getInt("quantitySold"),
                             obj.getInt("participants"),
-                            obj.getInt("status"));
+                            obj.getInt("status"),obj.getInt("productId"));
                     task.setLatitude(obj.getDouble("latitude"));
                     task.setLongitude(obj.getDouble("longitude"));
                     /*if(obj.getDouble("startLongitude") != 0.0 && obj.getDouble("startLatitude") != 0.0 &&

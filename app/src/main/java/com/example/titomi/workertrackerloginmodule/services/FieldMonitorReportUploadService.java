@@ -12,19 +12,24 @@ import android.os.IBinder;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.titomi.workertrackerloginmodule.R;
 import com.example.titomi.workertrackerloginmodule.supervisor.Task;
+import com.example.titomi.workertrackerloginmodule.supervisor.User;
 import com.example.titomi.workertrackerloginmodule.supervisor.activities.ActivityTaskListing;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.ImageUtils;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.MediaUploader;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.Network;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -39,12 +44,14 @@ public class FieldMonitorReportUploadService extends Service {
     ArrayList<String> images;
     String video;
     HashMap<String,String> postData;
+    User loggedInUser;
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         postData = ( HashMap<String,String> )intent.getSerializableExtra("postData");
         images = intent.getStringArrayListExtra("images");
         video = intent.getStringExtra("video");
+        loggedInUser = (User)intent.getSerializableExtra(getString(R.string.loggedInUser));
         cxt = this;
 
         notifManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -64,6 +71,7 @@ public class FieldMonitorReportUploadService extends Service {
         notifBuilder.setLights(Color.GREEN,60000,60000);
 
         notifManager.notify(submittingReportNotif, notifBuilder.build());
+
         images = ImageUtils.compressImages(this,new Task(),images);
         StringBuilder sb = new StringBuilder();
         for (String img : images) {
@@ -71,10 +79,15 @@ public class FieldMonitorReportUploadService extends Service {
         }
         sb.deleteCharAt(sb.toString().lastIndexOf(","));
         postData.put("photo",sb.toString());
+        postData.put("video",String.format("videos/%s,",new File(video).getName()));
+        if (video == null || Objects.equals(video,"")) {
+            NUM_ACTIONS = 2;
+        }
         sendReport();
 
         uploadImages();
-        if(video != null) {
+        if(video != null || Objects.equals(video, "")) {
+
             uploadVideo();
         }
 
@@ -97,9 +110,16 @@ public class FieldMonitorReportUploadService extends Service {
         VideoUploader videoUploader = new VideoUploader(this, String.format("%s%s", getString(R.string.api_url), getString(R.string.video_upload_url)));
         videoUploader.execute(videos);
     }
-    private void sendReport(){
-        ReportSubmitNetwork network = new ReportSubmitNetwork(postData);
-        network.execute(getString(R.string.api_url)+getString(R.string.clockOutUrl)+"?key="+getString(R.string.field_worker_api_key));
+    private void sendReport() {
+        try {
+            ReportSubmitNetwork network = new ReportSubmitNetwork();
+            String getData = Network.getPostDataString(postData);
+            System.out.printf("Outputing get data: %s", getData);
+
+            network.execute(getString(R.string.api_url) + getString(R.string.clockOutUrl) + "?key=" + getString(R.string.field_worker_api_key) + "&" + getData);
+        }catch(UnsupportedEncodingException e){
+            Log.e(getClass().getName(),e.getMessage());
+        }
     }
 
     @Override
@@ -124,21 +144,21 @@ public class FieldMonitorReportUploadService extends Service {
     }
 
 
-    class ReportSubmitNetwork extends AsyncTask<String,Void,String>{
+    private  class ReportSubmitNetwork extends AsyncTask<String,Void,String>{
 
-        HashMap<String,String> postData;
-        public ReportSubmitNetwork(HashMap<String,String> postData) {
-            this.postData = postData;
-        }
+
+
 
         @Override
         protected String doInBackground(String... strings) {
-            return Network.performPostCall(strings[0],postData);
+            return Network.backgroundTask(null,strings[0]);//strings[0],this.postData);
         }
 
         @Override
         protected void onPostExecute(String strings) {
+
             super.onPostExecute(strings);
+            System.out.println(strings);
             if(strings == null) return;
             actionCount++;
             if(actionCount == NUM_ACTIONS){
@@ -195,6 +215,7 @@ public class FieldMonitorReportUploadService extends Service {
                         .setContentTitle("Field monitor");
 
         Intent resultIntent = new Intent(cxt, ActivityTaskListing.class);
+         resultIntent.putExtra(getString(R.string.loggedInUser),loggedInUser);
 
         PendingIntent pendingIntent =   PendingIntent.getActivity(
                 cxt,
@@ -216,13 +237,9 @@ public class FieldMonitorReportUploadService extends Service {
 
     }
 
-    private ArrayList<String> compressImages(ArrayList<String> images){
-        return ImageUtils.compressImages(this,new Task(),images);
-    }
-
     NotificationManager notifManager;
     int submittingReportNotif = 001;
     int submissionComplete = 002;
     private static int actionCount = 0;
-    private static final int NUM_ACTIONS = 3;
+    private static int NUM_ACTIONS = 3;
 }

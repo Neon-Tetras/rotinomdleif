@@ -22,7 +22,7 @@ public class Task extends Entity {
                 String institution_name,
                 String location, String lga, String state,
                 String address, String sales, String images, int quantity,
-                int inventoryBalance, int quantitySold, int participants, int status) {
+                int inventoryBalance, int quantitySold, int participants, int status,int productId) {
         this.supervisor = supervisor;
         this.worker = worker;
         this.dateGiven = dateGiven;
@@ -46,6 +46,7 @@ public class Task extends Entity {
         this.images = images;
         this.participants = participants;
         this.id = id;
+        this.productId = productId;
 
     }
 
@@ -265,6 +266,14 @@ public class Task extends Entity {
         this.stopLongitude = stopLongitude;
     }
 
+    public int getProductId() {
+        return productId;
+    }
+
+    public void setProductId(int productId) {
+        this.productId = productId;
+    }
+
     private User supervisor;
     private User worker;
     public Date dateGiven;
@@ -298,6 +307,7 @@ public class Task extends Entity {
     public int inventoryBalance;
     public int quantitySold;
     private int participants;
+    private int productId;
 
 
 }

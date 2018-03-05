@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import com.example.titomi.workertrackerloginmodule.supervisor.Entity;
+import com.example.titomi.workertrackerloginmodule.supervisor.User;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.DrawableManager;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.ExcelExporter;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.ImageUtils;
@@ -42,7 +43,8 @@ public class ActivityViewReport extends AppCompatActivity implements View.OnClic
     ImageView userImage;
     TextView username,dateSubmitted,taskTitle,taskTypeText,institutionText,addressText,stateText,contactFullName,contactPhone,quantityGivenText, participantsText,quantityDistributedText,balanceText,exportText,approveText;
     LinearLayout reportImagesLayout;
-   static Context cxt;
+    static Context cxt;
+    User loggedInUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +56,7 @@ public class ActivityViewReport extends AppCompatActivity implements View.OnClic
         if(getIntent().getExtras() != null){
             Bundle extras  = getIntent().getExtras();
             selectedTask = (Task) extras.getSerializable("task");
+            loggedInUser = (User)extras.getSerializable(getString(R.string.loggedInUser));
             setupView(selectedTask);
         }
     }
@@ -108,7 +111,9 @@ public class ActivityViewReport extends AppCompatActivity implements View.OnClic
         balanceText.setText(numberFormat.format(task.getInventoryBalance()));
         participantsText.setText(numberFormat.format(task.getParticipants()));
 
-        if(selectedTask.getStatus() == Task.COMPLETED){
+
+
+        if(selectedTask.getStatus() == Task.COMPLETED || loggedInUser.getRoleId() == User.NURSE){
             approveText.setVisibility(View.GONE);
         }
 

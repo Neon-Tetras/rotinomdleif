@@ -180,8 +180,7 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
     private void captureImage() {
 
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-      // fileUri = Uri.fromFile(getOutputMediaFile());
-      //  intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+
 
         startActivityForResult(intent, 100);
 
@@ -203,7 +202,7 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
         if (resultCode == RESULT_OK) {
             if (requestCode == 100) {
               Bitmap photo = (Bitmap) data.getExtras().get("data");
-                //field_image.setImageURI(fileUri);
+
                Uri tempUri = Util.getImageUri(getApplicationContext(), photo);
 
                 // CALL THIS METHOD TO GET THE ACTUAL PATH
@@ -212,9 +211,6 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
                     reportImages.add(finalFile.getAbsolutePath());
                     loadReportImages(reportImages);
                 }
-                //sfield_image.setImageURI(data.getData());
-               // fab_remove_photo.setVisibility(View.VISIBLE);
-
 
             }
         }
@@ -222,10 +218,11 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
             case Util.PICK_VIDEO:
                 Uri videoUri = data.getData();
                 Intent i = new Intent(this, ActivityVideoTrimmer.class);
-                i.putExtra("video",videoUri.toString());
-              //  i.putExtra("video",videoUri);
-                startActivityForResult(i,TRIM_VIDEO);
-               // mVideoView.setVideoURI(videoUri);
+                if (videoUri != null) {
+                    i.putExtra("video",videoUri.toString());
+                    startActivityForResult(i,TRIM_VIDEO);
+                }
+
                 break;
             case TRIM_VIDEO:
             String uri = data.getExtras().getString("video");
@@ -246,7 +243,7 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-    String videoPath;
+     String videoPath;
     private static final int TRIM_VIDEO = 10;
 
     @Override
@@ -267,8 +264,9 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
                 postData.put("task_id",String.format("%d",selectedTask.getId()));
                 String stopTime = DateFormat.getDateTimeInstance().format(new Date()).replaceAll("/","-");
                 postData.put("stop_time",stopTime);
-                postData.put("stop_latitude",InputValidator.validateText(stopLat,8));
-                postData.put("stop_longitude",InputValidator.validateText(stopLong,8));
+                postData.put("stop_latitude",stopLat);
+                postData.put("stop_longitude",stopLong);
+                    postData.put("product_id",""+selectedTask.getProductId());
 
                     postData.put("participants", InputValidator.validateText(participantsEdit,1));
                     postData.put("quantity_sold", InputValidator.validateText(quantitySoldEdit,1));
@@ -278,6 +276,7 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
                 }
 
                 i.putExtra("postData",postData);
+                i.putExtra(getString(R.string.loggedInUser),loggedInUser);
 
 
                 startService(i);

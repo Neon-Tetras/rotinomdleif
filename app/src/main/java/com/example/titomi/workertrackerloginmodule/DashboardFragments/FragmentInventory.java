@@ -63,7 +63,7 @@ public class FragmentInventory extends Fragment {
         }
 
         pb = view.findViewById(R.id.progressBar);
-        BarChart barChart = view.findViewById(R.id.barChartInvt);
+        barInventoryChart= view.findViewById(R.id.barChartInvt);
 
         final SwipeRefreshLayout swipeRefreshLayout = view.findViewById(R.id.swipe_to_refresh_layout);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -75,7 +75,7 @@ public class FragmentInventory extends Fragment {
         });
         swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_light, R.color.accent, R.color.colorPrimaryDark);
 
-        barChart.getDescription().setEnabled(false);
+        barInventoryChart.getDescription().setEnabled(false);
         loadInventory();
         return view;
     }
@@ -203,7 +203,7 @@ public class FragmentInventory extends Fragment {
                             obj.getInt("inventoryBalance"),
                             obj.getInt("quantitySold"),
                             obj.getInt("participants"),
-                            obj.getInt("status"));
+                            obj.getInt("status"),obj.getInt("productId"));
                     task.setLatitude(obj.getDouble("latitude"));
                     task.setLongitude(obj.getDouble("longitude"));
                     /*if(obj.getDouble("startLongitude") != 0.0 && obj.getDouble("startLatitude") != 0.0 &&

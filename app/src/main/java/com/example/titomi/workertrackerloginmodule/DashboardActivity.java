@@ -195,8 +195,8 @@ public class DashboardActivity extends AppCompatActivity {
                         new DividerDrawerItem(),
                        /* mWorkerTrack,
                         new DividerDrawerItem(),*/
-                        mSupervisorManager,
-                        new DividerDrawerItem(),
+                       /* mSupervisorManager,
+                        new DividerDrawerItem(),*/
                         mMessage,
                         new DividerDrawerItem(),
                      /*   mAlert,

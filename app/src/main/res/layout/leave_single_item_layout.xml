@@ -36,6 +36,7 @@
                     android:textStyle="bold" />
 
 
+
                 <TextView
                     android:id="@+id/inventoryStatusText1"
                     android:layout_width="wrap_content"

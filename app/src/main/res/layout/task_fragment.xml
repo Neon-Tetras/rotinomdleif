@@ -45,7 +45,7 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:text="1000"
+
                     android:padding="3dp"
                     android:gravity="end"
                     android:textStyle="bold"
@@ -64,7 +64,7 @@
 
                 <TextView
                     android:padding="3dp"
-                    android:text="820"
+
                     android:gravity="end"
                     android:textStyle="bold"
                     android:id="@+id/executedTaskCount"/>
@@ -83,7 +83,7 @@
                 <TextView
                     android:padding="3dp"
                     android:gravity="end"
-                    android:text="180"
+
                     android:textStyle="bold"
                     android:id="@+id/unexecutedTasksCount"/>
             </TableRow>
