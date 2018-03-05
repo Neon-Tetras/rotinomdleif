@@ -11,11 +11,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
+import android.provider.MediaStore.Images;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MotionEventCompat;
@@ -43,6 +46,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -135,7 +139,7 @@ public class Util {
     public static void pickPhoto(Context cxt) {
 
         Intent pickPhoto = new Intent(Intent.ACTION_PICK,
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                Images.Media.EXTERNAL_CONTENT_URI);
         ((Activity) cxt).startActivityForResult(pickPhoto, PICK_IMAGE_SINGLE);
     }
 
@@ -297,8 +301,18 @@ public class Util {
         // this.video_map_or_image = requestCode;
 
         switch (requestCode) {
-            case PICK_IMAGE_MULTIPLE:
+
             case PICK_VIDEO:
+
+
+
+                Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+                if (takeVideoIntent.resolveActivity(cxt.getPackageManager()) != null) {
+                    ((Activity)cxt).startActivityForResult(takeVideoIntent, PICK_VIDEO);
+                }
+
+            break;
+            case PICK_IMAGE_MULTIPLE:
             case PICK_IMAGE_SINGLE:
 
                 ActivityCompat.requestPermissions(((Activity) cxt),
@@ -319,6 +333,43 @@ public class Util {
 
     }
 
+    public static String getVideoPath(Context cxt,Uri uri){
+        String[] projection = {Images.Media.DATA};
+        Cursor cursor = ((Activity)cxt).managedQuery(uri, projection, null, null, null);
+        if(cursor != null){
+            int columnIndex = cursor.getColumnIndex(MediaStore.Video.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(columnIndex);
+        }else return  null;
+    }
+
+    public static Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
+    }
+
+    public static String getRealPathFromURI(Context cxt, Uri uri) {
+        Cursor cursor = cxt.getContentResolver().query(uri, null, null, null, null);
+        cursor.moveToFirst();
+        int idx = cursor.getColumnIndex(Images.ImageColumns.DATA);
+        return cursor.getString(idx);
+    }
+   /* public static String getRealPathFromURI(Context context, Uri contentUri) {
+        Cursor cursor = null;
+        try {
+            String[] proj = { Images.Media.DATA };
+            cursor = context.getContentResolver().query(contentUri,  proj, null, null, null);
+            int column_index = cursor.getColumnIndexOrThrow(Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+    }*/
     public static Address doReverseGeocode(final Context cxt, final Place place) throws IOException {
         //final double lat, final double lon)
         //   ,

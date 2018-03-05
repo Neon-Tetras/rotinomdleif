@@ -518,6 +518,14 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
 
 
     private void getLocation(final Task task) {
+
+        final String clockIn = getString(R.string.clockIn);
+        final String clockOut = getString(R.string.clockOut);
+       if(clockInText.getTag().toString().equalsIgnoreCase(getString(R.string.clockIn))){
+           alertType = 0;
+       }else{
+           alertType = 1;
+       }
         final LocationManager mLocationManager;
 
         try {
@@ -630,7 +638,7 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
                                 protected void onPostExecute(String s) {
                                     super.onPostExecute(s);
                                 }
-                            }.execute(getString(R.string.api_url)+getString(R.string.alert_api)+"?key="+getString(R.string.field_worker_api_key)+"&task_id="+task.getId()+"&longitude="+latLng.longitude+"&latitude="+latLng.latitude+"&alert_type=0");
+                            }.execute(getString(R.string.api_url)+getString(R.string.alert_api)+"?key="+getString(R.string.field_worker_api_key)+"&task_id="+task.getId()+"&longitude="+latLng.longitude+"&latitude="+latLng.latitude+"&alert_type="+alertType);
 
                             alertDialog.setMessage("Clock-in/Clock out failed!\nPlease report at your place of assignment to clock-in/Clock-out");
                             alertDialog.show();
@@ -732,4 +740,5 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
     ProgressDialog pg;
     float results[] = new float[3];
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
+    int alertType = 0;
 }
