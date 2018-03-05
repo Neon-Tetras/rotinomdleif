@@ -3,26 +3,18 @@ package com.example.titomi.workertrackerloginmodule.DashboardFragments;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.titomi.workertrackerloginmodule.R;
 import com.example.titomi.workertrackerloginmodule.supervisor.Task;
 import com.example.titomi.workertrackerloginmodule.supervisor.User;
-import com.example.titomi.workertrackerloginmodule.supervisor.activities.ActivityTaskListing;
-import com.example.titomi.workertrackerloginmodule.supervisor.util.DrawableManager;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.Network;
-import com.example.titomi.workertrackerloginmodule.supervisor.util.Util;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.data.PieData;
@@ -34,13 +26,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Locale;
 
 /**
  * Created by Titomi on 2/8/2018.
@@ -48,14 +38,17 @@ import java.util.Locale;
 
 public class FragmentTask extends Fragment{
 
+    private static ProgressBar progressBar;
+    private static TextView taskAssignedCount, unexecutedTasksCount, executedTasksCount;
     View view;
      PieChart pieChart;
-
     Context cxt;
+    ArrayList<PieEntry> yValues = new ArrayList<>();
+    float doneTaskIndegree;
+    float undoneTaskIndegree;
+    float doneTaskCount = 0;
+    float undoneTaskCount = 0;
     private User loggedInUser;
-
-    private static ProgressBar progressBar;
-    private static TextView taskAssignedCount,unexecutedTasksCount,executedTasksCount;
     public FragmentTask() {
     }
 
@@ -90,7 +83,7 @@ public class FragmentTask extends Fragment{
         yValues.add(new PieEntry((float)0.0, "Task Unexecuted"));
 
         Description description = new Description();
-        description.setText("Task Assigned");
+        description.setText("Task Chart");
         description.setTextSize(15);
         pieChart.setDescription(description);
 
@@ -124,9 +117,49 @@ public class FragmentTask extends Fragment{
 
     }
 
+    private void loadChart(ArrayList<Task> list) {
+
+
+        for (Task task : list) {
+            switch (task.getStatus()) {
+                case Task.COMPLETED:
+                    doneTaskCount++;
+                    break;
+                default:
+                    undoneTaskCount++;
+            }
+        }
+
+
+        yValues.clear();
+
+        yValues.add(new PieEntry((float) Math.round(doneTaskCount), "Task Executed"));
+        yValues.add(new PieEntry((float) Math.round(undoneTaskCount), "Task Unexecuted"));
+
+
+        PieDataSet dataSet = new PieDataSet(yValues, "Tasks");
+        dataSet.setSliceSpace(3f);
+        dataSet.setSelectionShift(5f);
+        dataSet.setColors(ColorTemplate.JOYFUL_COLORS);
+
+        PieData data = new PieData((dataSet));
+        data.setValueTextSize(40f);
+        data.setValueTextColor(Color.YELLOW);
+
+        pieChart.setData(data);
+        pieChart.requestLayout();
+        // pieChart.refreshDrawableState();
+
+        taskAssignedCount.setText(NumberFormat.getInstance().format(list.size()));
+        unexecutedTasksCount.setText(NumberFormat.getInstance().format(undoneTaskCount));
+        executedTasksCount.setText(NumberFormat.getInstance().format(doneTaskCount));
+
+    }
+
     private  class AssignedTaskNetwork extends android.os.AsyncTask<String,Void,String>{
 
 
+        ArrayList<Task> taskList = new ArrayList<>();
 
         @Override
         protected String doInBackground(String... strings) {
@@ -227,58 +260,7 @@ public class FragmentTask extends Fragment{
                 e.printStackTrace();
             }
         }
-         ArrayList<Task> taskList = new ArrayList<>();
 
     }
-
-    private  void loadChart(ArrayList<Task> list){
-
-
-        for(Task task : list){
-            switch (task.getStatus()){
-                case Task.COMPLETED:
-                    doneTaskCount ++;
-                    break;
-                    default:
-                        undoneTaskCount++;
-            }
-        }
-
-
-
-        doneTaskIndegree = (doneTaskCount / (float)list.size()) * (float)360;
-        undoneTaskIndegree = (undoneTaskCount / (float)list.size()) * (float)360;
-
-
-        yValues.clear();
-
-        yValues.add(new PieEntry( (float)Math.round(doneTaskCount), "Task Executed"));
-        yValues.add(new PieEntry((float)Math.round(undoneTaskCount), "Task Unexecuted"));
-
-
-
-        PieDataSet dataSet = new PieDataSet(yValues,"Tasks");
-        dataSet.setSliceSpace(3f);
-        dataSet.setSelectionShift(5f);
-        dataSet.setColors(ColorTemplate.JOYFUL_COLORS);
-
-        PieData data = new PieData((dataSet));
-        data.setValueTextSize(40f);
-        data.setValueTextColor(Color.YELLOW);
-
-        pieChart.setData(data);
-        pieChart.requestLayout();
-       // pieChart.refreshDrawableState();
-
-        taskAssignedCount.setText(NumberFormat.getInstance().format(list.size()));
-        unexecutedTasksCount.setText(NumberFormat.getInstance().format( undoneTaskCount));
-        executedTasksCount.setText(NumberFormat.getInstance().format(doneTaskCount));
-
-    }
-    ArrayList<PieEntry> yValues = new ArrayList<>();
-     float doneTaskIndegree;
-    float undoneTaskIndegree;
-    float doneTaskCount = 0;
-    float undoneTaskCount = 0;
 
 }
