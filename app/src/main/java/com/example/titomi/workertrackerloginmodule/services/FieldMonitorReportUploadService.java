@@ -226,7 +226,7 @@ public class FieldMonitorReportUploadService extends Service {
 
 
         Toast.makeText(cxt,"Report submitted successfully",Toast.LENGTH_LONG).show();
-        startActivity(resultIntent);
+      //  startActivity(resultIntent);
 
         notifBuilder.setContentIntent(pendingIntent);
         notifBuilder.setAutoCancel(true);
