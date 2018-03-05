@@ -15,6 +15,20 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import jxl.CellView;
+import jxl.Sheet;
+import jxl.Workbook;
+import jxl.read.biff.BiffException;
+import jxl.write.Font;
+import jxl.write.Label;
+import jxl.write.WritableCellFormat;
+import jxl.write.WritableFont;
+import jxl.write.WritableSheet;
+import jxl.write.WritableWorkbook;
+import jxl.write.WriteException;
 
 import android.os.Environment;
 import android.widget.Toast;
@@ -81,7 +95,7 @@ public class ExcelExporter  extends android.os.AsyncTask<String ,String, String>
                 return file.getAbsolutePath();
             }
             catch (IOException e){
-                Log.e("MainActivity", e.getMessage(), e);
+                Log.e(this.getClass().getName(), e.getMessage(), e);
                 return "";
             }
         }
@@ -103,5 +117,72 @@ public class ExcelExporter  extends android.os.AsyncTask<String ,String, String>
                 Toast.makeText(cxt, "Export failed!", Toast.LENGTH_SHORT).show();
             }
         }
+
+  /*  public boolean exportCMs(File destination){
+        int cmCount = 0;
+        try {
+
+
+
+            WritableWorkbook workBook = Workbook.createWorkbook(destination);
+            WritableSheet sheet = workBook.createSheet("Sheet1", 0);
+
+            WritableFont arial10font = new WritableFont(WritableFont.ARIAL, 11,Font.BOLD);
+            WritableCellFormat arial10format = new WritableCellFormat (arial10font);
+
+
+            Label fullNameLabel = new Label(0,0,reader.getString("fullname").toUpperCase(),arial10format);
+            Label sexLabel = new Label(1,0,reader.getString("sex").toUpperCase(),arial10format);
+            Label stateLabel = new Label(2,0,reader.getString("state").toUpperCase(),arial10format);
+            Label universityLabel = new Label(3,0,reader.getString("university").toUpperCase(),arial10format);
+            Label courseLabel = new Label(4,0,reader.getString("course").toUpperCase(),arial10format);
+            Label qualificationLabel = new Label(5,0,reader.getString("qualification").toUpperCase(),arial10format);
+            Label callupNoLabel = new Label(6,0,reader.getString("callup").toUpperCase(),arial10format);
+            Label stateCodeLabel = new Label(7,0,reader.getString("statecode").toUpperCase(),arial10format);
+
+            for(String heading : header){
+
+
+            sheet.addCell(fullNameLabel);
+            sheet.addCell(sexLabel);
+            sheet.addCell(stateLabel);
+            sheet.addCell(universityLabel);
+            sheet.addCell(courseLabel);
+            sheet.addCell(qualificationLabel);
+            sheet.addCell(callupNoLabel);
+            sheet.addCell(stateCodeLabel);
+
+
+            ArrayList<CorpsMember> allCms = getAll();
+
+            cmCount = allCms.size();
+
+            for(int i = 1; i<= cmCount; i++){
+                // 1 is subtracted from i in List.get because List starts from 0 while the cells start from 1 because of the cell header
+                sheet.addCell(new Label(0,i,allCms.get(i-1).getFullname()));
+                sheet.addCell(new Label(1,i,allCms.get(i-1).getSex()));
+                sheet.addCell(new Label(2,i,allCms.get(i-1).getState()));
+                sheet.addCell(new Label(3,i,allCms.get(i-1).getUniversity()));
+                sheet.addCell(new Label(4,i,allCms.get(i-1).getCourse()));
+                sheet.addCell(new Label(5,i,allCms.get(i-1).getQualification()));
+                sheet.addCell(new Label(6,i,allCms.get(i-1).getCallUpNo()));
+                sheet.addCell(new Label(7,i,allCms.get(i-1).getStateCode()));
+
+
+            }
+            CellView cell;
+            for(int i = 0; i<sheet.getColumns(); i++){
+                cell = sheet.getColumnView(i);
+                cell.setAutosize(true);
+                sheet.setColumnView(i, cell);
+            }
+            workBook.write();
+            workBook.close();
+        } catch (IOException | WriteException ex) {
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
+        }
+        return cmCount != 0;
     }
+*/
+}
 

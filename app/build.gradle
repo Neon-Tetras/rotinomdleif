@@ -60,4 +60,5 @@ dependencies {
     implementation 'com.googlecode.places-api-client:places-api-client:1.0.0'
     implementation files('libs/opencsv2.4.jar')
     implementation files('libs/jxl.jar')
+    implementation 'life.knowledge4:k4l-video-trimmer:1.0'
 }
