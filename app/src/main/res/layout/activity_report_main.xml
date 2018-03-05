@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
@@ -33,6 +34,7 @@
                     android:layout_marginStart="10dp"
                     android:clickable="true"
                     android:focusable="true"
+                    android:visibility="gone"
                     android:foreground="?android:attr/selectableItemBackground">
 
                     <LinearLayout
@@ -67,6 +69,7 @@
                     android:layout_marginStart="3dp"
                     android:clickable="true"
                     android:focusable="true"
+                    android:visibility="gone"
                     android:foreground="?android:attr/selectableItemBackground">
 
                     <LinearLayout
@@ -111,6 +114,7 @@
                     android:layout_marginStart="10dp"
                     android:clickable="true"
                     android:focusable="true"
+                    android:visibility="gone"
                     android:foreground="?android:attr/selectableItemBackground">
 
                     <LinearLayout
@@ -124,7 +128,7 @@
                             android:layout_height="64dp"
                             android:background="@drawable/circlebackground"
                             android:padding="10dp"
-                            android:src="@drawable/task_video" />
+                            app:srcCompat="@drawable/task_video" />
 
                         <TextView
                             android:layout_width="wrap_content"
