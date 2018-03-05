@@ -208,6 +208,7 @@ private void notifyNewMessage(){
     int notificationId = 001;
     NotificationManager notifManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
     notifManager.notify(notificationId, notifBuilder.build());
+    newMessagesCount = 0;
 }
 
     private void startTimer() {
@@ -220,6 +221,7 @@ private void notifyNewMessage(){
             }
 
         };
+        
 
         int minutes = 60000; //1 minute;
         mTimer1.schedule(mTt1, minutes);

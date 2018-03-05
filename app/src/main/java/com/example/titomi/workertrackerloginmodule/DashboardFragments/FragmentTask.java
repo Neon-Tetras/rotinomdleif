@@ -236,6 +236,7 @@ public class FragmentTask extends Fragment{
                             obj.getInt("status"),obj.getInt("productId"));
                     task.setLatitude(obj.getDouble("latitude"));
                     task.setLongitude(obj.getDouble("longitude"));
+                    task.setWorkerComment(obj.getString("workerComment"));
                     /*if(obj.getDouble("startLongitude") != 0.0 && obj.getDouble("startLatitude") != 0.0 &&
                             obj.getDouble("stopLongitude") != 0.0 && obj.getDouble("stopLatitude") != 0.0)*/
                     task.setStartLatitude(obj.getDouble("startLatitude"));

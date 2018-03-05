@@ -274,6 +274,14 @@ public class Task extends Entity {
         this.productId = productId;
     }
 
+    public String getWorkerComment() {
+        return workerComment;
+    }
+
+    public void setWorkerComment(String workerComment) {
+        this.workerComment = workerComment;
+    }
+
     private User supervisor;
     private User worker;
     public Date dateGiven;
@@ -292,6 +300,7 @@ public class Task extends Entity {
     public Double stopLongitude;
     public int status;
 
+    public String workerComment;
     public String location;
     public String lga;
     public String state;

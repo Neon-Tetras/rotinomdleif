@@ -41,7 +41,7 @@ public class ActivityViewReport extends AppCompatActivity implements View.OnClic
     Task selectedTask;
 
     ImageView userImage;
-    TextView username,dateSubmitted,taskTitle,taskTypeText,institutionText,addressText,stateText,contactFullName,contactPhone,quantityGivenText, participantsText,quantityDistributedText,balanceText,exportText,approveText;
+    TextView username,dateSubmitted,taskTitle,taskTypeText,institutionText,addressText,stateText,contactFullName,contactPhone,quantityGivenText, participantsText,quantityDistributedText,balanceText,exportText,approveText,commentText;
     LinearLayout reportImagesLayout;
     static Context cxt;
     User loggedInUser;
@@ -85,6 +85,7 @@ public class ActivityViewReport extends AppCompatActivity implements View.OnClic
         exportText  = findViewById(R.id.exportText);
         reportImagesLayout = findViewById(R.id.reportImagesLayout);
         approveText = findViewById(R.id.approveText);
+        commentText = findViewById(R.id.commentText);
         approveText.setOnClickListener(this);
 
         exportText.setOnClickListener(this);
@@ -110,6 +111,7 @@ public class ActivityViewReport extends AppCompatActivity implements View.OnClic
         quantityDistributedText.setText(numberFormat.format(task.getQuantitySold()));
         balanceText.setText(numberFormat.format(task.getInventoryBalance()));
         participantsText.setText(numberFormat.format(task.getParticipants()));
+        commentText.setText(task.getWorkerComment() == null ? "" : task.getWorkerComment());
 
 
 
