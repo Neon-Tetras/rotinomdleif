@@ -1,16 +1,15 @@
 package com.example.titomi.workertrackerloginmodule.DashboardFragments;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 
 import com.example.titomi.workertrackerloginmodule.R;
@@ -31,7 +30,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by Titomi on 2/8/2018.
@@ -41,7 +39,7 @@ public class FragmentInventory extends Fragment {
     View view;
 
     Context ctx;
-    BarChart barChart;
+    BarChart barInventoryChart;
     ArrayList<BarEntry> yVals = new ArrayList<>();
     float itemQuantity = 0;
     float itemQuantitySold = 0;
@@ -79,54 +77,9 @@ public class FragmentInventory extends Fragment {
 
         barChart.getDescription().setEnabled(false);
         loadInventory();
-
-        BarDataSet dataSet = new BarDataSet(yVals, "Inventory");
-        dataSet.setColors(ColorTemplate.LIBERTY_COLORS);
-
-        BarData barData = new BarData((dataSet));
         return view;
     }
 
-    private void setData(int count) {
-        ArrayList<BarEntry> yVals = new ArrayList<>();
-
-        //looping through the number of bars set
-        for (int i = 0; i < count; i++) {
-            //creating random values of data
-            float value = (float) (Math.random() * 100);
-
-            //placing data on chart, i for postion and y for the actual value
-            yVals.add(new BarEntry(i, (int) value));
-        }
-
-        BarDataSet set = new BarDataSet(yVals, "Attendance");
-        set.setColors(ColorTemplate.MATERIAL_COLORS);
-        set.setDrawValues(true);
-
-
-        BarData data = new BarData(set);
-
-        barChart.setData(data);
-        barChart.invalidate();
-        barChart.animateY(500);
-    }
-
-    private BarData generateData(int count){
-
-        ArrayList<BarEntry> entries = new ArrayList<>();
-        for (int i = 0; i < 2; i++) {
-            entries.add(new BarEntry(i, (float) (Math.random()*70)+30));
-        }
-        entries.add(new BarEntry(3, (float) 4));
-
-        BarDataSet dataset = new BarDataSet(entries, "New Data set "+ count);
-        dataset.setColors(ColorTemplate.MATERIAL_COLORS);
-        dataset.setBarShadowColor(Color.rgb(203,203,203));
-
-        BarData data = new BarData(dataset);
-        data.setBarWidth(0.9f);
-        return data;
-    }
 
     private void loadInventory() {
 
@@ -146,6 +99,10 @@ public class FragmentInventory extends Fragment {
     private void loadChart(ArrayList<Task> list) {
         for (Task task : list) {
             if (task != null) {
+                itemBalance = task.getInventoryBalance();
+                itemQuantitySold = task.getQuantitySold();
+                itemQuantity = task.getQuantity();
+
                 itemQuantity++;
                 itemQuantitySold++;
                 itemBalance++;
@@ -156,29 +113,19 @@ public class FragmentInventory extends Fragment {
         yVals.add(new BarEntry(0, itemBalance));
         yVals.add(new BarEntry(1, itemQuantity));
         yVals.add(new BarEntry(2, itemQuantitySold));
+        Log.e("BAR ITEM", "Item Balance: "+itemQuantity);
 
         BarDataSet dataSet = new BarDataSet(yVals, "Inventory");
         dataSet.setColors(ColorTemplate.LIBERTY_COLORS);
         dataSet.setDrawValues(true);
 
-        BarData data = new BarData(dataSet);
+        BarData set = new BarData(dataSet);
 
-        barChart.setData(data);
-        barChart.invalidate();
-        barChart.animateY(500);
+        barInventoryChart.setData(set);
 
-    }
+        barInventoryChart.invalidate();
+        barInventoryChart.animateY(500);
 
-    private class ChartDataAdapter extends ArrayAdapter<BarData> {
-
-        public ChartDataAdapter(Context context, List<BarData> objects) {
-            super(context, 0, objects);
-        }
-
-
-        private class ViewHolder {
-            BarChart chart;
-        }
     }
 
     private class InventoryNetwork extends android.os.AsyncTask<String, Void, String> {
@@ -266,6 +213,10 @@ public class FragmentInventory extends Fragment {
                     task.setStartLongitude(obj.getDouble("startLongitude"));
                     task.setStopLongitude(obj.getDouble("stopLongitude"));
 
+
+                    task.setInventoryBalance(obj.getInt("inventoryBalance"));
+                    task.setQuantitySold(obj.getInt("quantity"));
+                    task.setQuantity(obj.getInt("quantitySold"));
 
                     taskList.add(task);
                 }
