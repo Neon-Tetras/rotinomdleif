@@ -41,11 +41,13 @@ public class FieldMonitorMessagingService extends Service {
     private Timer mTimer1;
     private TimerTask mTt1;
 
+    User loggedInUser;
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         cxt = this;
         startTimer();
 
+        loggedInUser = (User) intent.getExtras().getSerializable(getString(R.string.loggedInUser));
         return START_STICKY;
 
     }
@@ -117,14 +119,16 @@ public class FieldMonitorMessagingService extends Service {
                         receiver.setId(recipient.getInt("id"));
                         receiver.setName(String.format("%s %s",
                                 recipient.getString("first_name"),
-                                recipient.getString("first_name")));
+                                recipient.getString("last_name")));
 
                         receiver.setUserLevel(recipient.getInt("roleId"));
                         receiver.setUserLevelText(recipient.getString("role"));
                         JSONObject sender = msgs.getJSONObject("sender");
                         User _sender = new User();
                         _sender.setId(sender.getInt("id"));
-                        _sender.setName(sender.getString("username"));
+                        _sender.setName(String.format("%s %s",
+                                sender.getString("first_name"),
+                                sender.getString("last_name")));
                         _sender.setFeaturedImage(sender.getString("photo"));
                         _sender.setUserLevel(sender.getInt("roleId"));
                         _sender.setUserLevelText(sender.getString("role"));
@@ -139,6 +143,9 @@ public class FieldMonitorMessagingService extends Service {
                         //getInboxFromDb();
                         //   populateMessage(inboxMessages,messageInboxList);
                     }
+                    if(newMessagesCount > 0){
+                        notifyNewMessage();
+                    }
                 } catch (JSONException | ParseException e) {
                     e.printStackTrace();
                     System.err.println(s);
@@ -152,6 +159,7 @@ public class FieldMonitorMessagingService extends Service {
     private void saveInboxMessages(Messages msg){
         DatabaseAdapter db=  DatabaseAdapter.getInstance(cxt);
         if(!db.messageExists(msg.getId())){
+            newMessagesCount++;
             ImageUtils.ImageStorage storage = new ImageUtils.ImageStorage(msg.getPoster());
             String imageUrl = getString(R.string.api_url)+msg.getFeaturedImage();
             String imageName = ImageUtils.getImageNameFromUrlWithExtension(imageUrl);
@@ -163,41 +171,44 @@ public class FieldMonitorMessagingService extends Service {
 
             //    Toast.makeText(cxt,"Message does not exists so save",Toast.LENGTH_SHORT).show();
             if(db.saveInBox(msg.getPoster().getId(),msg.getReceiver().getId(),msg.getId(),msg.getTitle(),msg.getBody(),msg.getPoster().getName(),msg.getPoster().getFeaturedImage(),msg.getPriority()) != -1){
-                NotificationCompat.Builder notifBuilder =
-                        new NotificationCompat
-                                .Builder(cxt,getString(R.string.new_message))
-                                .setSmallIcon(R.mipmap.app_logo)
-                                .setContentText(String.format("%s","You have new messages"))
-                                .setContentTitle("New Message");
 
-                Intent resultIntent = new Intent(cxt, ActivityMessageListing.class);
-
-                // Because clicking the notification opens a new ("special") activity, there's
-                // no need to create an artificial back stack.
-                PendingIntent pendingIntent =
-                        PendingIntent.getActivity(
-                                cxt,
-                                0,
-                                resultIntent,
-                                PendingIntent.FLAG_UPDATE_CURRENT
-                        );
-
-                notifBuilder.setContentIntent(pendingIntent);
-                notifBuilder.setAutoCancel(true);
-                notifBuilder.setLights(Color.GREEN,60000,60000);
-                notifBuilder.setSound(Settings.System.DEFAULT_NOTIFICATION_URI);
-                notifBuilder.setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 });
-
-                int notificationId = 001;
-                NotificationManager notifManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                notifManager.notify(notificationId, notifBuilder.build());
             }
         }
     }
 
 
 
+private void notifyNewMessage(){
+    NotificationCompat.Builder notifBuilder =
+            new NotificationCompat
+                    .Builder(cxt,getString(R.string.new_message))
+                    .setSmallIcon(R.mipmap.app_logo)
+                    .setContentText(String.format("%s","You have "+newMessagesCount+" new message(s)"))
+                    .setContentTitle(getString(R.string.app_name));
 
+    Intent resultIntent = new Intent(cxt, ActivityMessageListing.class);
+    resultIntent.putExtra(getString(R.string.loggedInUser),loggedInUser);
+
+    // Because clicking the notification opens a new ("special") activity, there's
+    // no need to create an artificial back stack.
+    PendingIntent pendingIntent =
+            PendingIntent.getActivity(
+                    cxt,
+                    0,
+                    resultIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT
+            );
+
+    notifBuilder.setContentIntent(pendingIntent);
+    notifBuilder.setAutoCancel(true);
+    notifBuilder.setLights(Color.GREEN,60000,60000);
+    notifBuilder.setSound(Settings.System.DEFAULT_NOTIFICATION_URI);
+    notifBuilder.setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 });
+
+    int notificationId = 001;
+    NotificationManager notifManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+    notifManager.notify(notificationId, notifBuilder.build());
+}
 
     private void startTimer() {
         mTimer1 = new Timer();
@@ -214,5 +225,5 @@ public class FieldMonitorMessagingService extends Service {
         mTimer1.schedule(mTt1, minutes);
 
     }
-
+int newMessagesCount=0;
 }

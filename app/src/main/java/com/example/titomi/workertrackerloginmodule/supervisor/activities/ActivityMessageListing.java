@@ -223,14 +223,14 @@ public class ActivityMessageListing extends AppCompatActivity implements Adapter
                          JSONObject recipient = msgs.getJSONObject("receipient");
                             User receiver = new User();
                          receiver.setId(recipient.getInt("id"));
-                         receiver.setName(recipient.getString("line_id"));
+                         receiver.setName(recipient.getString("first_name")+" "+recipient.getString("last_name"));
 
                          receiver.setUserLevel(recipient.getInt("roleId"));
                          receiver.setUserLevelText(recipient.getString("role"));
                          JSONObject sender = msgs.getJSONObject("sender");
                          User _sender = new User();
                          _sender.setId(sender.getInt("id"));
-                         _sender.setName(sender.getString("line_id"));
+                         _sender.setName(sender.getString("first_name")+" "+sender.getString("last_name"));
                          _sender.setFeaturedImage(sender.getString("photo"));
                         _sender.setUserLevel(sender.getInt("roleId"));
                          _sender.setUserLevelText(sender.getString("role"));
@@ -253,7 +253,7 @@ public class ActivityMessageListing extends AppCompatActivity implements Adapter
                 }
 
             }
-        }.execute(getString(R.string.api_url)+getString(R.string.view_message_url)+"?key="+getString(R.string.field_worker_api_key)+"&msg_type=inbox&user_id="+5);
+        }.execute(getString(R.string.api_url)+getString(R.string.view_message_url)+"?key="+getString(R.string.field_worker_api_key)+"&msg_type=inbox&user_id="+loggedInUser.getId());
 
     }
 
