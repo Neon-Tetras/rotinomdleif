@@ -1,4 +1,4 @@
-package com.example.titomi.workertrackerloginmodule.supervisor.services;
+package com.example.titomi.workertrackerloginmodule.services;
 
 import android.annotation.SuppressLint;
 import android.app.NotificationManager;
@@ -23,12 +23,11 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import com.example.titomi.workertrackerloginmodule.R;
-import com.example.titomi.workertrackerloginmodule.SharedPrefManager.SharedPrefManager;
 import com.example.titomi.workertrackerloginmodule.supervisor.DatabaseAdapter;
 import com.example.titomi.workertrackerloginmodule.supervisor.Messages;
 
 import com.example.titomi.workertrackerloginmodule.supervisor.User;
-import com.example.titomi.workertrackerloginmodule.supervisor.activities.ActivityMessageListing;
+import com.example.titomi.workertrackerloginmodule.supervisor.activities.ActivityReportListing;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.ImageUtils;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.Network;
 
@@ -36,7 +35,7 @@ import com.example.titomi.workertrackerloginmodule.supervisor.util.Network;
  * Created by NeonTetras on 27-Feb-18.
  */
 
-public class FieldMonitorMessagingService extends Service {
+public class FieldMonitorReportService extends Service {
     private static Context cxt;
     private Timer mTimer1;
     private TimerTask mTt1;
@@ -65,16 +64,14 @@ public class FieldMonitorMessagingService extends Service {
 
 
     public class MyBinder extends Binder {
-        public FieldMonitorMessagingService getService() {
-            return FieldMonitorMessagingService.this;
+        public FieldMonitorReportService getService() {
+            return FieldMonitorReportService.this;
         }
 
     }
 
     @SuppressLint("StaticFieldLeak")
     private void getInboxMessages(){
-        SharedPrefManager sharedPrefManager = new SharedPrefManager(this);
-        User user = sharedPrefManager.getLoggedInUser();
 
         new android.os.AsyncTask<String,Void,String>(){
             @Override
@@ -143,7 +140,7 @@ public class FieldMonitorMessagingService extends Service {
                 }
 
             }
-        }.execute(getString(R.string.api_url)+getString(R.string.view_message_url)+"?key="+getString(R.string.field_worker_api_key)+"&msg_type=inbox&user_id="+user.getId());
+        }.execute(getString(R.string.api_url)+getString(R.string.view_message_url)+"?key="+getString(R.string.field_worker_api_key)+"&msg_type=inbox&user_id="+5);
 
     }
 
@@ -160,41 +157,44 @@ public class FieldMonitorMessagingService extends Service {
 
 
             //    Toast.makeText(cxt,"Message does not exists so save",Toast.LENGTH_SHORT).show();
-            if(db.saveInBox(msg.getPoster().getId(),msg.getReceiver().getId(),msg.getId(),msg.getTitle(),msg.getBody(),msg.getPoster().getName(),msg.getPoster().getFeaturedImage(),msg.getPriority()) != -1){
-                NotificationCompat.Builder notifBuilder =
-                        new NotificationCompat
-                                .Builder(cxt,getString(R.string.new_message))
-                                .setSmallIcon(R.mipmap.app_logo)
-                                .setContentText(String.format("%s","You have new messages"))
-                                .setContentTitle("New Message");
+          /*  if(db.saveInBox(msg.getPoster().getId(),msg.getId(),msg.getTitle(),msg.getBody(),msg.getPoster().getName(),msg.getPoster().getFeaturedImage(),msg.getPriority()) != -1){
 
-                Intent resultIntent = new Intent(cxt, ActivityMessageListing.class);
-
-                // Because clicking the notification opens a new ("special") activity, there's
-                // no need to create an artificial back stack.
-                PendingIntent pendingIntent =
-                        PendingIntent.getActivity(
-                                cxt,
-                                0,
-                                resultIntent,
-                                PendingIntent.FLAG_UPDATE_CURRENT
-                        );
-
-                notifBuilder.setContentIntent(pendingIntent);
-                notifBuilder.setAutoCancel(true);
-                notifBuilder.setLights(Color.GREEN,60000,60000);
-                notifBuilder.setSound(Settings.System.DEFAULT_NOTIFICATION_URI);
-                notifBuilder.setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 });
-
-                int notificationId = 001;
-                NotificationManager notifManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                notifManager.notify(notificationId, notifBuilder.build());
-            }
+            }*/
         }
     }
 
 
 
+    private void showNotification(){
+        NotificationCompat.Builder notifBuilder =
+                new NotificationCompat
+                        .Builder(cxt,getString(R.string.new_message))
+                        .setSmallIcon(R.mipmap.app_logo)
+                        .setContentText(String.format("%s","You have new report(s)"))
+                        .setContentTitle("New Report(s)");
+
+        Intent resultIntent = new Intent(cxt, ActivityReportListing.class);
+
+        // Because clicking the notification opens a new ("special") activity, there's
+        // no need to create an artificial back stack.
+        PendingIntent pendingIntent =
+                PendingIntent.getActivity(
+                        cxt,
+                        0,
+                        resultIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+
+        notifBuilder.setContentIntent(pendingIntent);
+        notifBuilder.setAutoCancel(true);
+        notifBuilder.setLights(Color.GREEN,60000,60000);
+        notifBuilder.setSound(Settings.System.DEFAULT_NOTIFICATION_URI);
+        notifBuilder.setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 });
+
+        int notificationId = 001;
+        NotificationManager notifManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notifManager.notify(notificationId, notifBuilder.build());
+    }
 
 
     private void startTimer() {
@@ -211,6 +211,37 @@ public class FieldMonitorMessagingService extends Service {
         int minutes = 60000; //1 minute;
         mTimer1.schedule(mTt1, minutes);
 
+    }
+
+    private static class ReportNetwork extends android.os.AsyncTask<String,Void,String>{
+
+
+        @Override
+        protected String doInBackground(String... strings) {
+            return Network.backgroundTask(null,strings[0]);
+        }
+
+
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            //  progressBar.setVisibility(View.GONE);
+
+            if(s == null) return;
+
+            try {
+                JSONArray jsonArray = new JSONArray(s);
+
+                if(jsonArray.length() > 0){
+
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+                System.err.println(s);
+            }
+        }
     }
 
 }

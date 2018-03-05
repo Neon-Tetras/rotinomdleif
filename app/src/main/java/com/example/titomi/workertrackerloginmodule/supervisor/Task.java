@@ -12,14 +12,17 @@ import com.google.android.gms.maps.model.LatLng;
 
 public class Task extends Entity {
 
-    public Task(int id,User supervisor, User worker, Date dateGiven,
-                Date dateDelivered,String name,String description, String timeGiven,
+    public Task() {
+    }
+
+    public Task(int id, User supervisor, User worker, Date dateGiven,
+                Date dateDelivered, String name, String description, String timeGiven,
                 String workType,
                 String contactName, String contactNumber,
                 String institution_name,
                 String location, String lga, String state,
-                String address, String sales, String images,int quantity,
-                int inventoryBalance, int quantitySold,int participants,int status) {
+                String address, String sales, String images, int quantity,
+                int inventoryBalance, int quantitySold, int participants, int status) {
         this.supervisor = supervisor;
         this.worker = worker;
         this.dateGiven = dateGiven;

@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 
 import com.example.titomi.workertrackerloginmodule.R;
-import com.example.titomi.workertrackerloginmodule.supervisor.services.FieldMonitorMessagingService;
+import com.example.titomi.workertrackerloginmodule.services.FieldMonitorMessagingService;
 
 public class ActivityMessageMenu extends AppCompatActivity implements View.OnClickListener{
 

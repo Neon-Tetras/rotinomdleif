@@ -12,6 +12,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -20,17 +21,23 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.titomi.workertrackerloginmodule.HttpParse;
 import com.example.titomi.workertrackerloginmodule.R;
+import com.example.titomi.workertrackerloginmodule.supervisor.Task;
+import com.example.titomi.workertrackerloginmodule.supervisor.User;
+import com.example.titomi.workertrackerloginmodule.services.FieldMonitorReportUploadService;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.ImageUtils;
+import com.example.titomi.workertrackerloginmodule.supervisor.util.InputValidator;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.Util;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 
 import java.io.File;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -45,23 +52,19 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
     FloatingActionMenu floatingActionMenu;
     private EditText timeEditText,taskTitleEdit,
             taskDescriptionEdit,institutionNameEdit,
-            fullAddressEdit,quantityEdit,contactFullNameEdit,contactNumberEdit,locationEdit, dateEditText,stateEdit, lgaEdit, taskTypeEdit;
+            fullAddressEdit,quantityEdit,contactFullNameEdit,contactNumberEdit,locationEdit, dateEditText,stateEdit, lgaEdit, taskTypeEdit,participantsEdit,quantitySoldEdit,commentsEdit;
 
-    TextView report_date,playVideoText;
-    String mReportRemarkHolder, institutionHolder, productSoldHolder, participantsHolder, mTaskTitleHolder, task_idHolder, productTypeHolder, mReportPhotoHolder;
-    Button userClockIn, userClockOut;
-    ImageView field_image;
-    ProgressDialog progressDialog;
-    HashMap<String, String> hashMap = new HashMap<>();
-    String HttpURL = "https://chemotropic-partiti.000webhostapp.com/sample/InsertReports.php";
-    HttpParse httpParse = new HttpParse();
-    Boolean checkEditText;
-    String finalResult;
-    private Uri fileUri;
+    TextView playVideoText;
+
 
     Context cxt;
 
     LinearLayout reportImagesLayout;
+
+    private User loggedInUser;
+    private Task selectedTask;
+
+    private String stopLat,stopLong;
 
     private static File getOutputMediaFile() {
         File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
@@ -106,7 +109,7 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
 
         dateEditText = findViewById(R.id.dateText);
         timeEditText = (EditText)findViewById(R.id.timeText);
-        reportImagesLayout = findViewById(R.id.reportImagesLayout);
+        reportImagesLayout = findViewById(R.id.imagesLayout);
         stateEdit = findViewById(R.id.state);
         lgaEdit = findViewById(R.id.lga);
 
@@ -121,12 +124,30 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
         taskTypeEdit = findViewById(R.id.taskType);
         locationEdit = findViewById(R.id.location);
 
+        commentsEdit = findViewById(R.id.commentField);
+        participantsEdit = findViewById(R.id.participantsEdit);
+        quantitySoldEdit = findViewById(R.id.quantityDistributedEdit);
+
+
         fab_photo.setOnClickListener(this);
         fab_video.setOnClickListener(this);
         fab_send.setOnClickListener(this);
         fab_record.setOnClickListener(this);
 
+        if(getIntent().getExtras() != null) {
+            Bundle extras = getIntent().getExtras();
+            loggedInUser = (User)extras.getSerializable(getString(R.string.loggedInUser));
+            selectedTask = (Task)extras.getSerializable("task");
+            stopLat = extras.getString("stop_lat");
+            stopLong = extras.getString("stop_long");
 
+            try {
+                setupView(selectedTask);
+            }catch (NullPointerException e){
+                Toast.makeText(cxt,e.getMessage(),Toast.LENGTH_LONG).show();
+            }
+
+        }
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             fab_photo.setEnabled(false);
@@ -135,50 +156,32 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
 
     }
 
+    private void setupView(Task task){
+        SimpleDateFormat dtf = new SimpleDateFormat("yyyy/M/dd");
+        dateEditText.setText(dtf.format(task.getDateGiven()));
+        timeEditText.setText(task.getTimeGiven());
 
-    public void insertReport(final String S_taskId, final String S_taskTitle, final String S_institution, final String S_participants, final String S_product_type, final String S_product_sold, final String S_remark, final String S_photo) {
-        class insertReportClass extends AsyncTask<String, Void, String> {
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
+        stateEdit.setText(task.getState());
+        lgaEdit.setText(task.getLga());
 
-                progressDialog = progressDialog.show(ReportActivity.this, "Loading", null, true, true);
-            }
+        taskTitleEdit.setText(task.getName());
+        taskDescriptionEdit.setText(task.getDescription());
+        institutionNameEdit.setText(task.getInstitution_name());
+        fullAddressEdit.setText(task.getAddress());
+        quantityEdit.setText(""+task.getQuantity());
+        contactFullNameEdit.setText(task.getContactName());
+        contactNumberEdit.setText(task.getContactNumber());
 
-            @Override
-            protected void onPostExecute(String httpResponseMsg) {
-                super.onPostExecute(httpResponseMsg);
+        taskTypeEdit.setText(task.getWorkType());
+        locationEdit.setText(task.getLocation());
 
-                progressDialog.dismiss();
-                Toast.makeText(ReportActivity.this, httpResponseMsg, Toast.LENGTH_SHORT).show();
-                finish();
-            }
-
-            @Override
-            protected String doInBackground(String... params) {
-                hashMap.put("TaskId", params[0]);
-                hashMap.put("TaskTitle", params[1]);
-                hashMap.put("Institution", params[2]);
-                hashMap.put("Participants", params[3]);
-                hashMap.put("ProductType", params[4]);
-                hashMap.put("ProductSold", params[5]);
-                hashMap.put("ReportRemark", params[6]);
-                hashMap.put("ReportPhoto", params[7]);
-
-                finalResult = httpParse.postRequest(hashMap, HttpURL);
-                return finalResult;
-            }
-        }
-
-        insertReportClass insertReportClass = new insertReportClass();
-        insertReportClass.execute(S_taskId, S_taskTitle, S_institution, S_participants, S_product_type, S_product_sold, S_remark, S_photo);
     }
 
     private void captureImage() {
 
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-       fileUri = Uri.fromFile(getOutputMediaFile());
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+      // fileUri = Uri.fromFile(getOutputMediaFile());
+      //  intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
 
         startActivityForResult(intent, 100);
 
@@ -199,9 +202,9 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
 
         if (resultCode == RESULT_OK) {
             if (requestCode == 100) {
-                Bitmap photo = (Bitmap) data.getExtras().get("data");
+              Bitmap photo = (Bitmap) data.getExtras().get("data");
                 //field_image.setImageURI(fileUri);
-                Uri tempUri = Util.getImageUri(getApplicationContext(), photo);
+               Uri tempUri = Util.getImageUri(getApplicationContext(), photo);
 
                 // CALL THIS METHOD TO GET THE ACTUAL PATH
                 File finalFile = new File(Util.getRealPathFromURI(cxt,tempUri));
@@ -209,8 +212,8 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
                     reportImages.add(finalFile.getAbsolutePath());
                     loadReportImages(reportImages);
                 }
-                field_image.setImageURI(data.getData());
-                fab_remove_photo.setVisibility(View.VISIBLE);
+                //sfield_image.setImageURI(data.getData());
+               // fab_remove_photo.setVisibility(View.VISIBLE);
 
 
             }
@@ -253,15 +256,43 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
                 captureImage();
                 break;
             case R.id.fab_send:
-                mReportPhotoHolder = fileUri.getPath();
 
+                Intent i = new Intent(cxt,FieldMonitorReportUploadService.class);
+                i.putExtra("video",videoPath);
+                i.putStringArrayListExtra("images",reportImages);
 
-                if (checkEditText) {
-                    insertReport(task_idHolder, mTaskTitleHolder, institutionHolder, participantsHolder, productTypeHolder, productSoldHolder, mReportRemarkHolder, mReportPhotoHolder);
+                HashMap<String,String> postData = new HashMap<>();
+                try {
+                    postData.put("user_id",String.format("%d",loggedInUser.getId()));
+                postData.put("task_id",String.format("%d",selectedTask.getId()));
+                String stopTime = DateFormat.getDateTimeInstance().format(new Date()).replaceAll("/","-");
+                postData.put("stop_time",stopTime);
+                postData.put("stop_latitude",InputValidator.validateText(stopLat,8));
+                postData.put("stop_longitude",InputValidator.validateText(stopLong,8));
 
-                } else {
-                    Toast.makeText(ReportActivity.this, "Please fill the form completely", Toast.LENGTH_SHORT).show();
+                    postData.put("participants", InputValidator.validateText(participantsEdit,1));
+                    postData.put("quantity_sold", InputValidator.validateText(quantitySoldEdit,1));
+                    postData.put("challenges", commentsEdit.getText().toString());
+                } catch (InputValidator.InvalidInputException e) {
+                    Toast.makeText(cxt,e.getMessage(),Toast.LENGTH_LONG).show();
                 }
+
+                i.putExtra("postData",postData);
+
+
+                startService(i);
+
+                Snackbar snackbar = Snackbar
+                        .make(findViewById(R.id.coordinator), "Report will be submitted in the background.\nPlease do not resend", Snackbar.LENGTH_LONG);
+                snackbar.show();
+                fab_send.setEnabled(false);
+                fab_photo.setEnabled(false);
+                fab_record.setEnabled(false);
+                fab_video.setEnabled(false);
+                fab_remove_photo.setEnabled(false);
+
+                snackbar.show();
+
                 break;
             case R.id.fab_video:
                 Util.requestPermission(ReportActivity.this,Util.PICK_VIDEO);
@@ -274,7 +305,7 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
     private void loadReportImages(final ArrayList<String> images){
 
 
-
+                reportImagesLayout.removeAllViews();
                 //String[] images = task.getImages().split(",");
                 for(final String image : images) {
                     final View view = getLayoutInflater().inflate(R.layout.report_image_single_item_with_delete_button, null);
@@ -307,7 +338,16 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
                 }
 
 
+private void recordAudio(){
+    Intent intent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
+    startActivityForResult(intent, ACTIVITY_RECORD_SOUND);
+}
+    public static final int ACTIVITY_RECORD_SOUND = 0;
+
+
+
 ArrayList<String> reportImages = new ArrayList<>();
+
 
 }
 

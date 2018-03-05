@@ -9,7 +9,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -31,7 +30,7 @@ import com.example.titomi.workertrackerloginmodule.supervisor.activities.Activit
 import com.example.titomi.workertrackerloginmodule.supervisor.activities.ActivityMessageListing;
 import com.example.titomi.workertrackerloginmodule.supervisor.activities.ActivityReportListing;
 import com.example.titomi.workertrackerloginmodule.supervisor.activities.ActivityTaskListing;
-import com.example.titomi.workertrackerloginmodule.supervisor.services.FieldMonitorMessagingService;
+import com.example.titomi.workertrackerloginmodule.services.FieldMonitorMessagingService;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.ImageUtils;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;

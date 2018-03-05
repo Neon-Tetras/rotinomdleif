@@ -188,5 +188,9 @@
     <string name="longitude">longitude</string>
     <string name="clockInUrl">task/clockin.php</string>
     <string name="alert_api">alert/add.php</string>
+    <string name="submitting_report">Submitting report</string>
+    <string name="image_upload_url">task/image_uploader.php</string>
+    <string name="video_upload_url">task/video_uploader.php</string>
+    <string name="clockOutUrl">task/clock_out.php</string>
 
 </resources>

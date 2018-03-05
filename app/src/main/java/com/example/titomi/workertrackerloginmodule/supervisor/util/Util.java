@@ -352,6 +352,7 @@ public class Util {
 
     public static String getRealPathFromURI(Context cxt, Uri uri) {
         Cursor cursor = cxt.getContentResolver().query(uri, null, null, null, null);
+        assert cursor != null;
         cursor.moveToFirst();
         int idx = cursor.getColumnIndex(Images.ImageColumns.DATA);
         return cursor.getString(idx);

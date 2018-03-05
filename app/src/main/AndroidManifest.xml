@@ -11,8 +11,11 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-feature android:name="android.hardware.location.gps" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-feature android:name="android.hardware.camera"
+        android:required="true" />
 
+    <uses-feature android:name="android.hardware.location.gps" />
 
     <application
         android:allowBackup="true"
@@ -46,7 +49,9 @@
         <activity
             android:name=".ReportModule.ReportActivity"
             android:label="@string/title_activity_report"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme.DarkActionBar" >
+
+        </activity>
         <activity android:name=".UserProfile.UserProfileActivity" />
         <activity android:name=".UserProfile.EditProfileActivity" />
         <activity android:name=".InventoryModule.InventoryActivity" />
@@ -72,50 +77,69 @@
         <activity android:name=".AlertManager.AlertSubMenu.LowBatteryActivity" />
         <activity android:name=".UserLoginActivity" />
         <activity android:name=".Task.RoutePlanActivity" />
-        <activity android:name=".Message_and_Notice.MessagesActivity"/>
-
-
-         <activity android:name=".supervisor.activities.MainActivity" />
-        <activity android:name=".supervisor.activities.ActivityAdminNewMessage"
+        <activity android:name=".Message_and_Notice.MessagesActivity" />
+        <activity android:name=".supervisor.activities.MainActivity" />
+        <activity
+            android:name=".supervisor.activities.ActivityAdminNewMessage"
             android:label="New Message"
-            android:theme="@style/AppTheme.DarkActionBar"/>
-        <activity android:name=".supervisor.activities.ActivityMessageListing"
+            android:theme="@style/AppTheme.DarkActionBar" />
+        <activity
+            android:name=".supervisor.activities.ActivityMessageListing"
             android:label="Messages"
-            android:theme="@style/AppTheme.DarkActionBar"/>
-        <activity android:name=".supervisor.activities.ActivityViewMessage"
-            android:theme="@style/AppTheme.DarkActionBar"
-            android:label="View Message"/>
-        <activity android:name=".supervisor.activities.ActivityMessageMenu"
-            android:theme="@style/AppTheme.DarkActionBar"
-            />
-        <activity android:name=".supervisor.activities.ActivityInventoryRequestsListing"
-            android:theme="@style/AppTheme.DarkActionBar"
-            android:label="Requests"/>
-        <activity android:name=".supervisor.activities.ActivityAssignTask"
-            android:theme="@style/AppTheme.DarkActionBar"
-            android:label="Assign Task"/>
-        <activity android:name=".supervisor.activities.ActivityViewReport"
-            android:theme="@style/AppTheme.DarkActionBar"
-            android:label="View Report"/>
-        <activity android:name=".supervisor.activities.ActivityReportListing"
-            android:theme="@style/AppTheme.DarkActionBar"
-            android:label="Reports"/>
-        <activity android:name=".supervisor.activities.ActivityChallenges"
-            android:theme="@style/AppTheme.DarkActionBar"
-            android:label="Challenges"/>
-        <activity android:name=".supervisor.activities.ActivityLeaveApplication"
-            android:theme="@style/AppTheme.DarkActionBar"
-            android:label="Leave Application"/>
-        <activity android:name=".supervisor.activities.ActivityAttendanceReport"/>
-        <activity android:name=".supervisor.activities.ActivityTaskListing"
-            android:theme="@style/AppTheme.DarkActionBar"
-            android:label="Task Listing"/>
-        <activity android:name=".LoginActivity"
-            android:label="Login"/>
-        <activity android:name=".supervisor.activities.ActivityInventoryRequest"
+            android:theme="@style/AppTheme.DarkActionBar" />
+        <activity
+            android:name=".supervisor.activities.ActivityViewMessage"
+            android:label="View Message"
+            android:theme="@style/AppTheme.DarkActionBar" />
+        <activity
+            android:name=".supervisor.activities.ActivityMessageMenu"
+            android:theme="@style/AppTheme.DarkActionBar" />
+        <activity
+            android:name=".supervisor.activities.ActivityInventoryRequestsListing"
+            android:label="Requests"
+            android:theme="@style/AppTheme.DarkActionBar" />
+        <activity
+            android:name=".supervisor.activities.ActivityAssignTask"
+            android:label="Assign Task"
+            android:theme="@style/AppTheme.DarkActionBar" />
+        <activity
+            android:name=".supervisor.activities.ActivityViewReport"
+            android:label="View Report"
+            android:theme="@style/AppTheme.DarkActionBar" />
+        <activity
+            android:name=".supervisor.activities.ActivityReportListing"
+            android:label="Reports"
+            android:theme="@style/AppTheme.DarkActionBar" />
+        <activity
+            android:name=".supervisor.activities.ActivityChallenges"
+            android:label="Challenges"
+            android:theme="@style/AppTheme.DarkActionBar" />
+        <activity
+            android:name=".supervisor.activities.ActivityLeaveApplication"
+            android:label="Leave Application"
+            android:theme="@style/AppTheme.DarkActionBar" />
+        <activity android:name=".supervisor.activities.ActivityAttendanceReport" />
+        <activity
+            android:name=".supervisor.activities.ActivityTaskListing"
+            android:label="Task Listing"
+            android:theme="@style/AppTheme.DarkActionBar" />
+        <activity
+            android:name=".LoginActivity"
+            android:label="Login" />
+        <activity
+            android:name=".supervisor.activities.ActivityInventoryRequest"
             android:label="Inventory Request"
-            android:theme="@style/AppTheme.DarkActionBar"/>
+            android:theme="@style/AppTheme.DarkActionBar" />
+        <activity android:name=".ReportModule.ActivityVideoTrimmer"/>
+        <activity android:name=".ReportModule.VideoPlayer"
+            android:theme="@style/AppTheme.DarkActionBar"
+            android:label="Video Player"/>
 
+        <service android:name=".services.FieldMonitorMessagingService"
+            android:label="FieldMonitorMessagingService"/>
+
+        <service android:name=".services.FieldMonitorReportUploadService"
+            android:label="FieldMonitorReportUploadService"/>
 
     </application>
 

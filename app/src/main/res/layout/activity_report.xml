@@ -7,7 +7,8 @@
     android:layout_height="match_parent"
     android:id="@+id/coordinator"
     tools:context="com.example.titomi.workertrackerloginmodule.ReportModule.ReportActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    >
 
 
 
@@ -175,6 +176,7 @@
                     android:layout_width="130dp"
                     android:layout_height="wrap_content"
                     android:inputType="none"
+                    android:gravity="center"
                     android:editable="false"
 
                     />
@@ -195,6 +197,7 @@
                     android:layout_height="wrap_content"
                     android:inputType="none"
                     android:editable="false"
+                    android:gravity="center"
 
                     />
 
@@ -345,7 +348,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
                     android:inputType="number"
-
+                    android:gravity="center_horizontal"
                     android:singleLine="true" />
 
                 <EditText
@@ -354,6 +357,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
                     android:inputType="number"
+                    android:gravity="center_horizontal"
                     android:layout_gravity="bottom|end"
                     android:singleLine="true" />
             </GridLayout>
@@ -362,19 +366,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:text="Challenges"
+                android:text="Comments"
                 android:textColor="@color/black"
 
                 android:textSize="12sp" />
 
             <EditText
-                android:id="@+id/challengesEdit"
+                android:id="@+id/commentField"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:inputType="none"
-                android:editable="false"
-                android:singleLine="true" />
+
+                android:lines="3" />
 
 
             <TextView
@@ -410,6 +413,8 @@
                     android:background="@color/gray"
                     android:gravity="center_vertical"
                     android:id="@+id/playVideoText"
+                    android:textColor="@color/black"
+                    android:layout_marginTop="20dp"
                     android:visibility="gone"/>
             </LinearLayout>
 
@@ -444,7 +449,8 @@
             android:overScrollMode="always"
             android:visibility="gone"
             app:fabSize="mini"
-            android:src="@drawable/remove_photo" />
+            android:src="@drawable/remove_photo"
+            />
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/fab_photo"
@@ -466,7 +472,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:fabSize="mini"
-            android:src="@drawable/ic_mic" />
+            android:src="@drawable/ic_mic"
+            android:visibility="gone"/>
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/fab_send"

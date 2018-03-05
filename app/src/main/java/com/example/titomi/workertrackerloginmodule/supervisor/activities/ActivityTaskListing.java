@@ -555,7 +555,7 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
 
                     @Override
                     public void onLocationChanged(Location location) {
-                        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                         latLng = new LatLng(location.getLatitude(), location.getLongitude());
                         if(pg.isShowing()){
                             pg.dismiss();
                         }
@@ -569,6 +569,10 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
                                 Intent i =  new Intent(cxt,ReportActivity.class);
                                 i.putExtra("task",selectedTask);
                                 i.putExtra(getString(R.string.loggedInUser),loggedInUser);
+                                i.putExtra("stop_lat",""+latLng.latitude);
+                                i.putExtra("stop_long",""+latLng.longitude);
+
+
                                 startActivity(i);
                                 return;
                             }
@@ -652,34 +656,7 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
 
                     @Override
                     public void onStatusChanged(String provider, int status, Bundle extras) {
-                       /* pg.dismiss();
-                        switch (bestProvider){
-                            case LocationManager.GPS_PROVIDER:
-                                switch (status){
-                                    case LocationProvider.TEMPORARILY_UNAVAILABLE:
-                                    case LocationProvider.OUT_OF_SERVICE:
-                                        mLocationManager.requestSingleUpdate(LocationManager.NETWORK_PROVIDER,this,null);
-                                        break;
-                                        case LocationProvider.AVAILABLE:
-                                            mLocationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER,this,null);
-                                            break;
 
-                                }
-                                break;
-                            case LocationManager.NETWORK_PROVIDER:
-                                switch (status){
-                                    case LocationProvider.TEMPORARILY_UNAVAILABLE:
-                                    case LocationProvider.OUT_OF_SERVICE:
-                                        mLocationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER,this,null);
-                                        break;
-                                    case LocationProvider.AVAILABLE:
-                                        mLocationManager.requestSingleUpdate(LocationManager.NETWORK_PROVIDER,this,null);
-                                        break;
-
-                                }
-                                break;
-                        }
-*/
                     }
 
                     @Override
@@ -700,7 +677,10 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
                      @Override
                      public void run() {
                             mLocationManager.removeUpdates(locationListener);
-                            Toast.makeText(cxt,"Sorry we could not detect your location.\nPlease try again",Toast.LENGTH_LONG).show();
+
+                            if(latLng == null) {
+                                Toast.makeText(cxt, "Sorry we could not detect your location.\nPlease try again", Toast.LENGTH_LONG).show();
+                            }
                             pg.dismiss();
                      }
                  },30000);
@@ -741,4 +721,5 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
     float results[] = new float[3];
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     int alertType = 0;
+    LatLng latLng;
 }
