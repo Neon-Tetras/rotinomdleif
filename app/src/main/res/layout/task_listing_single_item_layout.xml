@@ -216,6 +216,20 @@
                     android:layout_marginStart="20dp"/>
             </LinearLayout>
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_directions_black_24dp"
+                android:text="Get Directions"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                android:layout_marginTop="10dp"
+                android:gravity="center_vertical"
+                android:drawablePadding="5dp"
+                android:id="@+id/getDirection"
+
+                />
+
 
             <TextView
                 android:layout_width="match_parent"

@@ -345,8 +345,8 @@ public class Util {
 
     public static Uri getImageUri(Context inContext, Bitmap inImage) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+       inImage.compress(Bitmap.CompressFormat.JPEG, 0, bytes);
+        String path = Images.Media.insertImage(inContext.getContentResolver(), inImage, "Field Monitor", "Taken from Field Monitor App");
         return Uri.parse(path);
     }
 

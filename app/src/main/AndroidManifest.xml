@@ -24,6 +24,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -48,7 +50,7 @@
         <activity android:name=".TabActivity" />
         <activity
             android:name=".ReportModule.ReportActivity"
-            android:label="@string/title_activity_report"
+            android:label="Write Report"
             android:theme="@style/AppTheme.DarkActionBar" >
 
         </activity>
@@ -143,7 +145,15 @@
 
         <service android:name=".services.FieldMonitorReportUploadService"
             android:label="FieldMonitorReportUploadService"/>
-
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.example.android.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"></meta-data>
+        </provider>
     </application>
 
 </manifest>

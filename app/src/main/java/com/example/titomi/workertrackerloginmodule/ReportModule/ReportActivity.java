@@ -15,7 +15,9 @@ import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -37,6 +39,7 @@ import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -65,19 +68,24 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
     private Task selectedTask;
 
     private String stopLat,stopLong;
-
+File outputMedia;
     private static File getOutputMediaFile() {
-        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES), "CameraDemo");
+
+        String filePath = ImageUtils.ImageStorage.getStorageDirectory(new Task()).getAbsolutePath();
+       /* File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES), "FieldMonitor");
 
         if (!mediaStorageDir.exists()) {
             if (!mediaStorageDir.mkdirs()) {
                 return null;
             }
-        }
+        }*/
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        return new File(mediaStorageDir.getPath() + File.separator +
+       /* return new File(mediaStorageDir.getPath() + File.separator +
+                "IMG_" + timeStamp + ".jpg");*/
+        return new File(filePath + File.separator +
                 "IMG_" + timeStamp + ".jpg");
+        //filePath;
     }
 
     @Override
@@ -94,8 +102,8 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
         setContentView(R.layout.activity_report);
        /* Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);*/
-
-       cxt = this;
+System.out.println(this.getClass().getPackage());
+        cxt = this;
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
@@ -176,13 +184,16 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
         locationEdit.setText(task.getLocation());
 
     }
-
+Uri file;
     private void captureImage() {
 
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-
+        outputMedia = getOutputMediaFile();
+        file = Uri.fromFile(outputMedia);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, file);
         startActivityForResult(intent, 100);
+      //dispatchTakePictureIntent();
+       // onLaunchCamera(findViewById(R.id.image));
 
     }
 
@@ -201,15 +212,15 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
 
         if (resultCode == RESULT_OK) {
             if (requestCode == 100) {
-              Bitmap photo = (Bitmap) data.getExtras().get("data");
 
-               Uri tempUri = Util.getImageUri(getApplicationContext(), photo);
 
-                // CALL THIS METHOD TO GET THE ACTUAL PATH
-                File finalFile = new File(Util.getRealPathFromURI(cxt,tempUri));
-                if(!reportImages.contains(finalFile.getAbsolutePath())){
-                    reportImages.add(finalFile.getAbsolutePath());
-                    loadReportImages(reportImages);
+                ImageUtils.ImageStorage storage = new ImageUtils.ImageStorage(new Task());
+                if(storage.imageExists(outputMedia.getName())) {
+                    //  Util.getRealPathFromURI(cxt, file);
+                    if(!reportImages.contains(outputMedia.getAbsolutePath())){
+                        reportImages.add(outputMedia.getAbsolutePath());
+                        loadReportImages(reportImages);
+                    }
                 }
 
             }
@@ -225,25 +236,25 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
 
                 break;
             case TRIM_VIDEO:
-            String uri = data.getExtras().getString("video");
-           videoPath =  Util.getVideoPath(this,Uri.parse(uri));
+                String uri = data.getExtras().getString("video");
+                videoPath =  Util.getVideoPath(this,Uri.parse(uri));
 
-           if(videoPath != null){
-               playVideoText.setVisibility(View.VISIBLE);
-               playVideoText.setOnClickListener(new View.OnClickListener() {
-                   @Override
-                   public void onClick(View v) {
-                        Intent i = new Intent(ReportActivity.this,VideoPlayer.class);
-                         i.putExtra("videoUrl",videoPath);
-                         startActivity(i);
-                   }
-               });
-           }
+                if(videoPath != null){
+                    playVideoText.setVisibility(View.VISIBLE);
+                    playVideoText.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent i = new Intent(ReportActivity.this,VideoPlayer.class);
+                            i.putExtra("videoUrl",videoPath);
+                            startActivity(i);
+                        }
+                    });
+                }
                 break;
         }
     }
 
-     String videoPath;
+    String videoPath;
     private static final int TRIM_VIDEO = 10;
 
     @Override
@@ -261,38 +272,36 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
                 HashMap<String,String> postData = new HashMap<>();
                 try {
                     postData.put("user_id",String.format("%d",loggedInUser.getId()));
-                postData.put("task_id",String.format("%d",selectedTask.getId()));
-                String stopTime = DateFormat.getDateTimeInstance().format(new Date()).replaceAll("/","-");
-                postData.put("stop_time",stopTime);
-                postData.put("stop_latitude",stopLat);
-                postData.put("stop_longitude",stopLong);
+                    postData.put("task_id",String.format("%d",selectedTask.getId()));
+                    String stopTime = DateFormat.getDateTimeInstance().format(new Date()).replaceAll("/","-");
+                    postData.put("stop_time",stopTime);
+                    postData.put("stop_latitude",stopLat);
+                    postData.put("stop_longitude",stopLong);
                     postData.put("product_id",""+selectedTask.getProductId());
 
                     postData.put("participants", InputValidator.validateText(participantsEdit,1));
                     postData.put("quantity_sold", InputValidator.validateText(quantitySoldEdit,1));
                     postData.put("challenges", commentsEdit.getText().toString());
-
-                    i.putExtra("postData",postData);
-                    i.putExtra(getString(R.string.loggedInUser),loggedInUser);
-
-
-                    startService(i);
-
-                    Snackbar snackbar = Snackbar
-                            .make(findViewById(R.id.coordinator), "Report will be submitted in the background.\nPlease do not resend", Snackbar.LENGTH_LONG);
-                    snackbar.show();
-                    fab_send.setEnabled(false);
-                    fab_photo.setEnabled(false);
-                    fab_record.setEnabled(false);
-                    fab_video.setEnabled(false);
-                    fab_remove_photo.setEnabled(false);
-
-                    snackbar.show();
-
                 } catch (InputValidator.InvalidInputException e) {
                     Toast.makeText(cxt,e.getMessage(),Toast.LENGTH_LONG).show();
                 }
 
+                i.putExtra("postData",postData);
+                i.putExtra(getString(R.string.loggedInUser),loggedInUser);
+
+
+                startService(i);
+
+                Snackbar snackbar = Snackbar
+                        .make(findViewById(R.id.coordinator), "Report will be submitted in the background.\nPlease do not resend", Snackbar.LENGTH_LONG);
+                snackbar.show();
+                fab_send.setEnabled(false);
+                fab_photo.setEnabled(false);
+                fab_record.setEnabled(false);
+                fab_video.setEnabled(false);
+                fab_remove_photo.setEnabled(false);
+
+                snackbar.show();
 
                 break;
             case R.id.fab_video:
@@ -306,53 +315,52 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
     private void loadReportImages(final ArrayList<String> images){
 
 
-                reportImagesLayout.removeAllViews();
-                //String[] images = task.getImages().split(",");
-                for(final String image : images) {
-                    final View view = getLayoutInflater().inflate(R.layout.report_image_single_item_with_delete_button, null);
+        reportImagesLayout.removeAllViews();
+        //String[] images = task.getImages().split(",");
+        for(final String image : images) {
+            final View view = getLayoutInflater().inflate(R.layout.report_image_single_item_with_delete_button, null);
 
 
-                    final ImageView reportImage = view.findViewById(R.id.reportImage);
-                    final ImageView deleteImage = view.findViewById(R.id.delete);
+            final ImageView reportImage = view.findViewById(R.id.reportImage);
+            final ImageView deleteImage = view.findViewById(R.id.delete);
 
-                   reportImage.setImageDrawable(Drawable.createFromPath(image));
+            reportImage.setImageDrawable(Drawable.createFromPath(image));
 
-                   deleteImage.setOnClickListener(new View.OnClickListener() {
-                       @Override
-                       public void onClick(View v) {
-                           reportImagesLayout.removeView(view);
-                           images.remove(image);
-                       }
-                   });
-                    reportImage.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            Util.viewImages(cxt, reportImage, images);
-                        }
-                    });
-                    reportImagesLayout.addView(view);
-                    }
-
-
-
-
+            deleteImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    reportImagesLayout.removeView(view);
+                    images.remove(image);
                 }
+            });
+            reportImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Util.viewImages(cxt, reportImage, images);
+                }
+            });
+            reportImagesLayout.addView(view);
+        }
 
 
-private void recordAudio(){
-    Intent intent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
-    startActivityForResult(intent, ACTIVITY_RECORD_SOUND);
-}
+
+
+    }
+
+
+    private void recordAudio(){
+        Intent intent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
+        startActivityForResult(intent, ACTIVITY_RECORD_SOUND);
+    }
     public static final int ACTIVITY_RECORD_SOUND = 0;
 
 
 
-ArrayList<String> reportImages = new ArrayList<>();
+    ArrayList<String> reportImages = new ArrayList<>();
+
 
 
 }
-
-
 
 
 

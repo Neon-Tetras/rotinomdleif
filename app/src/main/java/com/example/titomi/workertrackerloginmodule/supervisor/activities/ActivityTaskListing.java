@@ -12,6 +12,7 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -448,7 +449,7 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
 
                         convertView.setLayoutParams(layoutParams);
 
-                        Task task = taskList.get(position);
+                        final Task task = taskList.get(position);
 
                         ImageView userImage = convertView.findViewById(R.id.userImage);
                         TextView usernameText = convertView.findViewById(R.id.username);
@@ -461,6 +462,8 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
                         TextView locationText = convertView.findViewById(R.id.locationText);
                         TextView contactPersonText =  convertView.findViewById(R.id.contactPersonText);
                         TextView quantityGivenText = convertView.findViewById(R.id.quantityGivenText);
+                        TextView getDirections = convertView.findViewById(R.id.getDirection);
+
 
                           institutionName.setText(task.getInstitution_name());
                         taskType.setText(String.format("(%s)",task.getWorkType()));
@@ -492,6 +495,22 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
                         taskTitle.setText(task.getName());
 
 
+                        getDirections.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                String uri = String.format(Locale.ENGLISH, "geo:%f,%f", task.getLatitude(), task.getLongitude());
+                                try {
+                                    String location = URLEncoder.encode(task.getLocation(),"UTF-8");
+
+                                Uri gmmIntentUri = Uri.parse("google.navigation:q="+location);
+                                Intent intent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                                intent.setPackage("com.google.android.apps.maps");
+                                ActivityTaskListing.cxt.startActivity(intent);
+                                } catch (UnsupportedEncodingException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
 
                         return convertView;
                     }

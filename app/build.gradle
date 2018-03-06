@@ -21,6 +21,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    buildToolsVersion '27.0.1'
 }
 
 dependencies {
@@ -61,4 +62,11 @@ dependencies {
     implementation files('libs/opencsv2.4.jar')
     implementation files('libs/jxl.jar')
     implementation 'life.knowledge4:k4l-video-trimmer:1.0'
+}
+configurations {
+    all {
+        exclude module: 'httpclient'
+        exclude module: 'commons-logging'
+        exclude group: 'org.json', module: 'json'
+    }
 }
