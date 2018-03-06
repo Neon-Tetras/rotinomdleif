@@ -3,10 +3,7 @@ package com.example.titomi.workertrackerloginmodule.DashboardFragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +14,8 @@ import com.example.titomi.workertrackerloginmodule.supervisor.Task;
 import com.example.titomi.workertrackerloginmodule.supervisor.User;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.Network;
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.LegendEntry;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
@@ -65,16 +64,6 @@ public class FragmentInventory extends Fragment {
         pb = view.findViewById(R.id.progressBar);
         barInventoryChart= view.findViewById(R.id.barChartInvt);
 
-        final SwipeRefreshLayout swipeRefreshLayout = view.findViewById(R.id.swipe_to_refresh_layout);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                Snackbar snackbar = Snackbar.make(swipeRefreshLayout,"Refreshing", Snackbar.LENGTH_LONG);
-                snackbar.show();
-            }
-        });
-        swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_light, R.color.accent, R.color.colorPrimaryDark);
-
         barInventoryChart.getDescription().setEnabled(false);
         loadInventory();
         return view;
@@ -110,12 +99,20 @@ public class FragmentInventory extends Fragment {
         }
         yVals.clear();
 
-        yVals.add(new BarEntry(0, itemBalance));
-        yVals.add(new BarEntry(1, itemQuantity));
-        yVals.add(new BarEntry(2, itemQuantitySold));
-        Log.e("BAR ITEM", "Item Balance: "+itemQuantity);
+        BarEntry balanceEntry = new BarEntry(0,itemBalance);
+        BarEntry quantityEntry = new BarEntry(1,itemQuantity);
+        BarEntry quantitySoldEntry = new BarEntry(2,itemQuantitySold);
+        yVals.add(0,  balanceEntry);
+        yVals.add(1,  quantitySoldEntry);
+        yVals.add(2,  quantityEntry);
+
+
+        /*yVals.add(new BarEntry(1, itemQuantity));
+        yVals.add(new BarEntry(2, itemQuantitySold));*/
 
         BarDataSet dataSet = new BarDataSet(yVals, "Inventory");
+
+
         dataSet.setColors(ColorTemplate.LIBERTY_COLORS);
         dataSet.setDrawValues(true);
 
@@ -125,6 +122,10 @@ public class FragmentInventory extends Fragment {
 
         barInventoryChart.invalidate();
         barInventoryChart.animateY(500);
+
+        Legend legend = barInventoryChart.getLegend();
+        LegendEntry le = new LegendEntry();
+//        legend.setCustom();
 
     }
 
