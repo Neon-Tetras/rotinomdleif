@@ -1,4 +1,4 @@
-package com.example.titomi.workertrackerloginmodule.AlertManager.alert_sub_menu;
+package com.example.titomi.workertrackerloginmodule.alert_manager.alert_sub_menu;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

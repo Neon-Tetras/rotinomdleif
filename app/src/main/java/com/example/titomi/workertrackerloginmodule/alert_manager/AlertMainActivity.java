@@ -1,4 +1,4 @@
-package com.example.titomi.workertrackerloginmodule.AlertManager;
+package com.example.titomi.workertrackerloginmodule.alert_manager;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,10 +7,10 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-import com.example.titomi.workertrackerloginmodule.AlertManager.alert_sub_menu.AbsentActivity;
-import com.example.titomi.workertrackerloginmodule.AlertManager.alert_sub_menu.GeofencingActivity;
-import com.example.titomi.workertrackerloginmodule.AlertManager.alert_sub_menu.LowBatteryActivity;
-import com.example.titomi.workertrackerloginmodule.AlertManager.alert_sub_menu.LowStockActivity;
+import com.example.titomi.workertrackerloginmodule.alert_manager.alert_sub_menu.AbsentActivity;
+import com.example.titomi.workertrackerloginmodule.alert_manager.alert_sub_menu.GeofencingActivity;
+import com.example.titomi.workertrackerloginmodule.alert_manager.alert_sub_menu.LowBatteryActivity;
+import com.example.titomi.workertrackerloginmodule.alert_manager.alert_sub_menu.LowStockActivity;
 import com.example.titomi.workertrackerloginmodule.R;
 
 public class AlertMainActivity extends AppCompatActivity implements View.OnClickListener {

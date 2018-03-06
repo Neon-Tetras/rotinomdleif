@@ -13,7 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.example.titomi.workertrackerloginmodule.AlertManager.AlertMainActivity;
+import com.example.titomi.workertrackerloginmodule.alert_manager.AlertMainActivity;
 import com.example.titomi.workertrackerloginmodule.attendance_module.AttendanceMainActivity;
 import com.example.titomi.workertrackerloginmodule.dashboard_fragments.FragmentAttendance;
 import com.example.titomi.workertrackerloginmodule.dashboard_fragments.FragmentInventory;

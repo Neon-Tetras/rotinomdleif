@@ -61,7 +61,7 @@
         <activity android:name=".task.TaskDetailsActivity" />
         <activity android:name=".report_module.ReportMainActivity" />
         <activity android:name=".attendance_module.AttendanceMainActivity" />
-        <activity android:name=".AlertManager.AlertMainActivity" />
+        <activity android:name=".alert_manager.AlertMainActivity" />
         <activity android:name=".supervisor_manager.SupervisorMainActivity" />
         <activity android:name=".inventory_module.InventorySubMenu.ProductRequestActivity" />
         <activity android:name=".inventory_module.InventorySubMenu.ReceivedInventoryActivity" />
@@ -76,10 +76,10 @@
             android:label="Leave Applications"
             android:icon="@drawable/app_logo"
             android:theme="@style/AppTheme.DarkActionBar"/>
-        <activity android:name=".AlertManager.alert_sub_menu.GeofencingActivity" />
-        <activity android:name=".AlertManager.alert_sub_menu.LowStockActivity" />
-        <activity android:name=".AlertManager.alert_sub_menu.AbsentActivity" />
-        <activity android:name=".AlertManager.alert_sub_menu.LowBatteryActivity" />
+        <activity android:name=".alert_manager.alert_sub_menu.GeofencingActivity" />
+        <activity android:name=".alert_manager.alert_sub_menu.LowStockActivity" />
+        <activity android:name=".alert_manager.alert_sub_menu.AbsentActivity" />
+        <activity android:name=".alert_manager.alert_sub_menu.LowBatteryActivity" />
         <activity android:name=".UserLoginActivity" />
         <activity android:name=".task.RoutePlanActivity" />
         <activity android:name=".message_and_notice.MessagesActivity" />
