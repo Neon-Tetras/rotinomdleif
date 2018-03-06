@@ -23,7 +23,7 @@ import com.example.titomi.workertrackerloginmodule.inventory_module.InventoryAct
 import com.example.titomi.workertrackerloginmodule.report_module.ReportMainActivity;
 import com.example.titomi.workertrackerloginmodule.shared_pref_manager.SharedPrefManager;
 import com.example.titomi.workertrackerloginmodule.supervisor_manager.SupervisorMainActivity;
-import com.example.titomi.workertrackerloginmodule.userProfile.UserProfileActivity;
+import com.example.titomi.workertrackerloginmodule.user_profile.UserProfileActivity;
 import com.example.titomi.workertrackerloginmodule.supervisor.User;
 import com.example.titomi.workertrackerloginmodule.supervisor.activities.ActivityInventoryRequestsListing;
 import com.example.titomi.workertrackerloginmodule.supervisor.activities.ActivityLeaveApplication;

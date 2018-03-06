@@ -54,8 +54,8 @@
             android:theme="@style/AppTheme.DarkActionBar" >
 
         </activity>
-        <activity android:name=".userProfile.UserProfileActivity" />
-        <activity android:name=".userProfile.EditProfileActivity" />
+        <activity android:name=".user_profile.UserProfileActivity" />
+        <activity android:name=".user_profile.EditProfileActivity" />
         <activity android:name=".inventory_module.InventoryActivity" />
         <activity android:name=".attendance_module.attendance_sub_menu.AttendanceActivity" />
         <activity android:name=".task.TaskDetailsActivity" />

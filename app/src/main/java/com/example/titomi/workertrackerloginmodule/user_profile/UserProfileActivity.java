@@ -1,4 +1,4 @@
-package com.example.titomi.workertrackerloginmodule.userProfile;
+package com.example.titomi.workertrackerloginmodule.user_profile;
 
 import android.content.Context;
 import android.os.Bundle;
