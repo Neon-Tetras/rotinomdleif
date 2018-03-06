@@ -417,6 +417,8 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
                     worker.setId(workerObj.getInt("id"));
                     SimpleDateFormat dtf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
                     //  DateFormat dtf = DateFormat.getDateTimeInstance();
+                    Date stopTime = dtf.parse(obj.getString("stopTime"));
+                    Date startTime = dtf.parse(obj.getString("startTime"));
                     Date dateGiven = dtf.parse(obj.getString("dateGiven"));
                     Date dateDelivered = dtf.parse(obj.getString("dateDelivered"));
                     SimpleDateFormat tf = new SimpleDateFormat("H:m:s");
@@ -448,7 +450,8 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
                     task.setStartLongitude(obj.getDouble("startLongitude"));
                     task.setStopLongitude(obj.getDouble("stopLongitude"));
 
-
+                    task.setStartTime(startTime);
+                    task.setStopTime(stopTime);
 
 
                     taskList.add(task);
