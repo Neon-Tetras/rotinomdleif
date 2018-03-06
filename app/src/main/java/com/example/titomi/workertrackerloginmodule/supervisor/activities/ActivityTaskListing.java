@@ -195,7 +195,7 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
          switch (selectedTask.getStatus()){
              case Task.PENDING:
 
-                 editTask.setVisibility(View.VISIBLE);
+                 //editTask.setVisibility(View.VISIBLE);
                  deleteTask.setVisibility(View.VISIBLE);
                  break;
 

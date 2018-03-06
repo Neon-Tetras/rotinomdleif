@@ -61,6 +61,8 @@ public class LeaveHistoryActivity extends AppCompatActivity {
             }
         });
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
 //        toolbar = findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);

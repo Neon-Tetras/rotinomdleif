@@ -93,13 +93,14 @@ public class DashboardActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         toolbar.setTitle("Dashboard");
         cxt = this;
-        startService(new Intent(cxt, FieldMonitorMessagingService.class));
+
 
         //Get the user serializable sent from the login activity
         Bundle extras =getIntent().getExtras();
         if(extras != null){
             loggedInUser = (User)extras.getSerializable(getString(R.string.loggedInUser));
         }
+        startService(new Intent(cxt, FieldMonitorMessagingService.class).putExtra(getString(R.string.loggedInUser),loggedInUser));
         sharedPrefManager = new SharedPrefManager(getApplicationContext());
 
         TabLayout tabLayout =  findViewById(R.id.tabLayout_id);
@@ -201,9 +202,9 @@ public class DashboardActivity extends AppCompatActivity {
                         new DividerDrawerItem(),
                      /*   mAlert,
                         new DividerDrawerItem(),*/
-                        mLiveChat,
+                      /*  mLiveChat,
                         new DividerDrawerItem(),
-
+*/
                       /*  mSettings,
                         new DividerDrawerItem(),*/
                         mLogout

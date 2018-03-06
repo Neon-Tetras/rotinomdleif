@@ -243,6 +243,7 @@ public class ActivityReportListing extends AppCompatActivity implements AdapterV
                             obj.getInt("quantitySold"),
                             obj.getInt("participants"),
                             obj.getInt("status"),obj.getInt("productId"));
+                    task.setWorkerComment(obj.getString("workerComment"));
 
 
                         taskList.add(task);

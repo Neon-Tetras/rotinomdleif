@@ -70,7 +70,10 @@
         <activity android:name=".ReportModule.SingleReportActivity" />
         <activity android:name=".AttendanceModule.AttendanceSubMenu.AttendanceReportActivity" />
         <activity android:name=".AttendanceModule.AttendanceSubMenu.LeaveRequestActivity" />
-        <activity android:name=".AttendanceModule.AttendanceSubMenu.LeaveHistoryActivity" />
+        <activity android:name=".AttendanceModule.AttendanceSubMenu.LeaveHistoryActivity"
+            android:label="Leave Applications"
+            android:icon="@drawable/app_logo"
+            android:theme="@style/AppTheme.DarkActionBar"/>
         <activity android:name=".AlertManager.AlertSubMenu.GeofencingActivity" />
         <activity android:name=".AlertManager.AlertSubMenu.LowStockActivity" />
         <activity android:name=".AlertManager.AlertSubMenu.AbsentActivity" />

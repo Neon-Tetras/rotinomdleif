@@ -66,7 +66,6 @@ public class FieldMonitorReportUploadService extends Service {
 
 
 
-
         notifBuilder.setAutoCancel(true);
         notifBuilder.setLights(Color.GREEN,60000,60000);
 
@@ -224,6 +223,10 @@ public class FieldMonitorReportUploadService extends Service {
                 PendingIntent.FLAG_UPDATE_CURRENT
         );
 
+
+
+        Toast.makeText(cxt,"Report submitted successfully",Toast.LENGTH_LONG).show();
+      //  startActivity(resultIntent);
 
         notifBuilder.setContentIntent(pendingIntent);
         notifBuilder.setAutoCancel(true);

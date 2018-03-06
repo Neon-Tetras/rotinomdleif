@@ -271,26 +271,28 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
                     postData.put("participants", InputValidator.validateText(participantsEdit,1));
                     postData.put("quantity_sold", InputValidator.validateText(quantitySoldEdit,1));
                     postData.put("challenges", commentsEdit.getText().toString());
+
+                    i.putExtra("postData",postData);
+                    i.putExtra(getString(R.string.loggedInUser),loggedInUser);
+
+
+                    startService(i);
+
+                    Snackbar snackbar = Snackbar
+                            .make(findViewById(R.id.coordinator), "Report will be submitted in the background.\nPlease do not resend", Snackbar.LENGTH_LONG);
+                    snackbar.show();
+                    fab_send.setEnabled(false);
+                    fab_photo.setEnabled(false);
+                    fab_record.setEnabled(false);
+                    fab_video.setEnabled(false);
+                    fab_remove_photo.setEnabled(false);
+
+                    snackbar.show();
+
                 } catch (InputValidator.InvalidInputException e) {
                     Toast.makeText(cxt,e.getMessage(),Toast.LENGTH_LONG).show();
                 }
 
-                i.putExtra("postData",postData);
-                i.putExtra(getString(R.string.loggedInUser),loggedInUser);
-
-
-                startService(i);
-
-                Snackbar snackbar = Snackbar
-                        .make(findViewById(R.id.coordinator), "Report will be submitted in the background.\nPlease do not resend", Snackbar.LENGTH_LONG);
-                snackbar.show();
-                fab_send.setEnabled(false);
-                fab_photo.setEnabled(false);
-                fab_record.setEnabled(false);
-                fab_video.setEnabled(false);
-                fab_remove_photo.setEnabled(false);
-
-                snackbar.show();
 
                 break;
             case R.id.fab_video:
