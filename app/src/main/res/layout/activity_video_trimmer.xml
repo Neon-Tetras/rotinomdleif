@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.titomi.workertrackerloginmodule.ReportModule.ActivityVideoTrimmer">
+    tools:context="com.example.titomi.workertrackerloginmodule.report_module.ActivityVideoTrimmer">
 
     <life.knowledge4.videotrimmer.K4LVideoTrimmer
         android:id="@+id/timeLine"

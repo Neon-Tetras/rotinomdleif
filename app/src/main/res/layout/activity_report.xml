@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/coordinator"
-    tools:context="com.example.titomi.workertrackerloginmodule.ReportModule.ReportActivity"
+    tools:context="com.example.titomi.workertrackerloginmodule.report_module.ReportActivity"
     android:orientation="vertical"
     >
 

@@ -222,6 +222,8 @@ public class ActivityReportListing extends AppCompatActivity implements AdapterV
                     SimpleDateFormat dtf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
                   //  DateFormat dtf = DateFormat.getDateTimeInstance();
                     Date dateGiven = dtf.parse(obj.getString("dateGiven"));
+                    Date stopTime = dtf.parse(obj.getString("stopTime"));
+                    Date startTime = dtf.parse(obj.getString("startTime"));
                     Date dateDelivered = dtf.parse(obj.getString("dateDelivered"));
                     SimpleDateFormat tf = new SimpleDateFormat("H:m:s");
                     String timeGiven = obj.getString("timeGiven");
@@ -244,6 +246,8 @@ public class ActivityReportListing extends AppCompatActivity implements AdapterV
                             obj.getInt("participants"),
                             obj.getInt("status"),obj.getInt("productId"));
                     task.setWorkerComment(obj.getString("workerComment"));
+                    task.setStartTime(startTime);
+                    task.setStopTime(stopTime);
 
 
                         taskList.add(task);

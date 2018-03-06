@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.example.titomi.workertrackerloginmodule.AttendanceModule.AttendanceSubMenu.AttendanceActivity">
+    tools:context="com.example.titomi.workertrackerloginmodule.attendance_module.attendance_sub_menu.AttendanceActivity">
 
     <include layout="@layout/main_toolbar" />
 

@@ -10,11 +10,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.titomi.workertrackerloginmodule.APIs.rest.BusProvider;
-import com.example.titomi.workertrackerloginmodule.APIs.rest.Communicator;
-import com.example.titomi.workertrackerloginmodule.APIs.rest.ErrorEvent;
-import com.example.titomi.workertrackerloginmodule.APIs.rest.ServerEvent;
-import com.example.titomi.workertrackerloginmodule.SharedPrefManager.SharedPrefManager;
+import com.example.titomi.workertrackerloginmodule.apis.rest.BusProvider;
+import com.example.titomi.workertrackerloginmodule.apis.rest.Communicator;
+import com.example.titomi.workertrackerloginmodule.apis.rest.ErrorEvent;
+import com.example.titomi.workertrackerloginmodule.apis.rest.ServerEvent;
+import com.example.titomi.workertrackerloginmodule.shared_pref_manager.SharedPrefManager;
 import com.example.titomi.workertrackerloginmodule.supervisor.activities.ActivityMessageMenu;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;

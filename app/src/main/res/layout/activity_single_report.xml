@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.example.titomi.workertrackerloginmodule.ReportModule.SingleReportActivity">
+    tools:context="com.example.titomi.workertrackerloginmodule.report_module.SingleReportActivity">
 
     <include
         android:id="@+id/include2"

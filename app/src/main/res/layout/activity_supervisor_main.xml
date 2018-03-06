@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    tools:context="com.example.titomi.workertrackerloginmodule.SupervisorManager.SupervisorMainActivity">
+    tools:context="com.example.titomi.workertrackerloginmodule.supervisor_manager.SupervisorMainActivity">
 
     <include layout="@layout/main_toolbar" />
 

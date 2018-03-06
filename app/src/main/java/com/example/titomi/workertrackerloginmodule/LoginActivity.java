@@ -12,7 +12,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.example.titomi.workertrackerloginmodule.SharedPrefManager.SharedPrefManager;
+import com.example.titomi.workertrackerloginmodule.shared_pref_manager.SharedPrefManager;
 import com.example.titomi.workertrackerloginmodule.supervisor.User;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.InputValidator;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.Network;
@@ -37,6 +37,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         Intent i = new Intent(cxt, DashboardActivity.class);
         i.putExtra(cxt.getString(R.string.loggedInUser), user);
         cxt.startActivity(i);
+
     }
 
     @Override
@@ -54,12 +55,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onClick(View v) {
 
-        progressBar.setVisibility(View.VISIBLE);
+
         try {
-            new LoginNetworkTask().execute(getString(R.string.api_url) + getString(R.string.login_url) + "?key=" + getString(R.string.field_worker_api_key) + "&username=" + URLEncoder.encode(InputValidator.validateText(lineIdEdit, 6), "UTF-8"));
+            String username = URLEncoder.encode(InputValidator.validateText(lineIdEdit, 6),"UTF-8");
+            progressBar.setVisibility(View.VISIBLE);
+            new LoginNetworkTask().execute(getString(R.string.api_url) + getString(R.string.login_url) + "?key=" + getString(R.string.field_worker_api_key) + "&username=" + username);
         } catch (InputValidator.InvalidInputException | UnsupportedEncodingException e) {
             Toast.makeText(cxt, "" + getClass().getName() + "\n" + e.getMessage(), Toast.LENGTH_LONG).show();
             e.printStackTrace();
+
 
         }
     }
@@ -70,6 +74,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         @Override
         protected java.lang.String doInBackground(java.lang.String[] strings) {
             return Network.backgroundTask(null, strings[0]);
+        }
+
+        @Override
+        protected void onPreExecute()
+        {
+            super.onPreExecute();
+
         }
 
         @Override
@@ -121,6 +132,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
 
                     goToDashBoard(user);
+                    //LoginActivity.cxt.fin
 
                 }
             } catch (JSONException e) {

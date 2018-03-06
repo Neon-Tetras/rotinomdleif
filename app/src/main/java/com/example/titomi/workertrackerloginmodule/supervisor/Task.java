@@ -282,11 +282,29 @@ public class Task extends Entity {
         this.workerComment = workerComment;
     }
 
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+    public Date getStopTime() {
+        return stopTime;
+    }
+
+    public void setStopTime(Date stopTime) {
+        this.stopTime = stopTime;
+    }
+
     private User supervisor;
     private User worker;
     public Date dateGiven;
     public String timeGiven;
     public Date dateDelivered;
+    public Date startTime;
+    public Date stopTime;
     public String workType;
     public int quantity;
     public String contactName;
@@ -299,6 +317,7 @@ public class Task extends Entity {
     public Double startLongitude;
     public Double stopLongitude;
     public int status;
+
 
     public String workerComment;
     public String location;

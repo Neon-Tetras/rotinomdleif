@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.titomi.workertrackerloginmodule.LoginActivity">
+    tools:context="com.example.titomi.workertrackerloginmodule.LoginActivity"
+    android:background="@color/colorPrimaryLight">
 
 
     <ImageView
@@ -25,11 +26,12 @@
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:id="@+id/line_id"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
         android:gravity="center"
         android:hint="Enter Your Code"
         android:inputType="textPhonetic"
+        android:background="@drawable/roundrectangle"
         android:layout_centerInParent="true"/>
     <Button
         android:layout_centerHorizontal="true"

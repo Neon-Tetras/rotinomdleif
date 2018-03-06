@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/graylight"
     android:orientation="vertical"
-    tools:context="com.example.titomi.workertrackerloginmodule.UserProfile.UserProfileActivity">
+    tools:context="com.example.titomi.workertrackerloginmodule.userProfile.UserProfileActivity">
 
     <include layout="@layout/main_toolbar" />
     <RelativeLayout

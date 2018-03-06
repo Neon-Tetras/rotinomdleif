@@ -179,6 +179,7 @@ public class InputValidator {
         editText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 v.setBackgroundColor(Color.WHITE);
             }
         });

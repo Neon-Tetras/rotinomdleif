@@ -4,6 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.titomi.workertrackerloginmodule.InventoryModule.InventorySubMenu.RemittanceRecordsActivity">
+    tools:context="com.example.titomi.workertrackerloginmodule.inventory_module.InventorySubMenu.RemittanceRecordsActivity">
 
 </android.support.constraint.ConstraintLayout>

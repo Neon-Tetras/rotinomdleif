@@ -49,40 +49,40 @@
         <activity android:name=".DashboardActivity" />
         <activity android:name=".TabActivity" />
         <activity
-            android:name=".ReportModule.ReportActivity"
+            android:name=".report_module.ReportActivity"
             android:label="Write Report"
             android:theme="@style/AppTheme.DarkActionBar" >
 
         </activity>
-        <activity android:name=".UserProfile.UserProfileActivity" />
-        <activity android:name=".UserProfile.EditProfileActivity" />
-        <activity android:name=".InventoryModule.InventoryActivity" />
-        <activity android:name=".AttendanceModule.AttendanceSubMenu.AttendanceActivity" />
-        <activity android:name=".Task.TaskDetailsActivity" />
-        <activity android:name=".ReportModule.ReportMainActivity" />
-        <activity android:name=".AttendanceModule.AttendanceMainActivity" />
+        <activity android:name=".userProfile.UserProfileActivity" />
+        <activity android:name=".userProfile.EditProfileActivity" />
+        <activity android:name=".inventory_module.InventoryActivity" />
+        <activity android:name=".attendance_module.attendance_sub_menu.AttendanceActivity" />
+        <activity android:name=".task.TaskDetailsActivity" />
+        <activity android:name=".report_module.ReportMainActivity" />
+        <activity android:name=".attendance_module.AttendanceMainActivity" />
         <activity android:name=".AlertManager.AlertMainActivity" />
-        <activity android:name=".SupervisorManager.SupervisorMainActivity" />
-        <activity android:name=".InventoryModule.InventorySubMenu.ProductRequestActivity" />
-        <activity android:name=".InventoryModule.InventorySubMenu.ReceivedInventoryActivity" />
-        <activity android:name=".InventoryModule.InventorySubMenu.RemittanceRecordsActivity" />
-        <activity android:name=".InventoryModule.InventorySubMenu.InventoryReportActivity" />
-        <activity android:name=".InventoryModule.InventorySubMenu.SalesReportActivity" />
-        <activity android:name=".ReportModule.TaskReportListActivity" />
-        <activity android:name=".ReportModule.SingleReportActivity" />
-        <activity android:name=".AttendanceModule.AttendanceSubMenu.AttendanceReportActivity" />
-        <activity android:name=".AttendanceModule.AttendanceSubMenu.LeaveRequestActivity" />
-        <activity android:name=".AttendanceModule.AttendanceSubMenu.LeaveHistoryActivity"
+        <activity android:name=".supervisor_manager.SupervisorMainActivity" />
+        <activity android:name=".inventory_module.InventorySubMenu.ProductRequestActivity" />
+        <activity android:name=".inventory_module.InventorySubMenu.ReceivedInventoryActivity" />
+        <activity android:name=".inventory_module.InventorySubMenu.RemittanceRecordsActivity" />
+        <activity android:name=".inventory_module.InventorySubMenu.InventoryReportActivity" />
+        <activity android:name=".inventory_module.InventorySubMenu.SalesReportActivity" />
+        <activity android:name=".report_module.TaskReportListActivity" />
+        <activity android:name=".report_module.SingleReportActivity" />
+        <activity android:name=".attendance_module.attendance_sub_menu.AttendanceReportActivity" />
+        <activity android:name=".attendance_module.attendance_sub_menu.LeaveRequestActivity" />
+        <activity android:name=".attendance_module.attendance_sub_menu.LeaveHistoryActivity"
             android:label="Leave Applications"
             android:icon="@drawable/app_logo"
             android:theme="@style/AppTheme.DarkActionBar"/>
-        <activity android:name=".AlertManager.AlertSubMenu.GeofencingActivity" />
-        <activity android:name=".AlertManager.AlertSubMenu.LowStockActivity" />
-        <activity android:name=".AlertManager.AlertSubMenu.AbsentActivity" />
-        <activity android:name=".AlertManager.AlertSubMenu.LowBatteryActivity" />
+        <activity android:name=".AlertManager.alert_sub_menu.GeofencingActivity" />
+        <activity android:name=".AlertManager.alert_sub_menu.LowStockActivity" />
+        <activity android:name=".AlertManager.alert_sub_menu.AbsentActivity" />
+        <activity android:name=".AlertManager.alert_sub_menu.LowBatteryActivity" />
         <activity android:name=".UserLoginActivity" />
-        <activity android:name=".Task.RoutePlanActivity" />
-        <activity android:name=".Message_and_Notice.MessagesActivity" />
+        <activity android:name=".task.RoutePlanActivity" />
+        <activity android:name=".message_and_notice.MessagesActivity" />
         <activity android:name=".supervisor.activities.MainActivity" />
         <activity
             android:name=".supervisor.activities.ActivityAdminNewMessage"
@@ -135,8 +135,8 @@
             android:name=".supervisor.activities.ActivityInventoryRequest"
             android:label="Inventory Request"
             android:theme="@style/AppTheme.DarkActionBar" />
-        <activity android:name=".ReportModule.ActivityVideoTrimmer"/>
-        <activity android:name=".ReportModule.VideoPlayer"
+        <activity android:name=".report_module.ActivityVideoTrimmer"/>
+        <activity android:name=".report_module.VideoPlayer"
             android:theme="@style/AppTheme.DarkActionBar"
             android:label="Video Player"/>
 

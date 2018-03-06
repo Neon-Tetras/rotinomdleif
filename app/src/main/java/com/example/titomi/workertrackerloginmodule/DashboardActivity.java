@@ -14,16 +14,16 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.titomi.workertrackerloginmodule.AlertManager.AlertMainActivity;
-import com.example.titomi.workertrackerloginmodule.AttendanceModule.AttendanceMainActivity;
-import com.example.titomi.workertrackerloginmodule.DashboardFragments.FragmentAttendance;
-import com.example.titomi.workertrackerloginmodule.DashboardFragments.FragmentInventory;
-import com.example.titomi.workertrackerloginmodule.DashboardFragments.FragmentTask;
-import com.example.titomi.workertrackerloginmodule.DashboardFragments.ViewPagerAdapter;
-import com.example.titomi.workertrackerloginmodule.InventoryModule.InventoryActivity;
-import com.example.titomi.workertrackerloginmodule.ReportModule.ReportMainActivity;
-import com.example.titomi.workertrackerloginmodule.SharedPrefManager.SharedPrefManager;
-import com.example.titomi.workertrackerloginmodule.SupervisorManager.SupervisorMainActivity;
-import com.example.titomi.workertrackerloginmodule.UserProfile.UserProfileActivity;
+import com.example.titomi.workertrackerloginmodule.attendance_module.AttendanceMainActivity;
+import com.example.titomi.workertrackerloginmodule.dashboard_fragments.FragmentAttendance;
+import com.example.titomi.workertrackerloginmodule.dashboard_fragments.FragmentInventory;
+import com.example.titomi.workertrackerloginmodule.dashboard_fragments.FragmentTask;
+import com.example.titomi.workertrackerloginmodule.dashboard_fragments.ViewPagerAdapter;
+import com.example.titomi.workertrackerloginmodule.inventory_module.InventoryActivity;
+import com.example.titomi.workertrackerloginmodule.report_module.ReportMainActivity;
+import com.example.titomi.workertrackerloginmodule.shared_pref_manager.SharedPrefManager;
+import com.example.titomi.workertrackerloginmodule.supervisor_manager.SupervisorMainActivity;
+import com.example.titomi.workertrackerloginmodule.userProfile.UserProfileActivity;
 import com.example.titomi.workertrackerloginmodule.supervisor.User;
 import com.example.titomi.workertrackerloginmodule.supervisor.activities.ActivityInventoryRequestsListing;
 import com.example.titomi.workertrackerloginmodule.supervisor.activities.ActivityLeaveApplication;
@@ -117,12 +117,9 @@ public class DashboardActivity extends AppCompatActivity {
         final String firstNameUser = sharedPrefManager.getSavedFirstName();
         final String lastNameUser = sharedPrefManager.getSavedLastName();
         final String emailUser = sharedPrefManager.getSavedEmail();
-        final int Iduser = sharedPrefManager.getSavedUserId();
 
-        final String userFirstName = getIntent().getStringExtra("UserFirstName");
-        final String userId = getIntent().getStringExtra("UserId");
-        final String userLastName = getIntent().getStringExtra("UserLastName");
-        final String userEmail = getIntent().getStringExtra("UserEmail");
+
+
 
         ImageUtils.ImageStorage storage = new ImageUtils.ImageStorage(loggedInUser);
         String imageUrl = getString(R.string.server_url)+loggedInUser.getFeaturedImage();

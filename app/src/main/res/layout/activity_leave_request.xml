@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.titomi.workertrackerloginmodule.AttendanceModule.AttendanceSubMenu.LeaveRequestActivity">
+    tools:context="com.example.titomi.workertrackerloginmodule.attendance_module.attendance_sub_menu.LeaveRequestActivity">
 
     <include
         android:id="@+id/toolbar"

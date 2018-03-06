@@ -23,7 +23,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import com.example.titomi.workertrackerloginmodule.R;
-import com.example.titomi.workertrackerloginmodule.SharedPrefManager.SharedPrefManager;
+import com.example.titomi.workertrackerloginmodule.shared_pref_manager.SharedPrefManager;
 import com.example.titomi.workertrackerloginmodule.supervisor.DatabaseAdapter;
 import com.example.titomi.workertrackerloginmodule.supervisor.Messages;
 
