@@ -1,4 +1,4 @@
-package com.example.titomi.workertrackerloginmodule.Task;
+package com.example.titomi.workertrackerloginmodule.task;
 
 import android.Manifest;
 import android.app.ProgressDialog;
@@ -62,12 +62,11 @@ public class TaskDetailsActivity extends AppCompatActivity implements LocationLi
     Snackbar snackbar;
     GoogleApiClient gac;
     LocationRequest locationRequest;
+    String longTextHolder, latTextHolder, startTime;
     private Toolbar toolbar;
     private ProgressDialog pd;
     private long UPDATE_INTERVAL = 2 * 1000;
     private long FASTEST_INTERVAL = 2000;
-
-    String longTextHolder, latTextHolder, startTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

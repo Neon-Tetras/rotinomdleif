@@ -56,7 +56,7 @@
         <activity android:name=".UserProfile.EditProfileActivity" />
         <activity android:name=".InventoryModule.InventoryActivity" />
         <activity android:name=".AttendanceModule.AttendanceSubMenu.AttendanceActivity" />
-        <activity android:name=".Task.TaskDetailsActivity" />
+        <activity android:name=".task.TaskDetailsActivity" />
         <activity android:name=".ReportModule.ReportMainActivity" />
         <activity android:name=".AttendanceModule.AttendanceMainActivity" />
         <activity android:name=".AlertManager.AlertMainActivity" />
@@ -71,15 +71,15 @@
         <activity android:name=".AttendanceModule.AttendanceSubMenu.AttendanceReportActivity" />
         <activity android:name=".AttendanceModule.AttendanceSubMenu.LeaveRequestActivity" />
         <activity android:name=".AttendanceModule.AttendanceSubMenu.LeaveHistoryActivity"
-            android:label="Leave Applications"
             android:icon="@drawable/app_logo"
+            android:label="Leave Applications"
             android:theme="@style/AppTheme.DarkActionBar"/>
         <activity android:name=".AlertManager.AlertSubMenu.GeofencingActivity" />
         <activity android:name=".AlertManager.AlertSubMenu.LowStockActivity" />
         <activity android:name=".AlertManager.AlertSubMenu.AbsentActivity" />
         <activity android:name=".AlertManager.AlertSubMenu.LowBatteryActivity" />
         <activity android:name=".UserLoginActivity" />
-        <activity android:name=".Task.RoutePlanActivity" />
+        <activity android:name=".task.RoutePlanActivity" />
         <activity android:name=".Message_and_Notice.MessagesActivity" />
         <activity android:name=".supervisor.activities.MainActivity" />
         <activity
@@ -135,8 +135,8 @@
             android:theme="@style/AppTheme.DarkActionBar" />
         <activity android:name=".ReportModule.ActivityVideoTrimmer"/>
         <activity android:name=".ReportModule.VideoPlayer"
-            android:theme="@style/AppTheme.DarkActionBar"
-            android:label="Video Player"/>
+            android:label="Video Player"
+            android:theme="@style/AppTheme.DarkActionBar" />
 
         <service android:name=".services.FieldMonitorMessagingService"
             android:label="FieldMonitorMessagingService"/>
