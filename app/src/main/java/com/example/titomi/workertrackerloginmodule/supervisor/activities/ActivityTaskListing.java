@@ -13,6 +13,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -33,6 +34,22 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.example.titomi.workertrackerloginmodule.R;
+import com.example.titomi.workertrackerloginmodule.report_module.ReportActivity;
+import com.example.titomi.workertrackerloginmodule.supervisor.Entity;
+import com.example.titomi.workertrackerloginmodule.supervisor.Task;
+import com.example.titomi.workertrackerloginmodule.supervisor.User;
+import com.example.titomi.workertrackerloginmodule.supervisor.util.DrawableManager;
+import com.example.titomi.workertrackerloginmodule.supervisor.util.Network;
+import com.example.titomi.workertrackerloginmodule.supervisor.util.Util;
+import com.google.android.gms.maps.model.LatLng;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,6 +65,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -66,6 +84,7 @@ import com.example.titomi.workertrackerloginmodule.supervisor.util.Network;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.Util;
 import com.google.android.gms.maps.model.LatLng;
 import android.os.Handler;
+
 
 /**
  * Created by NeonTetras on 24-Feb-18.
@@ -659,6 +678,15 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
 
                             alertDialog.setMessage("Clock-in/Clock out failed!\nPlease report at your place of assignment to clock-in/Clock-out");
                             alertDialog.show();
+                            
+                            final AlertDialog navAlertDialog = new AlertDialog.Builder(cxt).create();
+                            View navPromptView = View.inflate(cxt,R.layout.task_listing_long_click_nav_menu,null);
+                            alertDialog.setView(navPromptView);
+
+                            TextView viewNav  = navPromptView.findViewById(R.id.viewNavText);
+                            //TextView approveReport = promptView.findViewById(R.id.approveReport);
+//                            TextView editTask = navPromptView.findViewById(R.id.editTask);
+//                            clockInText = navPromptView.findViewById(R.id.clock_in);
 
 
                         }
