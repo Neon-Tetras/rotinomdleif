@@ -64,8 +64,12 @@
         <activity android:name=".supervisor_manager.SupervisorMainActivity" />
         <activity android:name=".inventory_module.inventory_sub_menu.ProductRequestActivity" />
         <activity android:name=".inventory_module.inventory_sub_menu.ReceivedInventoryActivity" />
-        <activity android:name=".inventory_module.inventory_sub_menu.RemittanceRecordsActivity" />
-        <activity android:name=".inventory_module.inventory_sub_menu.InventoryReportActivity" />
+        <activity android:name=".inventory_module.inventory_sub_menu.RemittanceRecordsActivity"
+            android:label="Remittance Record"
+            android:theme="@style/AppTheme.DarkActionBar"/>
+        <activity android:name=".inventory_module.inventory_sub_menu.InventoryReportActivity"
+            android:label="Inventory Report"
+            android:theme="@style/AppTheme.DarkActionBar"/>
         <activity android:name=".inventory_module.inventory_sub_menu.SalesReportActivity" />
         <activity android:name=".report_module.TaskReportListActivity" />
         <activity android:name=".report_module.SingleReportActivity" />

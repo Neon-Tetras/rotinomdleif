@@ -222,8 +222,8 @@ public class DashboardActivity extends AppCompatActivity {
                         new DividerDrawerItem(),
                         leaveApplication,
                         new SectionDrawerItem(),
-                        mReport,
-                        new SectionDrawerItem(),
+                     /*   mReport,
+                        new SectionDrawerItem(),*/
                        /* mSettings,
                         new DividerDrawerItem(),*/
                         mLogout

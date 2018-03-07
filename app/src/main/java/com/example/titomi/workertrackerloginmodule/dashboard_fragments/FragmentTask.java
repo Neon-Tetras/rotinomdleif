@@ -3,6 +3,7 @@ package com.example.titomi.workertrackerloginmodule.dashboard_fragments;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -154,7 +155,7 @@ public class FragmentTask extends Fragment{
 
     }
 
-    private  class AssignedTaskNetwork extends android.os.AsyncTask<String,Void,String>{
+    private  class AssignedTaskNetwork extends AsyncTask<String,Void,String>{
 
 
         ArrayList<Task> taskList = new ArrayList<>();
