@@ -14,6 +14,7 @@ import com.example.titomi.workertrackerloginmodule.inventory_module.inventory_su
 import com.example.titomi.workertrackerloginmodule.inventory_module.inventory_sub_menu.RemittanceRecordsActivity;
 import com.example.titomi.workertrackerloginmodule.inventory_module.inventory_sub_menu.SalesReportActivity;
 import com.example.titomi.workertrackerloginmodule.R;
+import com.example.titomi.workertrackerloginmodule.supervisor.User;
 
 public class InventoryActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -21,6 +22,7 @@ public class InventoryActivity extends AppCompatActivity implements View.OnClick
     Toolbar toolbar;
 
 
+    User loggedInUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +39,9 @@ public class InventoryActivity extends AppCompatActivity implements View.OnClick
         inventory_report = findViewById(R.id.inventory_report);
         sales_report = findViewById(R.id.sales_report);
 
+        if(getIntent().getExtras() != null){
+            loggedInUser = (User) getIntent().getExtras().getSerializable(getString(R.string.loggedInUser));
+        }
         product_request.setOnClickListener(this);
         received_inventory.setOnClickListener(this);
         remittance_record.setOnClickListener(this);
@@ -53,35 +58,41 @@ public class InventoryActivity extends AppCompatActivity implements View.OnClick
 
     @Override
     public void onClick(View v) {
-        Intent i;
+        Intent i = null;
 
         switch (v.getId()) {
             case R.id.product_request:
                 i = new Intent(this, ProductRequestActivity.class);
+                i.putExtra(getString(R.string.loggedInUser),loggedInUser);
                 startActivity(i);
                 break;
             case R.id.received_inventory:
                 i = new Intent(this, ReceivedInventoryActivity.class);
-                startActivity(i);
-                Toast.makeText(this, "Coming soon", Toast.LENGTH_SHORT).show();
+                i.putExtra(getString(R.string.loggedInUser),loggedInUser);
+
                 break;
             case R.id.remittance_record:
+
                 i = new Intent(this, RemittanceRecordsActivity.class);
-                startActivity(i);
-                Toast.makeText(this, "Coming soon", Toast.LENGTH_SHORT).show();
+                i.putExtra(getString(R.string.loggedInUser),loggedInUser);
+
+
                 break;
             case R.id.inventory_report:
                 i = new Intent(this, InventoryReportActivity.class);
-                startActivity(i);
-                Toast.makeText(this, "Coming soon", Toast.LENGTH_SHORT).show();
+                i.putExtra(getString(R.string.loggedInUser),loggedInUser);
+
                 break;
             case R.id.sales_report:
                 i = new Intent(this, SalesReportActivity.class);
-                startActivity(i);
-                Toast.makeText(this, "Coming soon", Toast.LENGTH_SHORT).show();
+                i.putExtra(getString(R.string.loggedInUser),loggedInUser);
+
                 break;
             default:
                 break;
+        }
+        if(i != null) {
+            startActivity(i);
         }
     }
 }

@@ -220,8 +220,11 @@ public class DashboardActivity extends AppCompatActivity {
                         new DividerDrawerItem(),
                         supervisorTasks,
                         new DividerDrawerItem(),
+                        mInventory,
+                        new DividerDrawerItem(),
                         leaveApplication,
                         new SectionDrawerItem(),
+
                      /*   mReport,
                         new SectionDrawerItem(),*/
                        /* mSettings,
@@ -248,7 +251,9 @@ public class DashboardActivity extends AppCompatActivity {
 
                             break;
                         case 3:
+
                             intent = new Intent(cxt, InventoryActivity.class);
+                            intent.putExtra(getString(R.string.loggedInUser),loggedInUser);
                             break;
                         case 4:
                             intent = new Intent(cxt, AttendanceMainActivity.class);

@@ -42,11 +42,11 @@ public class Remittance extends Entity implements Serializable{
         this.remittanceDate = remittanceDate;
     }
 
-    public String getAcknowledged() {
+    public int getAcknowledged() {
         return acknowledged;
     }
 
-    public void setAcknowledged(String acknowledged) {
+    public void setAcknowledged(int acknowledged) {
         this.acknowledged = acknowledged;
     }
 
@@ -74,11 +74,29 @@ public class Remittance extends Entity implements Serializable{
         this.uploadOk = uploadOk;
     }
 
+    public long getWorkerId() {
+        return workerId;
+    }
+
+    public void setWorkerId(long workerId) {
+        this.workerId = workerId;
+    }
+
+    public User getWorker() {
+        return worker;
+    }
+
+    public void setWorker(User worker) {
+        this.worker = worker;
+    }
+
     private long supervisorId;
+    private long workerId;
     public User supervisor;
+    public User worker;
     public long amount;
     public Date remittanceDate;
-    public String acknowledged;
+    public int acknowledged;
     public Date dateAcknowledge;
     public String proof;
     public boolean uploadOk;

@@ -50,6 +50,7 @@ public class FieldMonitorReportUploadService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
+        if(intent != null) return START_STICKY ;
         postData = ( HashMap<String,String> )intent.getSerializableExtra("postData");
         images = intent.getStringArrayListExtra("images");
         video = intent.getStringExtra("video");

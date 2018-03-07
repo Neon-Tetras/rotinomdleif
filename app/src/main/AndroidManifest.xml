@@ -11,9 +11,10 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-feature android:name="android.hardware.camera"
-        android:required="true" />
 
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
     <uses-feature android:name="android.hardware.location.gps" />
 
     <application
@@ -23,8 +24,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -50,9 +49,7 @@
         <activity
             android:name=".report_module.ReportActivity"
             android:label="Write Report"
-            android:theme="@style/AppTheme.DarkActionBar" >
-
-        </activity>
+            android:theme="@style/AppTheme.DarkActionBar"></activity>
         <activity android:name=".user_profile.UserProfileActivity" />
         <activity android:name=".user_profile.EditProfileActivity" />
         <activity android:name=".inventory_module.InventoryActivity" />
@@ -64,21 +61,24 @@
         <activity android:name=".supervisor_manager.SupervisorMainActivity" />
         <activity android:name=".inventory_module.inventory_sub_menu.ProductRequestActivity" />
         <activity android:name=".inventory_module.inventory_sub_menu.ReceivedInventoryActivity" />
-        <activity android:name=".inventory_module.inventory_sub_menu.RemittanceRecordsActivity"
+        <activity
+            android:name=".inventory_module.inventory_sub_menu.RemittanceRecordsActivity"
             android:label="Remittance Record"
-            android:theme="@style/AppTheme.DarkActionBar"/>
-        <activity android:name=".inventory_module.inventory_sub_menu.InventoryReportActivity"
+            android:theme="@style/AppTheme.DarkActionBar" />
+        <activity
+            android:name=".inventory_module.inventory_sub_menu.InventoryReportActivity"
             android:label="Inventory Report"
-            android:theme="@style/AppTheme.DarkActionBar"/>
+            android:theme="@style/AppTheme.DarkActionBar" />
         <activity android:name=".inventory_module.inventory_sub_menu.SalesReportActivity" />
         <activity android:name=".report_module.TaskReportListActivity" />
         <activity android:name=".report_module.SingleReportActivity" />
         <activity android:name=".attendance_module.attendance_sub_menu.AttendanceReportActivity" />
         <activity android:name=".attendance_module.attendance_sub_menu.LeaveRequestActivity" />
-        <activity android:name=".attendance_module.attendance_sub_menu.LeaveHistoryActivity"
-            android:label="Leave Applications"
+        <activity
+            android:name=".attendance_module.attendance_sub_menu.LeaveHistoryActivity"
             android:icon="@drawable/app_logo"
-            android:theme="@style/AppTheme.DarkActionBar"/>
+            android:label="Leave Applications"
+            android:theme="@style/AppTheme.DarkActionBar" />
         <activity android:name=".alert_manager.alert_sub_menu.GeofencingActivity" />
         <activity android:name=".alert_manager.alert_sub_menu.LowStockActivity" />
         <activity android:name=".alert_manager.alert_sub_menu.AbsentActivity" />
@@ -138,16 +138,20 @@
             android:name=".supervisor.activities.ActivityInventoryRequest"
             android:label="Inventory Request"
             android:theme="@style/AppTheme.DarkActionBar" />
-        <activity android:name=".report_module.ActivityVideoTrimmer"/>
-        <activity android:name=".report_module.VideoPlayer"
-            android:theme="@style/AppTheme.DarkActionBar"
-            android:label="Video Player"/>
+        <activity android:name=".report_module.ActivityVideoTrimmer"
+            />
+        <activity
+            android:name=".report_module.VideoPlayer"
+            android:label="Video Player"
+            android:theme="@style/AppTheme.DarkActionBar" />
 
-        <service android:name=".services.FieldMonitorMessagingService"
-            android:label="FieldMonitorMessagingService"/>
+        <service
+            android:name=".services.FieldMonitorMessagingService"
+            android:label="FieldMonitorMessagingService" />
+        <service
+            android:name=".services.FieldMonitorReportUploadService"
+            android:label="FieldMonitorReportUploadService" />
 
-        <service android:name=".services.FieldMonitorReportUploadService"
-            android:label="FieldMonitorReportUploadService"/>
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.example.android.fileprovider"
@@ -155,8 +159,13 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"></meta-data>
+                android:resource="@xml/file_paths" />
         </provider>
+
+        <activity android:name=".inventory_module.inventory_sub_menu.ActivityAddRemit"
+            android:label="Enter Record"
+            android:theme="@style/AppTheme.DarkActionBar"
+            ></activity>
     </application>
 
 </manifest>

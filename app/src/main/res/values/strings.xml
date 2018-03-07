@@ -195,5 +195,10 @@
     <string name="noLeave">No leave application available</string>
     <string name="leave">Leave</string>
     <string name="leave_view_requests_url">leave/view.php</string>
+    <string name="view_remittance_url">work/view_remittance.php</string>
+    <string name="admin">Admin</string>
+    <string name="acknowledged">Acknowledge</string>
+    <string name="pending">Pending</string>
+    <string name="send">Send</string>
 
 </resources>

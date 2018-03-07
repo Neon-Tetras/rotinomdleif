@@ -46,10 +46,11 @@ public class FieldMonitorMessagingService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         cxt = this;
 
-
-        loggedInUser = (User) intent.getExtras().getSerializable(getString(R.string.loggedInUser));
-        if(loggedInUser != null) {
-            startTimer();
+        if(intent != null && intent.getExtras() != null) {
+            loggedInUser = (User) intent.getExtras().getSerializable(getString(R.string.loggedInUser));
+            if (loggedInUser != null) {
+                startTimer();
+            }
         }
         return START_STICKY;
 
