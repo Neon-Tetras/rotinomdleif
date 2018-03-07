@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,14 +39,13 @@ import java.util.Date;
 
 public class FragmentAttendance extends Fragment {
 
+    final String TAG = "ATTENDANCE FRAGMENT";
     View view;
     Context ctx;
     PieChart pieChart;
     TextView totalAssigned, late, early;
     Context cxt;
     ArrayList<PieEntry> yValues = new ArrayList<>();
-    int lateCount = 0;
-    int earlyCount = 0;
     private ProgressBar progressBar;
     private User loggedInUser;
 
@@ -99,31 +99,6 @@ public class FragmentAttendance extends Fragment {
         return view;
     }
 
-/*    private void setData(int count) {
-        ArrayList<BarEntry> yVals = new ArrayList<>();
-
-        //looping through the number of bars set
-        for (int i = 0; i < count; i++) {
-            //creating random values of data
-            float value = (float) (Math.random() * 100);
-
-            //placing data on chart, i for postion and y for the actual value
-            yVals.add(new BarEntry(i, (int) value));
-        }
-
-        BarDataSet set = new BarDataSet(yVals, "Attendance");
-        set.setColors(ColorTemplate.MATERIAL_COLORS);
-        set.setDrawValues(true);
-
-
-        BarData data = new BarData(set);
-
-        barChart.setData(data);
-        barChart.invalidate();
-        barChart.animateY(500);
-
-    }*/
-
     private void loadData() {
         String url = "";
         switch (loggedInUser.getRoleId()) {
@@ -140,23 +115,24 @@ public class FragmentAttendance extends Fragment {
     }
 
     private void loadChart(ArrayList<Task> taskList) {
-        try {
+        int lateCount = 0;
+        int earlyCount = 0;
             for (Task task : taskList) {
                 if (task != null) {
                     SimpleDateFormat dtf2 = new SimpleDateFormat("yyyy/MM/dd");
-                    String dateTimeGiven = dtf2.format(task.getDateGiven()) + " " + task.getTimeGiven();
                     SimpleDateFormat dtf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-                    Date dateTimeGive = dtf.parse(dateTimeGiven);
-                    if (task.getStartTime().after(dateTimeGive)) {
+                    if (task.getStartTime().after(task.getDateGiven())) {
                         lateCount++;
                     }else{
                         earlyCount++;
                     }
+                    System.out.println("Start Time: " + task.getStartTime());
+                    System.out.println("DateTime Given: " + task.getDateGiven());
+
+                    Log.i(TAG, "StartTime: " + task.getStartTime().toString() + " DateTime Given: " + task.getDateGiven().toString());
                 }
             }
-        }catch(ParseException e){
-            e.printStackTrace();
-        }
+
 
         yValues.clear();
 
@@ -232,16 +208,15 @@ public class FragmentAttendance extends Fragment {
                     worker.setName(String.format("%s %s", workerObj.getString("first_name"), supervisorObj.getString("last_name")));
                     worker.setEmail(workerObj.getString("email"));
                     worker.setId(workerObj.getInt("id"));
-                    SimpleDateFormat dtf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+                    SimpleDateFormat dtf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
                     //  DateFormat dtf = DateFormat.getDateTimeInstance();
                     SimpleDateFormat dtf2 = new SimpleDateFormat("yyyy/MM/dd");
-                    Date dateGiven = dtf2.parse(obj.getString("dateGiven"));
+                    Date dateGiven = dtf.parse(String.format("%s %s", obj.getString("dateGiven"), obj.getString("timeGiven")));
                     Date stopTime = dtf.parse(obj.getString("stopTime"));
                     Date startTime = dtf.parse(obj.getString("startTime"));
                     Date dateDelivered = dtf.parse(obj.getString("dateDelivered"));
-                    SimpleDateFormat tf = new SimpleDateFormat("H:m:s");
+                    SimpleDateFormat tf = new SimpleDateFormat("HH:mm:ss");
                     String timeGiven = obj.getString("timeGiven");
-                    Date timeGive = tf.parse(obj.getString("timeGiven"));
 
 
                     Task task = new Task(obj.getInt("id"), supervisor, worker, dateGiven, dateDelivered,
@@ -277,7 +252,7 @@ public class FragmentAttendance extends Fragment {
 
                     task.setStartTime(startTime);
                     task.setStopTime(stopTime);
-                    task.setTimeGiven(String.valueOf(timeGive));
+                    task.setTimeGiven(timeGiven);
 
 
                     taskList.add(task);
