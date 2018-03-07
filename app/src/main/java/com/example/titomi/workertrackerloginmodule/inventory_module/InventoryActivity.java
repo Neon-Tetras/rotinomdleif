@@ -8,11 +8,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Toast;
 
-import com.example.titomi.workertrackerloginmodule.inventory_module.InventorySubMenu.InventoryReportActivity;
-import com.example.titomi.workertrackerloginmodule.inventory_module.InventorySubMenu.ProductRequestActivity;
-import com.example.titomi.workertrackerloginmodule.inventory_module.InventorySubMenu.ReceivedInventoryActivity;
-import com.example.titomi.workertrackerloginmodule.inventory_module.InventorySubMenu.RemittanceRecordsActivity;
-import com.example.titomi.workertrackerloginmodule.inventory_module.InventorySubMenu.SalesReportActivity;
+import com.example.titomi.workertrackerloginmodule.inventory_module.inventory_sub_menu.InventoryReportActivity;
+import com.example.titomi.workertrackerloginmodule.inventory_module.inventory_sub_menu.ProductRequestActivity;
+import com.example.titomi.workertrackerloginmodule.inventory_module.inventory_sub_menu.ReceivedInventoryActivity;
+import com.example.titomi.workertrackerloginmodule.inventory_module.inventory_sub_menu.RemittanceRecordsActivity;
+import com.example.titomi.workertrackerloginmodule.inventory_module.inventory_sub_menu.SalesReportActivity;
 import com.example.titomi.workertrackerloginmodule.R;
 
 public class InventoryActivity extends AppCompatActivity implements View.OnClickListener {

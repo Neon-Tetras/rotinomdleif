@@ -1,6 +1,7 @@
 package com.example.titomi.workertrackerloginmodule.dashboard_fragments;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,10 +14,11 @@ import com.example.titomi.workertrackerloginmodule.R;
 import com.example.titomi.workertrackerloginmodule.supervisor.Task;
 import com.example.titomi.workertrackerloginmodule.supervisor.User;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.Network;
-import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
 import org.json.JSONArray;
@@ -36,11 +38,13 @@ public class FragmentAttendance extends Fragment {
 
     View view;
     Context ctx;
-
-    private User loggedInUser;
+    PieChart pieChart;
+    Context cxt;
+    ArrayList<PieEntry> yValues = new ArrayList<>();
+    float lateCount = 0;
+    float earlyCount = 0;
     private ProgressBar progressBar;
-
-    private BarChart barChart;
+    private User loggedInUser;
 
     public FragmentAttendance() {
     }
@@ -56,20 +60,39 @@ public class FragmentAttendance extends Fragment {
             loggedInUser = (User) extras.getSerializable(getString(R.string.loggedInUser));
         }
 
-        barChart = view.findViewById(R.id.barChart);
-        barChart.getDescription().setEnabled(false);
+        pieChart = view.findViewById(R.id.pieChartAttend);
+        pieChart.getDescription().setEnabled(false);
 
+        pieChart.setExtraOffsets(5, 10, 5, 5);
+
+        pieChart.setDragDecelerationFrictionCoef(0.99f);
         progressBar = view.findViewById(R.id.progressBarAttend);
 
+        pieChart.setDrawHoleEnabled(false);
+        pieChart.setHoleColor(Color.WHITE);
+        pieChart.setTransparentCircleRadius(61f);
+        yValues.add(new PieEntry((float) 0.0, "Late"));
+        yValues.add(new PieEntry((float) 0.0, "Early"));
 
-        setData(3);
-        barChart.setFitBars(true);
+        Description description = new Description();
+        description.setText("Task Chart");
+        description.setTextSize(15);
+        pieChart.setDescription(description);
+
+        PieDataSet dataSet = new PieDataSet(yValues, "Tasks");
+        dataSet.setSliceSpace(3f);
+        dataSet.setSelectionShift(5f);
+        dataSet.setColors(ColorTemplate.JOYFUL_COLORS);
+
+        PieData data = new PieData((dataSet));
+        data.setValueTextSize(40f);
+        data.setValueTextColor(Color.YELLOW);
 
         loadData();
         return view;
     }
 
-    private void setData(int count) {
+/*    private void setData(int count) {
         ArrayList<BarEntry> yVals = new ArrayList<>();
 
         //looping through the number of bars set
@@ -92,7 +115,7 @@ public class FragmentAttendance extends Fragment {
         barChart.invalidate();
         barChart.animateY(500);
 
-    }
+    }*/
 
     private void loadData() {
         String url = "";
@@ -107,6 +130,42 @@ public class FragmentAttendance extends Fragment {
         new AttendanceNetwork().execute(url);
 
 
+    }
+
+    private void loadChart(ArrayList<Task> taskList) {
+        try {
+            for (Task task : taskList) {
+                if (task != null) {
+                String dateTimeGivenString = task.getDateGiven() + " " + task.getTimeGiven();
+                SimpleDateFormat dtf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+                Date dateTimeGiven = dtf.parse(dateTimeGivenString.replaceAll("-","/"));
+                    if (task.getStartTime().after(dateTimeGiven)){
+                        lateCount++;
+                    }else{
+                        earlyCount++;
+                    }
+                }
+            }
+        }catch(ParseException e){
+            e.printStackTrace();
+        }
+
+        yValues.clear();
+
+        yValues.add(new PieEntry(lateCount, "Late"));
+        yValues.add(new PieEntry(earlyCount, "Early"));
+
+        PieDataSet dataSet = new PieDataSet(yValues, "Attendance");
+        dataSet.setSliceSpace(3f);
+        dataSet.setSelectionShift(5f);
+        dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
+
+        PieData data = new PieData((dataSet));
+        data.setValueTextSize(40f);
+        data.setValueTextColor(Color.WHITE);
+
+        pieChart.setData(data);
+        pieChart.requestLayout();
     }
 
     private class AttendanceNetwork extends android.os.AsyncTask<String, Void, String> {
@@ -163,10 +222,14 @@ public class FragmentAttendance extends Fragment {
                     worker.setId(workerObj.getInt("id"));
                     SimpleDateFormat dtf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
                     //  DateFormat dtf = DateFormat.getDateTimeInstance();
-                    Date dateGiven = dtf.parse(obj.getString("dateGiven"));
+                    SimpleDateFormat dtf2 = new SimpleDateFormat("yyyy/MM/dd");
+                    Date dateGiven = dtf2.parse(obj.getString("dateGiven"));
+                    Date stopTime = dtf.parse(obj.getString("stopTime"));
+                    Date startTime = dtf.parse(obj.getString("startTime"));
                     Date dateDelivered = dtf.parse(obj.getString("dateDelivered"));
                     SimpleDateFormat tf = new SimpleDateFormat("H:m:s");
                     String timeGiven = obj.getString("timeGiven");
+                    Date timeGive = tf.parse(obj.getString("timeGiven"));
 
 
                     Task task = new Task(obj.getInt("id"), supervisor, worker, dateGiven, dateDelivered,
@@ -200,6 +263,11 @@ public class FragmentAttendance extends Fragment {
                     task.setQuantitySold(obj.getInt("quantity"));
                     task.setQuantity(obj.getInt("quantitySold"));
 
+                    task.setStartTime(startTime);
+                    task.setStopTime(stopTime);
+                    task.setTimeGiven(String.valueOf(timeGive));
+
+
                     taskList.add(task);
                 }
 
@@ -213,10 +281,6 @@ public class FragmentAttendance extends Fragment {
                 e.printStackTrace();
 
             }
-        }
-
-        private void loadChart(ArrayList<Task> taskList) {
-
         }
     }
 }
