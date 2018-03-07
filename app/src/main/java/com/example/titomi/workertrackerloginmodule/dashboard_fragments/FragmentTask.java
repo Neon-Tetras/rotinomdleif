@@ -44,8 +44,6 @@ public class FragmentTask extends Fragment{
      PieChart pieChart;
     Context cxt;
     ArrayList<PieEntry> yValues = new ArrayList<>();
-    float doneTaskIndegree;
-    float undoneTaskIndegree;
     float doneTaskCount = 0;
     float undoneTaskCount = 0;
     private User loggedInUser;
@@ -211,8 +209,9 @@ public class FragmentTask extends Fragment{
                     worker.setEmail(workerObj.getString("email"));
                     worker.setId(workerObj.getInt("id"));
                     SimpleDateFormat dtf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+                    SimpleDateFormat dtf2 = new SimpleDateFormat("yyyy/MM/dd");
                     //  DateFormat dtf = DateFormat.getDateTimeInstance();
-                    Date dateGiven = dtf.parse(obj.getString("dateGiven"));
+                    Date dateGiven = dtf2.parse(obj.getString("dateGiven"));
                     Date dateDelivered = dtf.parse(obj.getString("dateDelivered"));
                     SimpleDateFormat tf = new SimpleDateFormat("H:m:s");
                     String timeGiven = obj.getString("timeGiven");
@@ -244,10 +243,7 @@ public class FragmentTask extends Fragment{
                     task.setStartLongitude(obj.getDouble("startLongitude"));
                     task.setStopLongitude(obj.getDouble("stopLongitude"));
 
-
-
-
-                    taskList.add(task);
+                 taskList.add(task);
                 }
 
                 loadChart(taskList);

@@ -1,4 +1,4 @@
-package com.example.titomi.workertrackerloginmodule.inventory_module.InventorySubMenu;
+package com.example.titomi.workertrackerloginmodule.inventory_module.inventory_sub_menu;
 
 import android.content.Context;
 import android.os.Bundle;

@@ -67,25 +67,6 @@ import java.util.Locale;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-import com.example.titomi.workertrackerloginmodule.R;
-
-import com.example.titomi.workertrackerloginmodule.report_module.ReportActivity;
-import com.example.titomi.workertrackerloginmodule.supervisor.Entity;
-import com.example.titomi.workertrackerloginmodule.supervisor.User;
-import com.example.titomi.workertrackerloginmodule.supervisor.Task;
-import com.example.titomi.workertrackerloginmodule.supervisor.util.DrawableManager;
-import com.example.titomi.workertrackerloginmodule.supervisor.util.Network;
-import com.example.titomi.workertrackerloginmodule.supervisor.util.Util;
-import com.google.android.gms.maps.model.LatLng;
-import android.os.Handler;
-
-
 /**
  * Created by NeonTetras on 24-Feb-18.
  */
@@ -416,10 +397,12 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
                     worker.setEmail(workerObj.getString("email"));
                     worker.setId(workerObj.getInt("id"));
                     SimpleDateFormat dtf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+//                    SimpleDateFormat dtf3 = new SimpleDateFormat("yyyy/MM/dd/HH:mm:ss");
                     //  DateFormat dtf = DateFormat.getDateTimeInstance();
+                    SimpleDateFormat dtf2 = new SimpleDateFormat("yyyy/MM/dd");
+                    Date dateGiven = dtf2.parse(obj.getString("dateGiven"));
                     Date stopTime = dtf.parse(obj.getString("stopTime"));
                     Date startTime = dtf.parse(obj.getString("startTime"));
-                    Date dateGiven = dtf.parse(obj.getString("dateGiven"));
                     Date dateDelivered = dtf.parse(obj.getString("dateDelivered"));
                     SimpleDateFormat tf = new SimpleDateFormat("H:m:s");
                     String timeGiven = obj.getString("timeGiven");

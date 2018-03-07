@@ -183,7 +183,9 @@ public class FragmentInventory extends Fragment {
                     worker.setId(workerObj.getInt("id"));
                     SimpleDateFormat dtf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
                     //  DateFormat dtf = DateFormat.getDateTimeInstance();
-                    Date dateGiven = dtf.parse(obj.getString("dateGiven"));
+                    SimpleDateFormat dtf2 = new SimpleDateFormat("yyyy/MM/dd");
+                    Date dateGiven = dtf2.parse(obj.getString("dateGiven"));
+//                    Date dateGiven = dtf.parse(obj.getString("dateGiven"));
                     Date dateDelivered = dtf.parse(obj.getString("dateDelivered"));
                     SimpleDateFormat tf = new SimpleDateFormat("H:m:s");
                     String timeGiven = obj.getString("timeGiven");
