@@ -43,9 +43,9 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/totalAssignTaskTV"
                     android:gravity="end"
                     android:padding="3dp"
-                    android:text="1000"
                     android:textStyle="bold" />
             </TableRow>
 
@@ -56,13 +56,13 @@
                 <TextView
                     android:layout_column="1"
                     android:padding="3dp"
-                    android:text="Total Executed Task"
+                    android:text="Late"
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/lateCountTV"
                     android:gravity="end"
                     android:padding="3dp"
-                    android:text="820"
                     android:textStyle="bold" />
             </TableRow>
 
@@ -73,13 +73,13 @@
                 <TextView
                     android:layout_column="1"
                     android:padding="3dp"
-                    android:text="Unexecuted Task"
+                    android:text="Early"
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/earlyCountTV"
                     android:gravity="end"
                     android:padding="3dp"
-                    android:text="180"
                     android:textStyle="bold" />
             </TableRow>
         </TableLayout>

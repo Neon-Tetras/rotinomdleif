@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.example.titomi.workertrackerloginmodule.R;
 import com.example.titomi.workertrackerloginmodule.supervisor.Task;
@@ -25,6 +26,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -39,10 +41,11 @@ public class FragmentAttendance extends Fragment {
     View view;
     Context ctx;
     PieChart pieChart;
+    TextView totalAssigned, late, early;
     Context cxt;
     ArrayList<PieEntry> yValues = new ArrayList<>();
-    float lateCount = 0;
-    float earlyCount = 0;
+    int lateCount = 0;
+    int earlyCount = 0;
     private ProgressBar progressBar;
     private User loggedInUser;
 
@@ -67,6 +70,10 @@ public class FragmentAttendance extends Fragment {
 
         pieChart.setDragDecelerationFrictionCoef(0.99f);
         progressBar = view.findViewById(R.id.progressBarAttend);
+        early = view.findViewById(R.id.earlyCountTV);
+        late = view.findViewById(R.id.lateCountTV);
+        totalAssigned = view.findViewById(R.id.totalAssignTaskTV);
+
 
         pieChart.setDrawHoleEnabled(false);
         pieChart.setHoleColor(Color.WHITE);
@@ -136,10 +143,11 @@ public class FragmentAttendance extends Fragment {
         try {
             for (Task task : taskList) {
                 if (task != null) {
-                String dateTimeGivenString = task.getDateGiven() + " " + task.getTimeGiven();
-                SimpleDateFormat dtf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-                Date dateTimeGiven = dtf.parse(dateTimeGivenString.replaceAll("-","/"));
-                    if (task.getStartTime().after(dateTimeGiven)){
+                    SimpleDateFormat dtf2 = new SimpleDateFormat("yyyy/MM/dd");
+                    String dateTimeGiven = dtf2.format(task.getDateGiven()) + " " + task.getTimeGiven();
+                    SimpleDateFormat dtf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                    Date dateTimeGive = dtf.parse(dateTimeGiven);
+                    if (task.getStartTime().after(dateTimeGive)) {
                         lateCount++;
                     }else{
                         earlyCount++;
@@ -152,8 +160,8 @@ public class FragmentAttendance extends Fragment {
 
         yValues.clear();
 
-        yValues.add(new PieEntry(lateCount, "Late"));
-        yValues.add(new PieEntry(earlyCount, "Early"));
+        yValues.add(new PieEntry((float) lateCount, "Late"));
+        yValues.add(new PieEntry((float) earlyCount, "Early"));
 
         PieDataSet dataSet = new PieDataSet(yValues, "Attendance");
         dataSet.setSliceSpace(3f);
@@ -166,6 +174,10 @@ public class FragmentAttendance extends Fragment {
 
         pieChart.setData(data);
         pieChart.requestLayout();
+
+        early.setText(NumberFormat.getInstance().format(earlyCount));
+        late.setText(NumberFormat.getInstance().format(lateCount));
+        totalAssigned.setText(NumberFormat.getInstance().format(taskList.size()));
     }
 
     private class AttendanceNetwork extends android.os.AsyncTask<String, Void, String> {
