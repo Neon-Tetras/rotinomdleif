@@ -149,13 +149,16 @@
                     android:layout_marginEnd="10dp"
                     android:layout_marginStart="3dp"
                     android:clickable="true"
+                    android:visibility="gone"
                     android:focusable="true"
+
                     android:foreground="?android:attr/selectableItemBackground">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
+
                         android:orientation="vertical">
 
                         <ImageView

@@ -165,7 +165,11 @@
         <activity android:name=".inventory_module.inventory_sub_menu.ActivityAddRemit"
             android:label="Enter Record"
             android:theme="@style/AppTheme.DarkActionBar"
-            ></activity>
+            />
+
+        <activity android:name=".supervisor.activities.CustomPhotoGalleryActivity"
+
+            />
     </application>
 
 </manifest>
