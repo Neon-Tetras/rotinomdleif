@@ -41,7 +41,6 @@ import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
-import com.mikepenz.materialdrawer.model.SectionDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
@@ -226,8 +225,10 @@ public class DashboardActivity extends AppCompatActivity {
                         new DividerDrawerItem(),
                         mInventory,
                         new DividerDrawerItem(),
-                        leaveApplication,
-                        new SectionDrawerItem(),
+                        mAttendance,
+                        new DividerDrawerItem(),
+                       /* leaveApplication,
+                        new SectionDrawerItem(),*/
 
                      /*   mReport,
                         new SectionDrawerItem(),*/
