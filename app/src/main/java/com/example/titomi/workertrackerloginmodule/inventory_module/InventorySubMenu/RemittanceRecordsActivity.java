@@ -15,9 +15,8 @@ public class RemittanceRecordsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_remittance_records);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setTitle("Inventory Manager");
+
+        getSupportActionBar().setTitle("Remittance Record");
     }
 
 
