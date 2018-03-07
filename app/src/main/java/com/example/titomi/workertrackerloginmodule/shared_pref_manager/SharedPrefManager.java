@@ -14,6 +14,7 @@ public class SharedPrefManager {
     private static final String KEY_IS_LOGIN = "isLogin";
     //Keys for entire users table
     private static final String KEY_USER_ID = "userid";
+    private static final String KEY_SUPERVISOR_ID = "supervisor_id";
     private static final String KEY_USER_EMAIL = "useremail";
     private static final String KEY_USER_LINE_ID = "line_id";
     private static final String KEY_USER_SALT = "salt";
@@ -182,6 +183,7 @@ public class SharedPrefManager {
         user.setEmail(getSavedEmail());
         user.setAddress(getSavedAddress());
         user.setPhoneNumber(getSavedPhoneNumber());
+        user.setSupervisorId(getSavedSupervisorId());
         return user;
     }
 
@@ -269,4 +271,11 @@ public class SharedPrefManager {
         return pref.getString(KEY_USER_ADDRESS, "");
     }
 
+    public void setSavedSupervisorId(long savedSupervisorId) {
+        editor.putLong(KEY_SUPERVISOR_ID, savedSupervisorId);
+    }
+
+    public long getSavedSupervisorId() {
+        return pref.getLong(KEY_SUPERVISOR_ID, Long.parseLong("0"));
+    }
 }

@@ -2,6 +2,7 @@ package com.example.titomi.workertrackerloginmodule.inventory_module.inventory_s
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,7 +18,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.os.AsyncTask;
 import android.widget.TextView;
 
 import com.example.titomi.workertrackerloginmodule.R;
@@ -38,8 +38,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Locale;
 
-import static com.example.titomi.workertrackerloginmodule.apis.Interfaces.LeaveApiService.view;
-
 public class RemittanceRecordsActivity extends AppCompatActivity {
     Toolbar toolbar;
 
@@ -59,6 +57,12 @@ public class RemittanceRecordsActivity extends AppCompatActivity {
         if(getIntent().getExtras() != null){
             loggedInUser = (User)getIntent().getExtras().getSerializable(getString(R.string.loggedInUser));
         }
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getRemittanceRecord(loggedInUser);
+            }
+        });
 
        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -178,6 +182,7 @@ public class RemittanceRecordsActivity extends AppCompatActivity {
                     rem.setAmount(obj.getLong("amount"));
                     rem.setAcknowledged(obj.getInt("acknowledged"));
                     rem.setId(obj.getLong("id"));
+                    rem.setProof(obj.getString("proof"));
 
                     SimpleDateFormat dtf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
@@ -231,11 +236,12 @@ public class RemittanceRecordsActivity extends AppCompatActivity {
                 }else{
                     remittedToText.setText(rem.getSupervisor().getName());
                 }
-                DrawableManager drm = new DrawableManager();
 
-                if(rem.getProof() != null){
+
+                if (rem.getProof() != null && !rem.getProof().isEmpty()) {
                 String[] imgs = rem.getProof().split(",");
                 for (String im : imgs) {
+                    DrawableManager drm = new DrawableManager();
                     View viewImage = getLayoutInflater().inflate(R.layout.report_images_single_item, null);
                     final ImageView reportImage = viewImage.findViewById(R.id.reportImage);
                     drm.fetchDrawableOnThread(getString(R.string.server_url) + im, reportImage);
@@ -246,7 +252,7 @@ public class RemittanceRecordsActivity extends AppCompatActivity {
                         }
                     });
 
-                    proofMediaLayout.addView(reportImage);
+                    proofMediaLayout.addView(viewImage);
                 }
             }
                 return view;

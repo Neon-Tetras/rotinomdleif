@@ -1,10 +1,13 @@
 package com.example.titomi.workertrackerloginmodule.inventory_module.inventory_sub_menu;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,10 +18,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.titomi.workertrackerloginmodule.R;
+import com.example.titomi.workertrackerloginmodule.supervisor.Remittance;
 import com.example.titomi.workertrackerloginmodule.supervisor.User;
+import com.example.titomi.workertrackerloginmodule.supervisor.util.ImageUtils;
+import com.example.titomi.workertrackerloginmodule.supervisor.util.InputValidator;
+import com.example.titomi.workertrackerloginmodule.supervisor.util.MediaUploader;
+import com.example.titomi.workertrackerloginmodule.supervisor.util.Network;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.Util;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class ActivityAddRemit extends AppCompatActivity implements View.OnClickListener {
@@ -59,6 +73,12 @@ public class ActivityAddRemit extends AppCompatActivity implements View.OnClickL
                 finish();
                 break;
             case R.id.send:
+                try {
+                    sendRemittance();
+                } catch (InputValidator.InvalidInputException e) {
+                    Toast.makeText(cxt, e.getMessage(), Toast.LENGTH_LONG).show();
+                }
+                break;
 
         }
         return super.onOptionsItemSelected(item);
@@ -151,5 +171,120 @@ public class ActivityAddRemit extends AppCompatActivity implements View.OnClickL
 
     }
 
+    private void sendRemittance() throws InputValidator.InvalidInputException {
+        HashMap<String, String> postData = new HashMap<>();
+        String supervisorId = loggedInUser.getRoleId() == User.SUPERVISOR ?
+                "" + loggedInUser.getId() : "" + loggedInUser.getSupervisorId();
+        postData.put("supervisor_id", supervisorId);
+        postData.put("amount", InputValidator.validateText(amountText, 2));
+        postData.put("worker_id", "" + loggedInUser.getId());
+
+        proofImages = ImageUtils.compressImages(cxt, new Remittance(), proofImages);
+        StringBuilder sb = new StringBuilder();
+        for (String im : proofImages) {
+            sb.append("images/remittance/" + new File(im).getName()).append(",");
+        }
+        postData.put("proof", sb.deleteCharAt(sb.toString().lastIndexOf(",")).toString());
+
+        String remitUrl = loggedInUser.getRoleId() == User.SUPERVISOR ?
+                "work/supervisor_add_remit.php" : "work/worker_add_remit.php";
+        String url = getString(R.string.api_url) + remitUrl + "?key=" + getString(R.string.field_worker_api_key);
+
+
+        try {
+            System.err.println(Network.getPostDataString(postData));
+            new RemittanceNetwork(cxt, proofImages).execute(url + "&" + Network.getPostDataString(postData));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private static class RemittanceNetwork extends AsyncTask<String, Void, String> {
+
+        ArrayList<String> images;
+        HashMap<String, String> postData;
+        ProgressDialog progressDialog;
+        Context cxt;
+
+        public RemittanceNetwork(Context cxt, ArrayList<String> images) {
+            this.images = images;
+
+            this.cxt = cxt;
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            return Network.backgroundTask(null, strings[0]);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = new ProgressDialog(cxt);
+            progressDialog.setMessage("Please wait");
+            progressDialog.show();
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+            if (progressDialog.isShowing()) {
+                progressDialog.dismiss();
+            }
+
+            // if(s == null) return;
+
+
+            try {
+                JSONObject obj = new JSONObject(s);
+                //    if(obj.getInt("statusCode") == 1){
+                ImageUploader imageUploader = new ImageUploader(cxt, cxt.getString(R.string.api_url) + cxt.getString(R.string.proof_image_uploader) + "?key=" + cxt.getString(R.string.field_worker_api_key));
+                imageUploader.execute(images);
+                //   }
+            } catch (JSONException e) {
+                e.printStackTrace();
+                System.err.println(s);
+            }
+        }
+    }
+
+    private static class ImageUploader extends MediaUploader {
+
+        Context cxt;
+        ProgressDialog progressDialog;
+
+        public ImageUploader(Context cxt, String uploadApiUrl) {
+            super(cxt, uploadApiUrl);
+            this.cxt = cxt;
+
+
+            progressDialog = new ProgressDialog(cxt);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            progressDialog.setMessage("Please wait");
+            progressDialog.show();
+        }
+
+        @Override
+        protected void onPostExecute(List<String> strings) {
+            super.onPostExecute(strings);
+
+
+            if (progressDialog.isShowing()) {
+                progressDialog.dismiss();
+                Toast.makeText(cxt, "Record added successfully", Toast.LENGTH_LONG).show();
+                ((Activity) cxt).finish();
+            }
+
+        }
+    }
     ArrayList<String> proofImages = new ArrayList<>();
+
+
 }

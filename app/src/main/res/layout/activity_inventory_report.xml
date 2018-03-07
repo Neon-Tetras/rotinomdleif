@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.titomi.workertrackerloginmodule.inventory_module.inventory_sub_menu.InventoryReportActivity">
+    tools:context="com.example.titomi.workertrackerloginmodule.inventory_module.inventory_sub_menu.InventoryReportActivity"
+    android:layout_margin="10dp">
+
+    <com.github.mikephil.charting.charts.BarChart
+        android:id="@+id/barChartInvt"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+
+        android:layout_marginTop="50dp" />
 
 </android.support.constraint.ConstraintLayout>

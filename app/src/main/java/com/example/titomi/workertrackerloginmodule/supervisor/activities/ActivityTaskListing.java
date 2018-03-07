@@ -432,7 +432,7 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
                     task.setStopLatitude(obj.getDouble("stopLatitude"));
                     task.setStartLongitude(obj.getDouble("startLongitude"));
                     task.setStopLongitude(obj.getDouble("stopLongitude"));
-
+                    task.setWorkerComment(obj.getString("workerComment"));
                     task.setStartTime(startTime);
                     task.setStopTime(stopTime);
 

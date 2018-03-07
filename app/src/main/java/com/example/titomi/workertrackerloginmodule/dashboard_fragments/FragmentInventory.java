@@ -105,13 +105,13 @@ public class FragmentInventory extends Fragment implements OnChartValueSelectedL
     private void loadChart(ArrayList<Task> list) {
         for (Task task : list) {
             if (task != null) {
-                itemBalance = task.getInventoryBalance();
-                itemQuantitySold = task.getQuantitySold();
-                itemQuantity = task.getQuantity();
+                itemBalance += task.getInventoryBalance();
+                itemQuantitySold += task.getQuantitySold();
+                itemQuantity += task.getQuantity();
 
-                itemQuantity++;
-                itemQuantitySold++;
-                itemBalance++;
+                // itemQuantity++;
+                // itemQuantitySold++;
+                //itemBalance++;
             }
         }
         yVals.clear();

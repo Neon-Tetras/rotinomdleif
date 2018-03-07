@@ -57,7 +57,7 @@
                 <TextView
                     android:layout_column="1"
                     android:padding="3dp"
-                    android:text="Late"
+                    android:text="Times Late"
                     android:textStyle="bold" />
 
                 <TextView
@@ -74,7 +74,7 @@
                 <TextView
                     android:layout_column="1"
                     android:padding="3dp"
-                    android:text="Early"
+                    android:text="Times Early"
                     android:textStyle="bold" />
 
                 <TextView

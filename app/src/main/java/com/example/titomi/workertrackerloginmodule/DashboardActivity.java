@@ -21,17 +21,18 @@ import com.example.titomi.workertrackerloginmodule.dashboard_fragments.FragmentT
 import com.example.titomi.workertrackerloginmodule.dashboard_fragments.ViewPagerAdapter;
 import com.example.titomi.workertrackerloginmodule.inventory_module.InventoryActivity;
 import com.example.titomi.workertrackerloginmodule.report_module.ReportMainActivity;
+import com.example.titomi.workertrackerloginmodule.services.FieldMonitorMessagingService;
 import com.example.titomi.workertrackerloginmodule.shared_pref_manager.SharedPrefManager;
-import com.example.titomi.workertrackerloginmodule.supervisor_manager.SupervisorMainActivity;
-import com.example.titomi.workertrackerloginmodule.user_profile.UserProfileActivity;
 import com.example.titomi.workertrackerloginmodule.supervisor.User;
 import com.example.titomi.workertrackerloginmodule.supervisor.activities.ActivityInventoryRequestsListing;
 import com.example.titomi.workertrackerloginmodule.supervisor.activities.ActivityLeaveApplication;
 import com.example.titomi.workertrackerloginmodule.supervisor.activities.ActivityMessageListing;
 import com.example.titomi.workertrackerloginmodule.supervisor.activities.ActivityReportListing;
 import com.example.titomi.workertrackerloginmodule.supervisor.activities.ActivityTaskListing;
-import com.example.titomi.workertrackerloginmodule.services.FieldMonitorMessagingService;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.ImageUtils;
+import com.example.titomi.workertrackerloginmodule.supervisor.util.Util;
+import com.example.titomi.workertrackerloginmodule.supervisor_manager.SupervisorMainActivity;
+import com.example.titomi.workertrackerloginmodule.user_profile.UserProfileActivity;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -145,7 +146,10 @@ public class DashboardActivity extends AppCompatActivity {
                 .withActivity(this)
                 .withHeaderBackground(R.drawable.header)
                 .addProfiles(
-                        new ProfileDrawerItem().withName(loggedInUser.getFullName()).withEmail(loggedInUser.getEmail()).withIcon(imageDrawable)
+                        new ProfileDrawerItem()
+                                .withName(loggedInUser.getFullName())
+                                .withEmail(Util.toSentenceCase(loggedInUser.getRole()))
+                                .withIcon(imageDrawable)
                 )
                 .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
                     @Override
