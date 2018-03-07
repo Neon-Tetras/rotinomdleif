@@ -5,7 +5,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +37,7 @@ import java.util.Date;
  * Created by Titomi on 2/8/2018.
  */
 
-public class FragmentAttendance extends Fragment {
+public class FragmentAttendance extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     final String TAG = "ATTENDANCE FRAGMENT";
     View view;
@@ -47,6 +47,7 @@ public class FragmentAttendance extends Fragment {
     Context cxt;
     ArrayList<PieEntry> yValues = new ArrayList<>();
     private ProgressBar progressBar;
+    private SwipeRefreshLayout refreshLayout;
     private User loggedInUser;
 
     public FragmentAttendance() {
@@ -64,6 +65,9 @@ public class FragmentAttendance extends Fragment {
         }
 
         pieChart = view.findViewById(R.id.pieChartAttend);
+        refreshLayout = view.findViewById(R.id.swipe_on_attendance);
+        refreshLayout.setOnRefreshListener(this);
+        ;
         pieChart.getDescription().setEnabled(false);
 
         pieChart.setExtraOffsets(5, 10, 5, 5);
@@ -126,10 +130,6 @@ public class FragmentAttendance extends Fragment {
                     }else{
                         earlyCount++;
                     }
-                    System.out.println("Start Time: " + task.getStartTime());
-                    System.out.println("DateTime Given: " + task.getDateGiven());
-
-                    Log.i(TAG, "StartTime: " + task.getStartTime().toString() + " DateTime Given: " + task.getDateGiven().toString());
                 }
             }
 
@@ -156,6 +156,17 @@ public class FragmentAttendance extends Fragment {
         totalAssigned.setText(NumberFormat.getInstance().format(taskList.size()));
     }
 
+    @Override
+    public void onRefresh() {
+        loadData();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadData();
+    }
+
     private class AttendanceNetwork extends android.os.AsyncTask<String, Void, String> {
 
         ArrayList<Task> taskList = new ArrayList<>();
@@ -168,14 +179,16 @@ public class FragmentAttendance extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progressBar.setVisibility(View.VISIBLE);
+//            progressBar.setVisibility(View.VISIBLE);
+            refreshLayout.setRefreshing(true);
         }
+
 
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            progressBar.setVisibility(View.GONE);
-
+//            progressBar.setVisibility(View.GONE);
+            refreshLayout.setRefreshing(false);
             if (s == null) {
 
                 return;
