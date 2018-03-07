@@ -33,10 +33,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private static ProgressBar progressBar;
     private static Context cxt;
 
-    private static void goToDashBoard(User user) {
+    private  void goToDashBoard(User user) {
         Intent i = new Intent(cxt, DashboardActivity.class);
         i.putExtra(cxt.getString(R.string.loggedInUser), user);
-        cxt.startActivity(i);
+        startActivity(i);
+
+        finish();
+
+
+
 
     }
 
@@ -68,7 +73,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    private static final class LoginNetworkTask extends AsyncTask<String, Void, String> {
+    private  final class LoginNetworkTask extends AsyncTask<String, Void, String> {
 
 
         @Override
@@ -133,6 +138,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                     goToDashBoard(user);
                     //LoginActivity.cxt.fin
+
 
                 }
             } catch (JSONException e) {
