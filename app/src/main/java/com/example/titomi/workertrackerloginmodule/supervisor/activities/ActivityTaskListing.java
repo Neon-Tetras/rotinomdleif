@@ -418,8 +418,12 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
                     SimpleDateFormat dtf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
                     //  DateFormat dtf = DateFormat.getDateTimeInstance();
                     Date stopTime = dtf.parse(obj.getString("stopTime"));
+
                     Date startTime = dtf.parse(obj.getString("startTime"));
-                    Date dateGiven = dtf.parse(obj.getString("dateGiven"));
+                    SimpleDateFormat dtf2 = new SimpleDateFormat("yyyy/MM/dd");
+                    //  DateFormat dtf = DateFormat.getDateTimeInstance();
+                    Date dateGiven = dtf2.parse(obj.getString("dateGiven"));
+
                     Date dateDelivered = dtf.parse(obj.getString("dateDelivered"));
                     SimpleDateFormat tf = new SimpleDateFormat("H:m:s");
                     String timeGiven = obj.getString("timeGiven");

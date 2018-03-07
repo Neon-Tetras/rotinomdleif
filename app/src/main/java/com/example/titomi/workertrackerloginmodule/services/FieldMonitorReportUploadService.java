@@ -33,6 +33,8 @@ import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import jxl.write.DateTime;
+
 /**
  * Created by NeonTetras on 27-Feb-18.
  */
@@ -78,7 +80,7 @@ public class FieldMonitorReportUploadService extends Service {
         }
         sb.deleteCharAt(sb.toString().lastIndexOf(","));
         postData.put("photo",sb.toString());
-        postData.put("video",String.format("videos/%s,",new File(video).getName()));
+        postData.put("video",String.format("videos/%s",new File(video).getName()));
         if (video == null || Objects.equals(video,"")) {
             NUM_ACTIONS = 2;
         }
@@ -201,6 +203,7 @@ public class FieldMonitorReportUploadService extends Service {
                 stopSelf();
             }
         }
+
     }
 
     private void notifyCompletion(){
