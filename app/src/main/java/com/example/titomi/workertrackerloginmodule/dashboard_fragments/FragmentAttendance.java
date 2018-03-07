@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,17 +37,17 @@ import java.util.Date;
  * Created by Titomi on 2/8/2018.
  */
 
-public class FragmentAttendance extends Fragment {
+public class FragmentAttendance extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
+    final String TAG = "ATTENDANCE FRAGMENT";
     View view;
     Context ctx;
     PieChart pieChart;
     TextView totalAssigned, late, early;
     Context cxt;
     ArrayList<PieEntry> yValues = new ArrayList<>();
-    int lateCount = 0;
-    int earlyCount = 0;
     private ProgressBar progressBar;
+    private SwipeRefreshLayout refreshLayout;
     private User loggedInUser;
 
     public FragmentAttendance() {
@@ -64,6 +65,9 @@ public class FragmentAttendance extends Fragment {
         }
 
         pieChart = view.findViewById(R.id.pieChartAttend);
+        refreshLayout = view.findViewById(R.id.swipe_on_attendance);
+        refreshLayout.setOnRefreshListener(this);
+        ;
         pieChart.getDescription().setEnabled(false);
 
         pieChart.setExtraOffsets(5, 10, 5, 5);
@@ -99,31 +103,6 @@ public class FragmentAttendance extends Fragment {
         return view;
     }
 
-/*    private void setData(int count) {
-        ArrayList<BarEntry> yVals = new ArrayList<>();
-
-        //looping through the number of bars set
-        for (int i = 0; i < count; i++) {
-            //creating random values of data
-            float value = (float) (Math.random() * 100);
-
-            //placing data on chart, i for postion and y for the actual value
-            yVals.add(new BarEntry(i, (int) value));
-        }
-
-        BarDataSet set = new BarDataSet(yVals, "Attendance");
-        set.setColors(ColorTemplate.MATERIAL_COLORS);
-        set.setDrawValues(true);
-
-
-        BarData data = new BarData(set);
-
-        barChart.setData(data);
-        barChart.invalidate();
-        barChart.animateY(500);
-
-    }*/
-
     private void loadData() {
         String url = "";
         switch (loggedInUser.getRoleId()) {
@@ -140,23 +119,20 @@ public class FragmentAttendance extends Fragment {
     }
 
     private void loadChart(ArrayList<Task> taskList) {
-        try {
+        int lateCount = 0;
+        int earlyCount = 0;
             for (Task task : taskList) {
                 if (task != null) {
                     SimpleDateFormat dtf2 = new SimpleDateFormat("yyyy/MM/dd");
-                    String dateTimeGiven = dtf2.format(task.getDateGiven()) + " " + task.getTimeGiven();
                     SimpleDateFormat dtf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-                    Date dateTimeGive = dtf.parse(dateTimeGiven);
-                    if (task.getStartTime().after(dateTimeGive)) {
+                    if (task.getStartTime().after(task.getDateGiven())) {
                         lateCount++;
                     }else{
                         earlyCount++;
                     }
                 }
             }
-        }catch(ParseException e){
-            e.printStackTrace();
-        }
+
 
         yValues.clear();
 
@@ -180,6 +156,17 @@ public class FragmentAttendance extends Fragment {
         totalAssigned.setText(NumberFormat.getInstance().format(taskList.size()));
     }
 
+    @Override
+    public void onRefresh() {
+        loadData();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadData();
+    }
+
     private class AttendanceNetwork extends android.os.AsyncTask<String, Void, String> {
 
         ArrayList<Task> taskList = new ArrayList<>();
@@ -192,14 +179,16 @@ public class FragmentAttendance extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progressBar.setVisibility(View.VISIBLE);
+//            progressBar.setVisibility(View.VISIBLE);
+            refreshLayout.setRefreshing(true);
         }
+
 
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            progressBar.setVisibility(View.GONE);
-
+//            progressBar.setVisibility(View.GONE);
+            refreshLayout.setRefreshing(false);
             if (s == null) {
 
                 return;
@@ -232,16 +221,15 @@ public class FragmentAttendance extends Fragment {
                     worker.setName(String.format("%s %s", workerObj.getString("first_name"), supervisorObj.getString("last_name")));
                     worker.setEmail(workerObj.getString("email"));
                     worker.setId(workerObj.getInt("id"));
-                    SimpleDateFormat dtf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+                    SimpleDateFormat dtf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
                     //  DateFormat dtf = DateFormat.getDateTimeInstance();
                     SimpleDateFormat dtf2 = new SimpleDateFormat("yyyy/MM/dd");
-                    Date dateGiven = dtf2.parse(obj.getString("dateGiven"));
+                    Date dateGiven = dtf.parse(String.format("%s %s", obj.getString("dateGiven"), obj.getString("timeGiven")));
                     Date stopTime = dtf.parse(obj.getString("stopTime"));
                     Date startTime = dtf.parse(obj.getString("startTime"));
                     Date dateDelivered = dtf.parse(obj.getString("dateDelivered"));
-                    SimpleDateFormat tf = new SimpleDateFormat("H:m:s");
+                    SimpleDateFormat tf = new SimpleDateFormat("HH:mm:ss");
                     String timeGiven = obj.getString("timeGiven");
-                    Date timeGive = tf.parse(obj.getString("timeGiven"));
 
 
                     Task task = new Task(obj.getInt("id"), supervisor, worker, dateGiven, dateDelivered,
@@ -277,7 +265,7 @@ public class FragmentAttendance extends Fragment {
 
                     task.setStartTime(startTime);
                     task.setStopTime(stopTime);
-                    task.setTimeGiven(String.valueOf(timeGive));
+                    task.setTimeGiven(timeGiven);
 
 
                     taskList.add(task);

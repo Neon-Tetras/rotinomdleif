@@ -1,9 +1,12 @@
 package com.example.titomi.workertrackerloginmodule.dashboard_fragments;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.RectF;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,10 +19,15 @@ import com.example.titomi.workertrackerloginmodule.supervisor.util.Network;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.LegendEntry;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.github.mikephil.charting.utils.MPPointF;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,9 +42,9 @@ import java.util.Date;
  * Created by Titomi on 2/8/2018.
  */
 
-public class FragmentInventory extends Fragment {
+public class FragmentInventory extends Fragment implements OnChartValueSelectedListener, SwipeRefreshLayout.OnRefreshListener {
+    protected RectF mOnValueSelectedRectF = new RectF();
     View view;
-
     Context ctx;
     BarChart barInventoryChart;
     ArrayList<BarEntry> yVals = new ArrayList<>();
@@ -45,8 +53,15 @@ public class FragmentInventory extends Fragment {
     float itemBalance = 0;
     private User loggedInUser;
     private ProgressBar pb;
+    private SwipeRefreshLayout refreshLayout;
 
     public FragmentInventory() {
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadInventory();
     }
 
     @Nullable
@@ -63,12 +78,14 @@ public class FragmentInventory extends Fragment {
 
         pb = view.findViewById(R.id.progressBar);
         barInventoryChart= view.findViewById(R.id.barChartInvt);
+        refreshLayout = view.findViewById(R.id.swipe_to_refresh_inventory);
+        refreshLayout.setOnRefreshListener(this);
 
         barInventoryChart.getDescription().setEnabled(false);
+        barInventoryChart.setOnChartValueSelectedListener(this);
         loadInventory();
         return view;
     }
-
 
     private void loadInventory() {
 
@@ -121,11 +138,38 @@ public class FragmentInventory extends Fragment {
         barInventoryChart.setData(set);
 
         barInventoryChart.invalidate();
+        barInventoryChart.setPinchZoom(false);
         barInventoryChart.animateY(500);
+        barInventoryChart.getData().setHighlightEnabled(true);
 
         Legend legend = barInventoryChart.getLegend();
         LegendEntry le = new LegendEntry();
 //        legend.setCustom();
+
+    }
+
+    @Override
+    public void onRefresh() {
+        loadInventory();
+
+    }
+
+    @SuppressLint("NewApi")
+    @Override
+    public void onValueSelected(Entry e, Highlight h) {
+
+        if (e == null)
+            return;
+
+        RectF bounds = mOnValueSelectedRectF;
+        barInventoryChart.getBarBounds((BarEntry) e, bounds);
+        MPPointF position = barInventoryChart.getPosition(e, YAxis.AxisDependency.LEFT);
+
+        MPPointF.recycleInstance(position);
+    }
+
+    @Override
+    public void onNothingSelected() {
 
     }
 
@@ -141,14 +185,16 @@ public class FragmentInventory extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pb.setVisibility(View.VISIBLE);
+//            pb.setVisibility(View.VISIBLE);
+            refreshLayout.setRefreshing(true);
         }
 
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            pb.setVisibility(View.GONE);
+//            pb.setVisibility(View.GONE);
 
+            refreshLayout.setRefreshing(false);
             if (s == null) {
 
                 return;
