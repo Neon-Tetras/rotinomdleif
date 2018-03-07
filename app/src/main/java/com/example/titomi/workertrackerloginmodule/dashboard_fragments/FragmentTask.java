@@ -45,8 +45,7 @@ public class FragmentTask extends Fragment{
      PieChart pieChart;
     Context cxt;
     ArrayList<PieEntry> yValues = new ArrayList<>();
-    float doneTaskCount = 0;
-    float undoneTaskCount = 0;
+
     private User loggedInUser;
     public FragmentTask() {
     }
@@ -117,7 +116,8 @@ public class FragmentTask extends Fragment{
     }
 
     private void loadChart(ArrayList<Task> list) {
-
+        float doneTaskCount = 0;
+        float undoneTaskCount = 0;
 
         for (Task task : list) {
             switch (task.getStatus()) {

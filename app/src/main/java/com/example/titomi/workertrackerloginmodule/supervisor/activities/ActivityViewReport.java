@@ -92,7 +92,7 @@ public class ActivityViewReport extends AppCompatActivity implements View.OnClic
     }
     private void setupView(final Task task){
         DrawableManager drm = new DrawableManager();
-        drm.fetchDrawableOnThread(getString(R.string.api_url)+task.getWorker().getFeaturedImage(),userImage);
+        drm.fetchDrawableOnThread(getString(R.string.server_url)+task.getWorker().getFeaturedImage(),userImage);
         username.setText(task.getWorker().getName());
 
         DateFormat dtf = DateFormat.getDateTimeInstance();
