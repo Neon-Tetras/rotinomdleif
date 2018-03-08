@@ -108,10 +108,6 @@ public class FragmentInventory extends Fragment implements OnChartValueSelectedL
                 itemBalance += task.getInventoryBalance();
                 itemQuantitySold += task.getQuantitySold();
                 itemQuantity += task.getQuantity();
-
-                // itemQuantity++;
-                // itemQuantitySold++;
-                //itemBalance++;
             }
         }
         yVals.clear();
