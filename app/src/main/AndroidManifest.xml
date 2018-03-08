@@ -168,6 +168,20 @@
         <activity android:name=".supervisor.activities.CustomPhotoGalleryActivity"
 
             />
+
+        <activity
+            android:name=".report_module.ActivityWorkerReportListing"
+            android:label="My Reports"
+            android:theme="@style/AppTheme.DarkActionBar"
+
+            />
+
+        <activity
+            android:name=".report_module.ActivityNurseViewReport"
+            android:label="View Report"
+            android:theme="@style/AppTheme.DarkActionBar"
+
+            />
     </application>
 
 </manifest>
