@@ -200,5 +200,7 @@
     <string name="acknowledged">Acknowledge</string>
     <string name="pending">Pending</string>
     <string name="send">Send</string>
+    <string name="enter_remittance_record">Enter Remittance Record</string>
+    <string name="proof_image_uploader">work/proof_image_uploader.php</string>
 
 </resources>

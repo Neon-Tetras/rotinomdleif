@@ -131,6 +131,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     sharedPrefManager.setSavedPhoneNumber(user.getPhoneNumber());
                     sharedPrefManager.setSavedPhoto(user.getFeaturedImage());
                     sharedPrefManager.setSavedRole(user.getRole());
+                    sharedPrefManager.setSavedSupervisorId(user.getSupervisorId());
                     Long userId = user.getId();
                     sharedPrefManager.setSavedUserId(userId.intValue());
                     sharedPrefManager.setSavedRoleId(user.getRoleId());

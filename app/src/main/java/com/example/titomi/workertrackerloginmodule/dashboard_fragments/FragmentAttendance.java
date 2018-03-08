@@ -86,11 +86,11 @@ public class FragmentAttendance extends Fragment implements SwipeRefreshLayout.O
         yValues.add(new PieEntry((float) 0.0, "Early"));
 
         Description description = new Description();
-        description.setText("Task Chart");
+        description.setText("Attendance Chart");
         description.setTextSize(15);
         pieChart.setDescription(description);
 
-        PieDataSet dataSet = new PieDataSet(yValues, "Tasks");
+        PieDataSet dataSet = new PieDataSet(yValues, "Attendance");
         dataSet.setSliceSpace(3f);
         dataSet.setSelectionShift(5f);
         dataSet.setColors(ColorTemplate.JOYFUL_COLORS);

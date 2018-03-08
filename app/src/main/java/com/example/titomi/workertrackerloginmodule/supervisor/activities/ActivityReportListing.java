@@ -25,7 +25,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.titomi.workertrackerloginmodule.R;
-import com.example.titomi.workertrackerloginmodule.supervisor.Entity;
 import com.example.titomi.workertrackerloginmodule.supervisor.Task;
 import com.example.titomi.workertrackerloginmodule.supervisor.User;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.DateTimeUtil;
@@ -165,6 +164,7 @@ public class ActivityReportListing extends AppCompatActivity implements AdapterV
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         Task task = (Task)adapterView.getItemAtPosition(i);
         Intent data = new Intent(cxt,ActivityViewReport.class);
+        data.putExtra(getString(R.string.loggedInUser), loggedInUser);
         data.putExtra("task",task);
         startActivity(data);
     }
