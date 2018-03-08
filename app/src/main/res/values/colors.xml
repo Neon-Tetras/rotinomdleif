@@ -18,4 +18,9 @@
     <color name="black_overlay">#66000000</color>
     <color name="gray">#f0f0f0</color>
     <color name="light_blue">#a8c2f6</color>
+
+    //Inventory Bar Chart Bar colors
+    <color name="balanceColor">#9e190d</color>
+    <color name="quantityColor">#5f9e0d</color>
+    <color name="quantitySoldColor">#69e9e4</color>
 </resources>

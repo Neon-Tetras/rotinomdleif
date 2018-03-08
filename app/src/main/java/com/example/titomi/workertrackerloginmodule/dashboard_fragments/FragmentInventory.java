@@ -26,7 +26,6 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
-import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.MPPointF;
 
 import org.json.JSONArray;
@@ -126,7 +125,8 @@ public class FragmentInventory extends Fragment implements OnChartValueSelectedL
         BarDataSet dataSet = new BarDataSet(yVals, "Inventory");
 
 
-        dataSet.setColors(ColorTemplate.LIBERTY_COLORS);
+//        dataSet.setColors(ColorTemplate.LIBERTY_COLORS);
+        dataSet.setColors(R.color.balanceColor, R.color.quantitySoldColor, R.color.quantityColor);
         dataSet.setDrawValues(true);
 
         BarData set = new BarData(dataSet);
