@@ -126,7 +126,7 @@ public class FragmentInventory extends Fragment implements OnChartValueSelectedL
 
 
 //        dataSet.setColors(ColorTemplate.LIBERTY_COLORS);
-        dataSet.setColors(R.color.balanceColor, R.color.quantitySoldColor, R.color.quantityColor);
+        dataSet.setColors(getResources().getColor(R.color.balanceColor), getResources().getColor(R.color.quantitySoldColor), getResources().getColor(R.color.quantityColor));
         dataSet.setDrawValues(true);
 
         BarData set = new BarData(dataSet);
