@@ -11,7 +11,7 @@ import com.example.titomi.workertrackerloginmodule.R;
 import com.example.titomi.workertrackerloginmodule.inventory_module.inventory_sub_menu.InventoryReportActivity;
 import com.example.titomi.workertrackerloginmodule.inventory_module.inventory_sub_menu.ReceivedInventoryActivity;
 import com.example.titomi.workertrackerloginmodule.inventory_module.inventory_sub_menu.RemittanceRecordsActivity;
-import com.example.titomi.workertrackerloginmodule.inventory_module.inventory_sub_menu.SalesReportActivity;
+import com.example.titomi.workertrackerloginmodule.report_module.ActivityWorkerReportListing;
 import com.example.titomi.workertrackerloginmodule.supervisor.User;
 import com.example.titomi.workertrackerloginmodule.supervisor.activities.ActivityInventoryRequestsListing;
 
@@ -83,7 +83,7 @@ public class InventoryActivity extends AppCompatActivity implements View.OnClick
 
                 break;
             case R.id.sales_report:
-                i = new Intent(this, SalesReportActivity.class);
+                i = new Intent(this, ActivityWorkerReportListing.class);
                 i.putExtra(getString(R.string.loggedInUser),loggedInUser);
 
                 break;
