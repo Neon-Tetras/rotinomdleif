@@ -19,7 +19,6 @@ import android.widget.Toast;
 
 import com.example.titomi.workertrackerloginmodule.R;
 import com.example.titomi.workertrackerloginmodule.supervisor.Products;
-import com.example.titomi.workertrackerloginmodule.supervisor.Task;
 import com.example.titomi.workertrackerloginmodule.supervisor.User;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.InputValidator;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.Network;
@@ -61,9 +60,17 @@ public class ActivityInventoryRequest extends AppCompatActivity
         if(getIntent().getExtras() != null){
             loggedInUser = (User)getIntent().getExtras().getSerializable(getString(R.string.loggedInUser));
 
+            if (loggedInUser.getRoleId() != User.SUPERVISOR) {
+                hideDistributor();
+            }
         }
     }
 
+    private void hideDistributor() {
+        distributorSpinner.setVisibility(View.GONE);
+        findViewById(R.id.distributorLoading).setVisibility(View.GONE);
+        findViewById(R.id.distributorText).setVisibility(View.GONE);
+    }
     @Override
     protected void onResume() {
         super.onResume();
@@ -86,8 +93,12 @@ public class ActivityInventoryRequest extends AppCompatActivity
 
         if(!NetworkChecker.haveNetworkConnection(cxt))return;
         HashMap<String,String> postData = new HashMap<>();
-        postData.put(getString(R.string.supervisor_id),""+loggedInUser.getId());
-        postData.put(getString(R.string.distributor_id),""+distributorIds.get(distributorSpinner.getSelectedItemPosition()));
+        postData.put(getString(R.string.user_id), "" + loggedInUser.getId());
+        if (loggedInUser.getRoleId() == User.NURSE) {
+            postData.put(getString(R.string.distributor_id), "" + loggedInUser.getSupervisorId());
+        } else if (loggedInUser.getRoleId() == User.SUPERVISOR) {
+            postData.put(getString(R.string.distributor_id), "" + distributorIds.get(distributorSpinner.getSelectedItemPosition()));
+        }
         try {
             postData.put(getString(R.string.quantity), InputValidator.validateText(quantityEdit,1));
 

@@ -72,16 +72,22 @@ public class ActivityLeaveApplication extends AppCompatActivity implements View.
                 break;
             case R.id.submit:
                 if(!NetworkChecker.haveNetworkConnection(cxt))return;
-                submitApplication();
+
+                try {
+                    HashMap<String, String> data = getLeaveData();
+                    submitApplication(data);
+                } catch (InputValidator.InvalidInputException e) {
+                    Toast.makeText(cxt, e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
                 break;
         }
     }
 
-    private void submitApplication(){
+    private void submitApplication(final HashMap<String, String> leaveData) {
         new android.os.AsyncTask<String,Void,String>(){
             @Override
             protected String doInBackground(String... strings) {
-                return Network.performPostCall(strings[0],getLeaveData());
+                return Network.performPostCall(strings[0], leaveData);
             }
 
             @Override
@@ -119,15 +125,13 @@ public class ActivityLeaveApplication extends AppCompatActivity implements View.
                 getString(R.string.field_worker_api_key));
     }
 
-    private HashMap<String,String> getLeaveData(){
-        try {
+    private HashMap<String, String> getLeaveData() throws InputValidator.InvalidInputException {
+
             leaveData.put("from_date", InputValidator.validateText(fromDate,10));
             leaveData.put("to_date", InputValidator.validateText(toDate,10));
             leaveData.put("reason", InputValidator.validateText(reasonEditText,5));
             leaveData.put("user_id", ""+loggedInUser.getId());
-        } catch (InputValidator.InvalidInputException e) {
-            Toast.makeText(cxt,e.getMessage(),Toast.LENGTH_SHORT).show();
-        }
+
         return leaveData;
     }
     HashMap<String,String> leaveData = new HashMap<>();

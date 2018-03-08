@@ -6,15 +6,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.Toast;
 
+import com.example.titomi.workertrackerloginmodule.R;
 import com.example.titomi.workertrackerloginmodule.inventory_module.inventory_sub_menu.InventoryReportActivity;
-import com.example.titomi.workertrackerloginmodule.inventory_module.inventory_sub_menu.ProductRequestActivity;
 import com.example.titomi.workertrackerloginmodule.inventory_module.inventory_sub_menu.ReceivedInventoryActivity;
 import com.example.titomi.workertrackerloginmodule.inventory_module.inventory_sub_menu.RemittanceRecordsActivity;
 import com.example.titomi.workertrackerloginmodule.inventory_module.inventory_sub_menu.SalesReportActivity;
-import com.example.titomi.workertrackerloginmodule.R;
 import com.example.titomi.workertrackerloginmodule.supervisor.User;
+import com.example.titomi.workertrackerloginmodule.supervisor.activities.ActivityInventoryRequestsListing;
 
 public class InventoryActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -62,7 +61,7 @@ public class InventoryActivity extends AppCompatActivity implements View.OnClick
 
         switch (v.getId()) {
             case R.id.product_request:
-                i = new Intent(this, ProductRequestActivity.class);
+                i = new Intent(this, ActivityInventoryRequestsListing.class);
                 i.putExtra(getString(R.string.loggedInUser),loggedInUser);
                 startActivity(i);
                 break;
