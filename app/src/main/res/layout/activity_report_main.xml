@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.titomi.workertrackerloginmodule.report_module.ReportMainActivity">
 
     <LinearLayout
@@ -34,8 +34,8 @@
                     android:layout_marginStart="10dp"
                     android:clickable="true"
                     android:focusable="true"
-                    android:visibility="gone"
-                    android:foreground="?android:attr/selectableItemBackground">
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:visibility="gone">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -48,7 +48,7 @@
                             android:layout_height="64dp"
                             android:background="@drawable/circlebackground"
                             android:padding="10dp"
-                            android:src="@drawable/people" />
+                            app:srcCompat="@drawable/people" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -69,8 +69,8 @@
                     android:layout_marginStart="3dp"
                     android:clickable="true"
                     android:focusable="true"
-                    android:visibility="gone"
-                    android:foreground="?android:attr/selectableItemBackground">
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:visibility="gone">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -84,7 +84,7 @@
                             android:layout_height="64dp"
                             android:background="@drawable/circlebackground"
                             android:padding="10dp"
-                            android:src="@drawable/ic_picture_as_pdf_black_24dp" />
+                            app:srcCompat="@drawable/ic_picture_as_pdf_black_24dp" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -114,8 +114,8 @@
                     android:layout_marginStart="10dp"
                     android:clickable="true"
                     android:focusable="true"
-                    android:visibility="gone"
-                    android:foreground="?android:attr/selectableItemBackground">
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:visibility="gone">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -204,7 +204,7 @@
                             android:layout_height="64dp"
                             android:background="@drawable/circlebackground"
                             android:padding="10dp"
-                            android:src="@drawable/inventory_report" />
+                            app:srcCompat="@drawable/inventory_report" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -238,7 +238,7 @@
                             android:layout_height="64dp"
                             android:background="@drawable/circlebackground"
                             android:padding="10dp"
-                            android:src="@drawable/sales_report_up" />
+                            app:srcCompat="@drawable/sales_report_up" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -279,7 +279,7 @@
                             android:layout_height="64dp"
                             android:background="@drawable/circlebackground"
                             android:padding="10dp"
-                            android:src="@drawable/attendance_report" />
+                            app:srcCompat="@drawable/attendance_report" />
 
                         <TextView
                             android:layout_width="wrap_content"

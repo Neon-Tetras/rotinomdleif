@@ -75,12 +75,16 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
         AdapterView.OnItemClickListener,
         SwipeRefreshLayout.OnRefreshListener, AdapterView.OnItemLongClickListener {
 
-    private static ListView taskListView;
-
-    private static TextView noTaskNotif;
-    private CircleImageView userImage;
-    private static SwipeRefreshLayout swipeRefreshLayout;
+    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     static Context cxt;
+    private static ListView taskListView;
+    private static TextView noTaskNotif;
+    private static SwipeRefreshLayout swipeRefreshLayout;
+    ProgressDialog pg;
+    float results[] = new float[3];
+    int alertType = 0;
+    LatLng latLng;
+    private CircleImageView userImage;
     private User loggedInUser;
     private Task selectedTask;
     private TextView clockInText;
@@ -98,9 +102,9 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
             loggedInUser = (User)extras.getSerializable(getString(R.string.loggedInUser));
         }
 
-        if(loggedInUser != null && loggedInUser.getRoleId() != User.SUPERVISOR){
-            findViewById(R.id.newTaskButton).setVisibility(View.GONE);
-        }
+//        if(loggedInUser != null && loggedInUser.getRoleId() != User.SUPERVISOR){
+//            findViewById(R.id.newTaskButton).setVisibility(View.GONE);
+//        }
 
     }
 
@@ -122,6 +126,7 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
         findViewById(R.id.newTaskButton).setOnClickListener(this);
         taskListView.setOnItemLongClickListener(this);
     }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -343,9 +348,212 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
         return false;
     }
 
+    private void getLocation(final Task task) {
+
+        final String clockIn = getString(R.string.clockIn);
+        final String clockOut = getString(R.string.clockOut);
+        if (clockInText.getTag().toString().equalsIgnoreCase(getString(R.string.clockIn))) {
+            alertType = 0;
+        } else {
+            alertType = 1;
+        }
+        final LocationManager mLocationManager;
+
+        try {
+
+            Criteria criteria = new Criteria();
+
+            criteria.setAccuracy(Criteria.ACCURACY_COARSE);
+            criteria.setPowerRequirement(Criteria.POWER_LOW);
+            criteria.setAltitudeRequired(false);
+            criteria.setBearingRequired(false);
+            criteria.setSpeedRequired(true);
+            criteria.setCostAllowed(true);
+            criteria.setHorizontalAccuracy(Criteria.ACCURACY_HIGH);
+            criteria.setVerticalAccuracy(Criteria.ACCURACY_MEDIUM);
+            criteria.setBearingAccuracy(Criteria.ACCURACY_LOW);
+            criteria.setSpeedAccuracy(Criteria.ACCURACY_HIGH);
+
+            mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+
+            if (mLocationManager != null) {
+                final String bestProvider = mLocationManager.getBestProvider(criteria, true);
+                //Toast.makeText(cxt,bestProvider,Toast.LENGTH_LONG).show();
+                final LocationListener locationListener = new LocationListener() {
+
+                    @Override
+                    public void onLocationChanged(Location location) {
+                        latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                        if (pg.isShowing()) {
+                            pg.dismiss();
+                        }
+                        final AlertDialog alertDialog = new AlertDialog.Builder(cxt).create();
+                        if (isWithinClockInRange(task.getLatitude(), task.getLongitude(), latLng.latitude, latLng.longitude)) {
+                            if (clockInText == null) {
+                                return;
+                            }
+
+                            if (clockInText.getTag().toString().equalsIgnoreCase(getString(R.string.clockOut))) {
+                                Intent i = new Intent(cxt, ReportActivity.class);
+                                i.putExtra("task", selectedTask);
+                                i.putExtra(getString(R.string.loggedInUser), loggedInUser);
+                                i.putExtra("stop_lat", "" + latLng.latitude);
+                                i.putExtra("stop_long", "" + latLng.longitude);
+
+
+                                startActivity(i);
+                                return;
+                            }
+                            RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+                            Date date = new Date(location.getTime());
+                            SimpleDateFormat dtf = new SimpleDateFormat("yyyy/M/dd HH:mm:ss");
+                            String formatedTime = null;
+                            try {
+                                formatedTime = URLEncoder.encode(dtf.format(date), "UTF-8");
+                            } catch (UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                            }
+                            String uri = null;
+
+                            uri = String.format("%s%s?key=%s",
+                                    getString(R.string.api_url),
+                                    getString(R.string.clockInUrl),
+                                    getString(R.string.field_worker_api_key)) +
+                                    "&start_longitude=" + latLng.longitude +
+                                    "&start_latitude=" +
+                                    latLng.latitude + "&user_id=" +
+                                    loggedInUser.getId() + "&task_id=" +
+                                    task.getId() + "&start_time=" +
+                                    formatedTime;
+
+
+                            StringRequest stringRequest = new StringRequest(Request.Method.GET, uri, new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
+                                    if (response == null) return;
+
+                                    try {
+                                        JSONObject obj = new JSONObject(response);
+                                        if (obj.getInt("statusCode") == Entity.STATUS_OK) {
+
+                                            alertDialog.setMessage("Clock-in successful");
+                                            alertDialog.show();
+
+                                            loadTasks();
+
+                                        } else {
+                                            Toast.makeText(cxt, obj.getString("message"), Toast.LENGTH_LONG).show();
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                        System.err.println(response);
+                                    }
+                                }
+                            }, new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+
+                                }
+                            });
+                            queue.add(stringRequest);
+
+                        } else {
+
+                            //Report clock-in mismatch
+                            new android.os.AsyncTask<String, Void, String>() {
+                                @Override
+                                protected String doInBackground(String... strings) {
+                                    return Network.backgroundTask(null, strings[0]);
+                                }
+
+                                @Override
+                                protected void onPostExecute(String s) {
+                                    super.onPostExecute(s);
+                                }
+                            }.execute(getString(R.string.api_url) + getString(R.string.alert_api) + "?key=" + getString(R.string.field_worker_api_key) + "&task_id=" + task.getId() + "&longitude=" + latLng.longitude + "&latitude=" + latLng.latitude + "&alert_type=" + alertType);
+
+                            alertDialog.setMessage("Clock-in/Clock out failed!\nPlease report at your place of assignment to clock-in/Clock-out");
+                            alertDialog.show();
+
+                            final AlertDialog navAlertDialog = new AlertDialog.Builder(cxt).create();
+                            View navPromptView = View.inflate(cxt, R.layout.task_listing_long_click_nav_menu, null);
+                            alertDialog.setView(navPromptView);
+
+                            TextView viewNav = navPromptView.findViewById(R.id.viewNavText);
+                            //TextView approveReport = promptView.findViewById(R.id.approveReport);
+//                            TextView editTask = navPromptView.findViewById(R.id.editTask);
+//                            clockInText = navPromptView.findViewById(R.id.clock_in);
+
+
+                        }
+
+
+                    }
+
+                    @Override
+                    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+                    }
+
+                    @Override
+                    public void onProviderEnabled(String provider) {
+
+                    }
+
+                    @Override
+                    public void onProviderDisabled(String provider) {
+
+                    }
+                };
+
+                mLocationManager.requestSingleUpdate(bestProvider, locationListener, null);
+
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mLocationManager.removeUpdates(locationListener);
+
+                        if (latLng == null) {
+                            Toast.makeText(cxt, "Sorry we could not detect your location.\nPlease try again", Toast.LENGTH_LONG).show();
+                        }
+                        pg.dismiss();
+                    }
+                }, 30000);
+            }
+        } catch (SecurityException e) {
+            e.printStackTrace();
+            pg.dismiss();
+        }
+
+    }
+
+    public boolean isWithinClockInRange(Double taskLat, Double taskLng, Double nurseLat, Double nurseLng) {
+        Location.distanceBetween(taskLat, taskLng, nurseLat, nurseLng, results);
+        return results[0] <= 200;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (grantResults.length > 0
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+
+        } else {
+            Toast.makeText(cxt, "You need to grant location permission", Toast.LENGTH_LONG).show();
+            if (pg.isShowing()) {
+                pg.dismiss();
+            }
+        }
+    }
 
     private static class AssignedTaskNetwork extends android.os.AsyncTask<String,Void,String>{
 
+
+        static ArrayList<Task> taskList = new ArrayList<>();
+        static ArrayAdapter<Task> taskArrayAdapter;
 
         @Override
         protected String doInBackground(String... strings) {
@@ -530,223 +738,5 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
                 e.printStackTrace();
             }
         }
-        static ArrayList<Task> taskList = new ArrayList<>();
-        static ArrayAdapter<Task> taskArrayAdapter;
     }
-
-
-    private void getLocation(final Task task) {
-
-        final String clockIn = getString(R.string.clockIn);
-        final String clockOut = getString(R.string.clockOut);
-       if(clockInText.getTag().toString().equalsIgnoreCase(getString(R.string.clockIn))){
-           alertType = 0;
-       }else{
-           alertType = 1;
-       }
-        final LocationManager mLocationManager;
-
-        try {
-
-            Criteria criteria = new Criteria();
-
-            criteria.setAccuracy(Criteria.ACCURACY_COARSE);
-            criteria.setPowerRequirement(Criteria.POWER_LOW);
-            criteria.setAltitudeRequired(false);
-            criteria.setBearingRequired(false);
-            criteria.setSpeedRequired(true);
-            criteria.setCostAllowed(true);
-            criteria.setHorizontalAccuracy(Criteria.ACCURACY_HIGH);
-            criteria.setVerticalAccuracy(Criteria.ACCURACY_MEDIUM);
-            criteria.setBearingAccuracy(Criteria.ACCURACY_LOW);
-            criteria.setSpeedAccuracy(Criteria.ACCURACY_HIGH);
-
-            mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-
-
-
-            if (mLocationManager != null) {
-               final String bestProvider = mLocationManager.getBestProvider(criteria, true);
-              //Toast.makeText(cxt,bestProvider,Toast.LENGTH_LONG).show();
-                final LocationListener locationListener = new LocationListener() {
-
-                    @Override
-                    public void onLocationChanged(Location location) {
-                         latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                        if(pg.isShowing()){
-                            pg.dismiss();
-                        }
-                        final AlertDialog alertDialog = new AlertDialog.Builder(cxt).create();
-                        if (isWithinClockInRange(task.getLatitude(), task.getLongitude(), latLng.latitude, latLng.longitude)) {
-                            if(clockInText == null){
-                                return;
-                            }
-
-                            if(clockInText.getTag().toString().equalsIgnoreCase(getString(R.string.clockOut))){
-                                Intent i =  new Intent(cxt,ReportActivity.class);
-                                i.putExtra("task",selectedTask);
-                                i.putExtra(getString(R.string.loggedInUser),loggedInUser);
-                                i.putExtra("stop_lat",""+latLng.latitude);
-                                i.putExtra("stop_long",""+latLng.longitude);
-
-
-                                startActivity(i);
-                                return;
-                            }
-                            RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-                            Date date = new Date(location.getTime());
-                            SimpleDateFormat dtf = new SimpleDateFormat("yyyy/M/dd HH:mm:ss");
-                            String formatedTime = null;
-                            try {
-                                formatedTime = URLEncoder.encode(dtf.format(date),"UTF-8");
-                            } catch (UnsupportedEncodingException e) {
-                                e.printStackTrace();
-                            }
-                            String uri = null;
-
-                            uri =String.format("%s%s?key=%s",
-                                    getString(R.string.api_url),
-                                    getString(R.string.clockInUrl),
-                                    getString(R.string.field_worker_api_key)) +
-                                    "&start_longitude=" + latLng.longitude +
-                                    "&start_latitude=" +
-                                    latLng.latitude + "&user_id=" +
-                                    loggedInUser.getId() + "&task_id=" +
-                                    task.getId() + "&start_time=" +
-                                    formatedTime;
-
-
-                            StringRequest stringRequest = new StringRequest(Request.Method.GET, uri, new Response.Listener<String>() {
-                                @Override
-                                public void onResponse(String response) {
-                                    if(response ==null) return;
-
-                                    try {
-                                        JSONObject obj = new JSONObject(response);
-                                        if(obj.getInt("statusCode") == Entity.STATUS_OK){
-
-                                            alertDialog.setMessage("Clock-in successful");
-                                            alertDialog.show();
-
-                                            loadTasks();
-
-                                        }else{
-                                            Toast.makeText(cxt,obj.getString("message"),Toast.LENGTH_LONG).show();
-                                        }
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                        System.err.println(response);
-                                    }
-                                }
-                            }, new Response.ErrorListener() {
-                                @Override
-                                public void onErrorResponse(VolleyError error) {
-
-                                }
-                            });
-                            queue.add(stringRequest);
-
-                        }else{
-
-                            //Report clock-in mismatch
-                            new android.os.AsyncTask<String,Void,String>(){
-                                @Override
-                                protected String doInBackground(String... strings) {
-                                    return Network.backgroundTask(null,strings[0]);
-                                }
-
-                                @Override
-                                protected void onPostExecute(String s) {
-                                    super.onPostExecute(s);
-                                }
-                            }.execute(getString(R.string.api_url)+getString(R.string.alert_api)+"?key="+getString(R.string.field_worker_api_key)+"&task_id="+task.getId()+"&longitude="+latLng.longitude+"&latitude="+latLng.latitude+"&alert_type="+alertType);
-
-                            alertDialog.setMessage("Clock-in/Clock out failed!\nPlease report at your place of assignment to clock-in/Clock-out");
-                            alertDialog.show();
-                            
-                            final AlertDialog navAlertDialog = new AlertDialog.Builder(cxt).create();
-                            View navPromptView = View.inflate(cxt,R.layout.task_listing_long_click_nav_menu,null);
-                            alertDialog.setView(navPromptView);
-
-                            TextView viewNav  = navPromptView.findViewById(R.id.viewNavText);
-                            //TextView approveReport = promptView.findViewById(R.id.approveReport);
-//                            TextView editTask = navPromptView.findViewById(R.id.editTask);
-//                            clockInText = navPromptView.findViewById(R.id.clock_in);
-
-
-                        }
-
-
-
-                    }
-
-                    @Override
-                    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-                    }
-
-                    @Override
-                    public void onProviderEnabled(String provider) {
-
-                    }
-
-                    @Override
-                    public void onProviderDisabled(String provider) {
-
-                    }
-                };
-
-                mLocationManager.requestSingleUpdate(bestProvider,locationListener , null);
-
-                Handler handler = new Handler();
-                 handler.postDelayed(new Runnable() {
-                     @Override
-                     public void run() {
-                            mLocationManager.removeUpdates(locationListener);
-
-                            if(latLng == null) {
-                                Toast.makeText(cxt, "Sorry we could not detect your location.\nPlease try again", Toast.LENGTH_LONG).show();
-                            }
-                            pg.dismiss();
-                     }
-                 },30000);
-            }
-        } catch (SecurityException e) {
-            e.printStackTrace();
-            pg.dismiss();
-        }
-
-    }
-
-
-    public boolean isWithinClockInRange(Double taskLat, Double taskLng, Double nurseLat, Double nurseLng) {
-        Location.distanceBetween(taskLat, taskLng, nurseLat, nurseLng, results);
-        return results[0] <= 200;
-    }
-
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (grantResults.length > 0
-                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-
-
-
-        }else{
-            Toast.makeText(cxt,"You need to grant location permission",Toast.LENGTH_LONG).show();
-            if(pg.isShowing()) {
-                pg.dismiss();
-            }
-        }
-    }
-
-
-    ProgressDialog pg;
-    float results[] = new float[3];
-    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
-    int alertType = 0;
-    LatLng latLng;
 }
