@@ -2,8 +2,8 @@ package com.example.titomi.workertrackerloginmodule.dashboard_fragments;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.os.Bundle;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -105,7 +105,7 @@ public class FragmentTask extends Fragment{
         String url = "";
         switch (loggedInUser.getRoleId()){
             case User.SUPERVISOR:
-                url = getString(R.string.api_url)+getString(R.string.task_url)+"?view=supervisor&key="+getString(R.string.field_worker_api_key)+"&id="+loggedInUser.getId();
+                url = getString(R.string.api_url) + getString(R.string.task_url) + "?view=worker&key=" + getString(R.string.field_worker_api_key) + "&id=" + loggedInUser.getId();
                 break;
             case User.NURSE:
                 url = getString(R.string.api_url)+getString(R.string.task_url)+"?view=worker&key="+getString(R.string.field_worker_api_key)+"&id="+loggedInUser.getId();

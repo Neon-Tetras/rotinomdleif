@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -88,7 +89,7 @@ public class ActivityReportListing extends AppCompatActivity implements AdapterV
         getNewReports();
     }
 
-    private  static void getNewReports() {
+    private void getNewReports() {
         SimpleDateFormat dtf = new SimpleDateFormat("yyyy/MM/dd");
         try {
             String from = Network.encodeUrl(dtf.format(new Date()));
@@ -170,7 +171,7 @@ public class ActivityReportListing extends AppCompatActivity implements AdapterV
     }
 
 
-    private static class ReportNetwork extends android.os.AsyncTask<String,Void,String>{
+    private class ReportNetwork extends android.os.AsyncTask<String, Void, String> {
 
 
         @Override
@@ -194,6 +195,10 @@ public class ActivityReportListing extends AppCompatActivity implements AdapterV
 
             try {
                 JSONArray jsonArray = new JSONArray(s);
+                if (jsonArray.length() == 0) {
+                    Snackbar snackbar = Snackbar.make(findViewById(R.id.parent), "No submitted report today", Snackbar.LENGTH_LONG);
+                    snackbar.show();
+                }
                 taskList.clear();
              //   Toast.makeText(cxt,"Length: "+jsonArray.length(),Toast.LENGTH_SHORT).show();
                 if(jsonArray.length() > 0){
@@ -301,6 +306,8 @@ public class ActivityReportListing extends AppCompatActivity implements AdapterV
                 reportList.setAdapter(taskArrayAdapter);
 
             } catch (JSONException e) {
+                Snackbar snackbar = Snackbar.make(findViewById(R.id.parent), "No submitted report today", Snackbar.LENGTH_LONG);
+                snackbar.show();
                 e.printStackTrace();
                 System.err.println(s);
             } catch (ParseException e) {

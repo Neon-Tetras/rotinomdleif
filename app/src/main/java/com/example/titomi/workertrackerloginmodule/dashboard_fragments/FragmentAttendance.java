@@ -107,7 +107,7 @@ public class FragmentAttendance extends Fragment implements SwipeRefreshLayout.O
         String url = "";
         switch (loggedInUser.getRoleId()) {
             case User.SUPERVISOR:
-                url = getString(R.string.api_url) + getString(R.string.task_url) + "?view=supervisor&key=" + getString(R.string.field_worker_api_key) + "&id=" + loggedInUser.getId();
+                url = getString(R.string.api_url) + getString(R.string.task_url) + "?view=worker&key=" + getString(R.string.field_worker_api_key) + "&id=" + loggedInUser.getId();
                 break;
             case User.NURSE:
                 url = getString(R.string.api_url) + getString(R.string.task_url) + "?view=worker&key=" + getString(R.string.field_worker_api_key) + "&id=" + loggedInUser.getId();

@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="5dp"
-    tools:context="com.example.titomi.workertrackerloginmodule.supervisor.activities.ActivityReportListing">
+    tools:context="com.example.titomi.workertrackerloginmodule.supervisor.activities.ActivityReportListing"
+    android:id="@+id/parent">
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefresh"
