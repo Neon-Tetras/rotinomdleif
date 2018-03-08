@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
@@ -112,6 +113,18 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
 
         assignSelfChecked = selfAssignCheck.isChecked();
 
+        selfAssignCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    Toast.makeText(cxt, "Supervisor only", Toast.LENGTH_SHORT).show();
+                    workerSpinner.setEnabled(false);
+                } else if (!isChecked)
+                    Toast.makeText(cxt, "Show all Workers", Toast.LENGTH_SHORT).show();
+                workerSpinner.setEnabled(true);
+            }
+        });
+
 
         if(getIntent().getExtras() != null){
             loggedInUser = (User)getIntent().getExtras().getSerializable(getString(R.string.loggedInUser));
@@ -159,13 +172,6 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
                 }
 
             break;
-            case R.id.selfCheckBox:
-                if (!assignSelfChecked) {
-                    Toast.makeText(cxt, "Unchecked", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(cxt, "Checked", Toast.LENGTH_SHORT).show();
-                }
-                break;
         }
     }
 
@@ -473,8 +479,12 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
                         taskData.put(getString(R.string.id), "" + selectedTask.getId());
                     }
                     taskData.put(getString(R.string.supervisor_id), "" + loggedInUser.getId());
-                    taskData.put(getString(R.string.worker_id), "" +
-                            workerIds.get(InputValidator.validateSpinner(workerSpinner, -1)));
+                    if (selfAssignCheck.isChecked()) {
+                        taskData.put(getString(R.string.worker_id), "" + loggedInUser.getId());
+                    } else if (!selfAssignCheck.isChecked()) {
+                        taskData.put(getString(R.string.worker_id), "" +
+                                workerIds.get(InputValidator.validateSpinner(workerSpinner, -1)));
+                    }
                     taskData.put(getString(R.string._task_type), taskTypeSpinner.getSelectedItem().toString());
                     taskData.put(getString(R.string.task_title), InputValidator.validateText(taskTitleEdit, 2));
                     taskData.put(getString(R.string.task_description), InputValidator.validateText(taskDescriptionEdit, 3));
