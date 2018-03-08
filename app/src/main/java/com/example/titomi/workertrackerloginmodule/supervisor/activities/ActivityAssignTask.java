@@ -60,7 +60,7 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
     private EditText dateEditText;
     private EditText timeEditText,taskTitleEdit,
             taskDescriptionEdit,institutionNameEdit,
-            fullAddressEdit,quantityEdit,contactFullNameEdit,contactNumberEdit,locationEdit;
+            fullAddressEdit, contactFullNameEdit, contactNumberEdit, locationEdit;
     private Spinner stateSpinner, lgaSpinner, taskTypeSpinner;
     private Spinner workerSpinner;
     private TextView selectLocationText;
@@ -89,7 +89,6 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
         taskDescriptionEdit = findViewById(R.id.description);
         institutionNameEdit = findViewById(R.id.institution);
         fullAddressEdit = findViewById(R.id.fullAddress);
-        quantityEdit = findViewById(R.id.quantity);
         contactFullNameEdit = findViewById(R.id.contactFullName);
         contactNumberEdit = findViewById(R.id.contactPhone);
         assignTaskBut = findViewById(R.id.assignTaskBut);
@@ -192,7 +191,6 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
         taskDescriptionEdit.setText(task.getDescription());
         institutionNameEdit.setText(task.getInstitution_name());
         fullAddressEdit.setText(task.getAddress());
-        quantityEdit.setText(String.format("%d",task.getQuantity()));
         contactFullNameEdit.setText(task.getContactName());
         contactNumberEdit.setText(task.getContactNumber());
 
@@ -493,7 +491,6 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
 
                     taskData.put(getString(R.string.state), InputValidator.validateText(stateSpinner.getSelectedItem().toString(), 2));
                     taskData.put(getString(R.string.lga), lgas.get(InputValidator.validateSpinner(lgaSpinner, -1)));
-                    taskData.put(getString(R.string.quantity), InputValidator.validateText(quantityEdit, 1));
                     taskData.put(getString(R.string.state), InputValidator.validateText(stateSpinner.getSelectedItem().toString(), 2));
                     taskData.put(getString(R.string.contact_full_name), InputValidator.validateText(contactFullNameEdit, 2));
                     taskData.put(getString(R.string.date_given), InputValidator.validateText(dateEditText, 8).replaceAll("/", "-"));//.toString());
@@ -525,7 +522,6 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
 
                     taskData.put(getString(R.string.state), InputValidator.validateText(stateSpinner.getSelectedItem().toString(), 2));
                     taskData.put(getString(R.string.lga), lgas.get(InputValidator.validateSpinner(lgaSpinner, -1)));
-                    taskData.put(getString(R.string.quantity), InputValidator.validateText(quantityEdit, 1));
                     taskData.put(getString(R.string.state), InputValidator.validateText(stateSpinner.getSelectedItem().toString(), 2));
                     taskData.put(getString(R.string.contact_full_name), InputValidator.validateText(contactFullNameEdit, 2));
                     taskData.put(getString(R.string.date_given), InputValidator.validateText(dateEditText, 8).replaceAll("/", "-"));//.toString());
@@ -610,7 +606,7 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
     private void clearAllFields() {
         Util.clearEditTexts(dateEditText, timeEditText, taskTitleEdit,
                 taskDescriptionEdit, institutionNameEdit,
-                fullAddressEdit, quantityEdit, contactFullNameEdit, contactNumberEdit, locationEdit);
+                fullAddressEdit, contactFullNameEdit, contactNumberEdit, locationEdit);
 //        Util.clearSpinner(workerSpinner, stateSpinner, lgaSpinner, taskTypeSpinner);
         Util.clearSpinner(stateSpinner, lgaSpinner, taskTypeSpinner);
     }
