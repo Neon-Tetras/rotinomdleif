@@ -12,53 +12,64 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.titomi.workertrackerloginmodule.R;
+import com.example.titomi.workertrackerloginmodule.supervisor.Entity;
+import com.example.titomi.workertrackerloginmodule.supervisor.Task;
+import com.example.titomi.workertrackerloginmodule.supervisor.User;
+import com.example.titomi.workertrackerloginmodule.supervisor.util.DateTimeUtil;
+import com.example.titomi.workertrackerloginmodule.supervisor.util.InputValidator;
+import com.example.titomi.workertrackerloginmodule.supervisor.util.Network;
+import com.example.titomi.workertrackerloginmodule.supervisor.util.NetworkChecker;
+import com.example.titomi.workertrackerloginmodule.supervisor.util.Util;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
+import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import com.example.titomi.workertrackerloginmodule.R;
-import com.example.titomi.workertrackerloginmodule.supervisor.Entity;
-
-import com.example.titomi.workertrackerloginmodule.supervisor.User;
-import com.example.titomi.workertrackerloginmodule.supervisor.Task;
-import com.example.titomi.workertrackerloginmodule.supervisor.util.InputValidator;
-import com.example.titomi.workertrackerloginmodule.supervisor.util.DateTimeUtil;
-import com.example.titomi.workertrackerloginmodule.supervisor.util.Network;
-import com.example.titomi.workertrackerloginmodule.supervisor.util.NetworkChecker;
-import com.example.titomi.workertrackerloginmodule.supervisor.util.Util;
-import com.google.android.gms.maps.model.LatLng;
-
 import static com.example.titomi.workertrackerloginmodule.supervisor.util.Network.backgroundTask;
 
 public class ActivityAssignTask extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener{
 
+    public static final String update = "update";
+    final String assign = "assign";
     Context cxt;
+    Boolean assignSelfChecked;
+    ArrayList<Long> workerIds = new ArrayList<>();
+    ArrayList<String> workerNames = new ArrayList<>();
+    ArrayList<String> states = new ArrayList<>();
+    ArrayList<String> lgas = new ArrayList<>();
+    String selectedState;
+    HashMap<String, String> taskData = new HashMap<>();
     private EditText dateEditText;
     private EditText timeEditText,taskTitleEdit,
             taskDescriptionEdit,institutionNameEdit,
             fullAddressEdit,quantityEdit,contactFullNameEdit,contactNumberEdit,locationEdit;
-    private Spinner workerSpinner,stateSpinner,lgaSpinner,taskTypeSpinner;
+    private Spinner stateSpinner, lgaSpinner, taskTypeSpinner;
+    private Spinner workerSpinner;
     private TextView selectLocationText;
     private Button assignTaskBut;
+    private CheckBox selfAssignCheck;
     private ProgressBar lgaLoading;
     private Task selectedTask;
     private User loggedInUser;
+    private LatLng taskCoordinates;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +84,7 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
         lgaSpinner = (Spinner)findViewById(R.id.lga);
         selectLocationText = findViewById(R.id.selectLocation);
         taskTitleEdit = findViewById(R.id.taskTitle);
+        selfAssignCheck = findViewById(R.id.selfCheckBox);
         taskDescriptionEdit = findViewById(R.id.description);
         institutionNameEdit = findViewById(R.id.institution);
         fullAddressEdit = findViewById(R.id.fullAddress);
@@ -93,8 +105,12 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
         ActionBar actionBar = getSupportActionBar();
         actionBar.setLogo(R.drawable.app_logo);
         actionBar.setDisplayUseLogoEnabled(true);
+        selfAssignCheck.setOnClickListener(this);
+
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        assignSelfChecked = selfAssignCheck.isChecked();
 
 
         if(getIntent().getExtras() != null){
@@ -107,6 +123,15 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
                 loadWorkerSpinner();
             }
 
+        }
+
+        switch (loggedInUser.getRoleId()) {
+            case User.SUPERVISOR:
+                selfAssignCheck.setVisibility(View.VISIBLE);
+                break;
+            case User.NURSE:
+                selfAssignCheck.setVisibility(View.GONE);
+                break;
         }
 
 
@@ -134,6 +159,13 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
                 }
 
             break;
+            case R.id.selfCheckBox:
+                if (!assignSelfChecked) {
+                    Toast.makeText(cxt, "Unchecked", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(cxt, "Checked", Toast.LENGTH_SHORT).show();
+                }
+                break;
         }
     }
 
@@ -197,7 +229,6 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
         super.onSaveInstanceState(outState);
     }
 
-
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
@@ -234,64 +265,120 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
     }
 
     private void loadWorkerSpinner(){
-      //  final ProgressDialog d = new ProgressDialog(cxt);
-        new android.os.AsyncTask<String,Void,String>(){
-            @Override
-            protected String doInBackground(String... params) {
-                return backgroundTask(null,params[0]);
-            }
+        //  final ProgressDialog d = new ProgressDialog(cxt);
+        switch (loggedInUser.getRoleId()) {
+            case User.SUPERVISOR:
+                new android.os.AsyncTask<String,Void,String>(){
+                    @Override
+                    protected String doInBackground(String... params) {
+                        return backgroundTask(null,params[0]);
+                    }
 
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-              //  d.setMessage(getString(R.string.please_wait));
-              //  d.show();
-            }
+                    @Override
+                    protected void onPreExecute() {
+                        super.onPreExecute();
+                        //  d.setMessage(getString(R.string.please_wait));
+                        //  d.show();
+                    }
 
-            @Override
-            protected void onPostExecute(String s) {
-               // super.onPostExecute(s);
+                    @Override
+                    protected void onPostExecute(String s) {
+                        // super.onPostExecute(s);
 
-              //  Toast.makeText(cxt,s,Toast.LENGTH_LONG).show();
-              //  d.dismiss();
-                if(s == null){
-                  //  Toast.makeText(cxt,"returned null",Toast.LENGTH_LONG).show();
-                    return;
+                        //  Toast.makeText(cxt,s,Toast.LENGTH_LONG).show();
+                        //  d.dismiss();
+                        if(s == null){
+                            //  Toast.makeText(cxt,"returned null",Toast.LENGTH_LONG).show();
+                            return;
 
-                }
+                        }
 
-                try {
-                    JSONArray array = new JSONArray(s);
+                        try {
+                            JSONArray array = new JSONArray(s);
 
-                    workerIds.clear();
-                    workerNames.clear();
-                   // Toast.makeText(cxt,""+array.length(),Toast.LENGTH_LONG).show();
-                    for(int i = 0; i< array.length(); i++){
-                        JSONObject obj = array.getJSONObject(i);
-                        workerIds.add(obj.getLong("id"));
-                        workerNames.add(String.format("%s %s - %s",
-                                obj.getString("first_name"),
-                                obj.getString("last_name"),
-                                obj.getString("line_id")));
-
+                            workerIds.clear();
+                            workerNames.clear();
+                            // Toast.makeText(cxt,""+array.length(),Toast.LENGTH_LONG).show();
+                            for(int i = 0; i< array.length(); i++){
+                                JSONObject obj = array.getJSONObject(i);
+                                workerIds.add(obj.getLong("id"));
+                                workerNames.add(String.format("%s %s - %s",
+                                        obj.getString("first_name"),
+                                        obj.getString("last_name"),
+                                        obj.getString("line_id")));
+                            }
+                            //  Toast.makeText(cxt,workerNames.get(0),Toast.LENGTH_LONG).show();
+                            setupWorkerSpinner();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Toast.makeText(cxt,e.getMessage(),Toast.LENGTH_LONG).show();
+                        }
 
                     }
-                  //  Toast.makeText(cxt,workerNames.get(0),Toast.LENGTH_LONG).show();
-                    setupWorkerSpinner();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    Toast.makeText(cxt,e.getMessage(),Toast.LENGTH_LONG).show();
-                }
 
-            }
+                    //TODO: get the supervisor id programmatically
 
-            //TODO: get the supervisor id programmatically
+                }.execute(String.format("%s?key=%s&view=get_workers&id=%d",getString(R.string.api_url)+getString(R.string.supervisor_view_url),getString(R.string.field_worker_api_key),loggedInUser.getId()));
+                break;
 
-        }.execute(String.format("%s?key=%s&view=get_workers&id=%d",getString(R.string.api_url)+getString(R.string.supervisor_view_url),getString(R.string.field_worker_api_key),loggedInUser.getId()));
+            case User.NURSE:
+
+                new android.os.AsyncTask<String, Void, String>() {
+                    @Override
+                    protected String doInBackground(String... params) {
+                        return backgroundTask(null, params[0]);
+                    }
+
+                    @Override
+                    protected void onPreExecute() {
+                        super.onPreExecute();
+                        //  d.setMessage(getString(R.string.please_wait));
+                        //  d.show();
+                    }
+
+                    @Override
+                    protected void onPostExecute(String s) {
+                        // super.onPostExecute(s);
+
+                        //  Toast.makeText(cxt,s,Toast.LENGTH_LONG).show();
+                        //  d.dismiss();
+                        if (s == null) {
+                            //  Toast.makeText(cxt,"returned null",Toast.LENGTH_LONG).show();
+                            return;
+
+                        }
+
+                        try {
+                            JSONObject obj = new JSONObject(s);
+
+                            workerIds.clear();
+                            workerNames.clear();
+                            // Toast.makeText(cxt,""+array.length(),Toast.LENGTH_LONG).show();
+//                            for(int i = 0; i< obj.length();){
+//                                JSONObject obj = array.getJSONObject(i);
+                            workerIds.add(obj.getLong("id"));
+                            workerNames.add(String.format("%s %s - %s",
+                                    obj.getString("first_name"),
+                                    obj.getString("last_name"),
+                                    obj.getString("line_id")));
+//                            }
+                            //  Toast.makeText(cxt,workerNames.get(0),Toast.LENGTH_LONG).show();
+                            setupWorkerSpinner();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+//                            Toast.makeText(cxt,e.getMessage(),Toast.LENGTH_LONG).show();
+                            System.out.println(e.getMessage());
+                        }
+
+                    }
+
+                    //TODO: get the supervisor id programmatically
+
+                }.execute(String.format("%suser/view.php?key=%s&view=by_id&id=%d", getString(R.string.api_url), getString(R.string.field_worker_api_key), loggedInUser.getId()));
+//                String dfg = "http://fieldmonitor.co/fieldworker_api/user/view.php?key=a66Zo3osEyV7o&view=all";
+                break;
+        }
     }
-
-
-
 
     private void setupLgaSpinner(){
         ArrayAdapter<String> lgaAdapter = new ArrayAdapter<>(cxt, android.R.layout.simple_spinner_dropdown_item, lgas);
@@ -356,6 +443,7 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
 
         }.execute(getString(R.string.api_url)+getString(R.string.state_api_url)+"?view=lga&state="+selectedState);
     }
+
     private void setupWorkerSpinner(){
         if(workerNames.size() == 0){
             return;
@@ -366,40 +454,83 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
 
         if(selectedTask != null){
 
+//            switch (loggedInUser.getRoleId()){
+//                case User.SUPERVISOR:
             workerSpinner.setSelection(Arrays.asList(workerIds.toArray()).indexOf(selectedTask.getWorker().getId()));
+//                break;
+//                case User.NURSE:
+//                workerSpinner.setSelection(Arrays.asList(workerIds.toArray()).indexOf(selectedTask.get));
+//                break;
+//            }
         }
     }
 
     private void assignTask(String api_url){
-        try {
-            if(selectedTask != null) {
-                taskData.put(getString(R.string.id), "" + selectedTask.getId());
-            }
-            taskData.put(getString(R.string.supervisor_id),""+loggedInUser.getId());
-            taskData.put(getString(R.string.worker_id),""+
-                    workerIds.get(InputValidator.validateSpinner(workerSpinner,-1)));
-            taskData.put(getString(R.string._task_type),taskTypeSpinner.getSelectedItem().toString());
-            taskData.put(getString(R.string.task_title),InputValidator.validateText(taskTitleEdit,2));
-            taskData.put(getString(R.string.task_description),InputValidator.validateText(taskDescriptionEdit,3));
-            taskData.put(getString(R.string.task_location),InputValidator.validateText(locationEdit,2));
-            taskData.put(getString(R.string.full_address),InputValidator.validateText(fullAddressEdit,5));
+        switch (loggedInUser.getRoleId()) {
+            case User.SUPERVISOR:
+                try {
+                    if (selectedTask != null) {
+                        taskData.put(getString(R.string.id), "" + selectedTask.getId());
+                    }
+                    taskData.put(getString(R.string.supervisor_id), "" + loggedInUser.getId());
+                    taskData.put(getString(R.string.worker_id), "" +
+                            workerIds.get(InputValidator.validateSpinner(workerSpinner, -1)));
+                    taskData.put(getString(R.string._task_type), taskTypeSpinner.getSelectedItem().toString());
+                    taskData.put(getString(R.string.task_title), InputValidator.validateText(taskTitleEdit, 2));
+                    taskData.put(getString(R.string.task_description), InputValidator.validateText(taskDescriptionEdit, 3));
+                    taskData.put(getString(R.string.task_location), InputValidator.validateText(locationEdit, 2));
+                    taskData.put(getString(R.string.full_address), InputValidator.validateText(fullAddressEdit, 5));
 
-            taskData.put(getString(R.string.state),InputValidator.validateText(stateSpinner.getSelectedItem().toString(),2));
-            taskData.put(getString(R.string.lga),lgas.get(InputValidator.validateSpinner(lgaSpinner,-1)));
-            taskData.put(getString(R.string.quantity),InputValidator.validateText(quantityEdit,1));
-            taskData.put(getString(R.string.state),InputValidator.validateText(stateSpinner.getSelectedItem().toString(),2));
-            taskData.put(getString(R.string.contact_full_name),InputValidator.validateText(contactFullNameEdit,2));
-            taskData.put(getString(R.string.date_given),InputValidator.validateText(dateEditText,8).replaceAll("/","-"));//.toString());
-            taskData.put(getString(R.string.time_given),InputValidator.validateText(timeEditText,5));
-            taskData.put(getString(R.string.institution_name),InputValidator.validateText(institutionNameEdit,2));
-            taskData.put(getString(R.string.contact_number),InputValidator.validateText(contactNumberEdit,11));
+                    taskData.put(getString(R.string.state), InputValidator.validateText(stateSpinner.getSelectedItem().toString(), 2));
+                    taskData.put(getString(R.string.lga), lgas.get(InputValidator.validateSpinner(lgaSpinner, -1)));
+                    taskData.put(getString(R.string.quantity), InputValidator.validateText(quantityEdit, 1));
+                    taskData.put(getString(R.string.state), InputValidator.validateText(stateSpinner.getSelectedItem().toString(), 2));
+                    taskData.put(getString(R.string.contact_full_name), InputValidator.validateText(contactFullNameEdit, 2));
+                    taskData.put(getString(R.string.date_given), InputValidator.validateText(dateEditText, 8).replaceAll("/", "-"));//.toString());
+                    taskData.put(getString(R.string.time_given), InputValidator.validateText(timeEditText, 5));
+                    taskData.put(getString(R.string.institution_name), InputValidator.validateText(institutionNameEdit, 2));
+                    taskData.put(getString(R.string.contact_number), InputValidator.validateText(contactNumberEdit, 11));
 
-            taskData.put(getString(R.string.latitude),String.format("%f",taskCoordinates.latitude));
-            taskData.put(getString(R.string.longitude),String.format("%f",taskCoordinates.longitude));
+                    taskData.put(getString(R.string.latitude), String.format("%f", taskCoordinates.latitude));
+                    taskData.put(getString(R.string.longitude), String.format("%f", taskCoordinates.longitude));
 
-            sendToNetwork(taskData,api_url);
-        } catch (InputValidator.InvalidInputException e) {
-            Toast.makeText(cxt,e.getMessage(),Toast.LENGTH_LONG).show();
+                    sendToNetwork(taskData, api_url);
+                } catch (InputValidator.InvalidInputException e) {
+                    Toast.makeText(cxt, e.getMessage(), Toast.LENGTH_LONG).show();
+                }
+                break;
+
+            case User.NURSE:
+                try {
+                    if (selectedTask != null) {
+                        taskData.put(getString(R.string.id), "" + selectedTask.getId());
+                    }
+                    taskData.put(getString(R.string.supervisor_id), "" + loggedInUser.getSupervisorId());
+                    taskData.put(getString(R.string.worker_id), "" + workerIds.get(InputValidator.validateSpinner(workerSpinner, -1)));
+                    taskData.put(getString(R.string._task_type), taskTypeSpinner.getSelectedItem().toString());
+                    taskData.put(getString(R.string.task_title), InputValidator.validateText(taskTitleEdit, 2));
+                    taskData.put(getString(R.string.task_description), InputValidator.validateText(taskDescriptionEdit, 3));
+                    taskData.put(getString(R.string.task_location), InputValidator.validateText(locationEdit, 2));
+                    taskData.put(getString(R.string.full_address), InputValidator.validateText(fullAddressEdit, 5));
+
+                    taskData.put(getString(R.string.state), InputValidator.validateText(stateSpinner.getSelectedItem().toString(), 2));
+                    taskData.put(getString(R.string.lga), lgas.get(InputValidator.validateSpinner(lgaSpinner, -1)));
+                    taskData.put(getString(R.string.quantity), InputValidator.validateText(quantityEdit, 1));
+                    taskData.put(getString(R.string.state), InputValidator.validateText(stateSpinner.getSelectedItem().toString(), 2));
+                    taskData.put(getString(R.string.contact_full_name), InputValidator.validateText(contactFullNameEdit, 2));
+                    taskData.put(getString(R.string.date_given), InputValidator.validateText(dateEditText, 8).replaceAll("/", "-"));//.toString());
+                    taskData.put(getString(R.string.time_given), InputValidator.validateText(timeEditText, 5));
+                    taskData.put(getString(R.string.institution_name), InputValidator.validateText(institutionNameEdit, 2));
+                    taskData.put(getString(R.string.contact_number), InputValidator.validateText(contactNumberEdit, 11));
+
+                    taskData.put(getString(R.string.latitude), String.format("%f", taskCoordinates.latitude));
+                    taskData.put(getString(R.string.longitude), String.format("%f", taskCoordinates.longitude));
+
+                    sendToNetwork(taskData, api_url);
+                } catch (InputValidator.InvalidInputException e) {
+                    Toast.makeText(cxt, e.getMessage(), Toast.LENGTH_LONG).show();
+                }
+                break;
         }
 
 
@@ -466,22 +597,11 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
         }.execute(api_url);
     }
 
-
     private void clearAllFields() {
         Util.clearEditTexts(dateEditText, timeEditText, taskTitleEdit,
                 taskDescriptionEdit, institutionNameEdit,
                 fullAddressEdit, quantityEdit, contactFullNameEdit, contactNumberEdit, locationEdit);
-        Util.clearSpinner(workerSpinner, stateSpinner, lgaSpinner, taskTypeSpinner);
+//        Util.clearSpinner(workerSpinner, stateSpinner, lgaSpinner, taskTypeSpinner);
+        Util.clearSpinner(stateSpinner, lgaSpinner, taskTypeSpinner);
     }
-
-
-    ArrayList<Long> workerIds = new ArrayList<>();
-    ArrayList<String> workerNames = new ArrayList<>();
-    ArrayList<String> states = new ArrayList<>();
-    ArrayList<String> lgas = new ArrayList<>();
-    String selectedState;
-    HashMap<String,String> taskData = new HashMap<>();
-    public static final String update = "update";
-    final String assign = "assign";
-    private LatLng taskCoordinates;
 }

@@ -20,12 +20,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.titomi.workertrackerloginmodule.R;
+import com.example.titomi.workertrackerloginmodule.services.FieldMonitorReportUploadService;
 import com.example.titomi.workertrackerloginmodule.supervisor.Task;
 import com.example.titomi.workertrackerloginmodule.supervisor.User;
-import com.example.titomi.workertrackerloginmodule.services.FieldMonitorReportUploadService;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.ImageUtils;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.InputValidator;
-import com.example.titomi.workertrackerloginmodule.supervisor.util.Network;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.NetworkChecker;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.Util;
 import com.github.clans.fab.FloatingActionButton;
@@ -41,26 +40,26 @@ import java.util.HashMap;
 public class ReportActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static final int MEDIA_TYPE_IMAGE = 1;
+    public static final int ACTIVITY_RECORD_SOUND = 0;
     private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
     private static final String IMAGE_DIRECTORY_NAME = "Hello Camera";
+    private static final int TRIM_VIDEO = 10;
     FloatingActionButton fab_photo, fab_record, fab_send, fab_remove_photo,fab_video;
     FloatingActionMenu floatingActionMenu;
-    private EditText timeEditText,taskTitleEdit,
-            taskDescriptionEdit,institutionNameEdit,
-            fullAddressEdit,quantityEdit,contactFullNameEdit,contactNumberEdit,locationEdit, dateEditText,stateEdit, lgaEdit, taskTypeEdit,participantsEdit,quantitySoldEdit,commentsEdit;
-
     TextView playVideoText;
-
-
     Context cxt;
-
     LinearLayout reportImagesLayout;
-
+    File outputMedia;
+    Uri file;
+    String videoPath;
+    ArrayList<String> reportImages = new ArrayList<>();
+    private EditText timeEditText, taskTitleEdit,
+            taskDescriptionEdit, institutionNameEdit,
+            fullAddressEdit, quantityEdit, contactFullNameEdit, contactNumberEdit, locationEdit, dateEditText, stateEdit, lgaEdit, taskTypeEdit, participantsEdit, quantitySoldEdit, commentsEdit;
     private User loggedInUser;
     private Task selectedTask;
-
     private String stopLat,stopLong;
-File outputMedia;
+
     private static File getOutputMediaFile() {
 
         String filePath = ImageUtils.ImageStorage.getStorageDirectory(new Task()).getAbsolutePath();
@@ -85,8 +84,6 @@ File outputMedia;
         onBackPressed();
         return true;
     }
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,7 +114,7 @@ System.out.println(this.getClass().getPackage());
         taskDescriptionEdit = findViewById(R.id.description);
         institutionNameEdit = findViewById(R.id.institution);
         fullAddressEdit = findViewById(R.id.fullAddress);
-        quantityEdit = findViewById(R.id.quantity);
+//        quantityEdit = findViewById(R.id.quantity);
         contactFullNameEdit = findViewById(R.id.contactFullName);
         contactNumberEdit = findViewById(R.id.contactPhone);
 
@@ -176,7 +173,7 @@ System.out.println(this.getClass().getPackage());
         locationEdit.setText(task.getLocation());
 
     }
-Uri file;
+
     private void captureImage() {
 
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -245,9 +242,6 @@ Uri file;
                 break;
         }
     }
-
-    String videoPath;
-    private static final int TRIM_VIDEO = 10;
 
     @Override
     public void onClick(View v) {
@@ -342,16 +336,10 @@ Uri file;
 
     }
 
-
     private void recordAudio(){
         Intent intent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
         startActivityForResult(intent, ACTIVITY_RECORD_SOUND);
     }
-    public static final int ACTIVITY_RECORD_SOUND = 0;
-
-
-
-    ArrayList<String> reportImages = new ArrayList<>();
 
 
 

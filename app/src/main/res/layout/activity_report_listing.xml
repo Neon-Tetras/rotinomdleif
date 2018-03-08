@@ -3,16 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="5dp"
     android:orientation="vertical"
-    tools:context=".activities.ActivityReportListing"
-    >
+    android:padding="5dp"
+    tools:context="com.example.titomi.workertrackerloginmodule.supervisor.activities.ActivityReportListing">
 
     <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefresh"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/swipeRefresh"
 
         >
         <LinearLayout
@@ -20,15 +18,15 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
             <ProgressBar
+                android:id="@+id/progressBar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:id="@+id/progressBar"
                 android:visibility="gone"/>
             <ListView
+                android:id="@+id/reportList"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/reportList"/>
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
 

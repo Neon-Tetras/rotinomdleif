@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
@@ -16,10 +17,10 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="5dp"
             android:descendantFocusability="beforeDescendants"
-            android:focusableInTouchMode="true">
+            android:focusableInTouchMode="true"
+            android:orientation="vertical"
+            android:padding="5dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -29,11 +30,28 @@
                 android:textColor="@color/black"
                 android:textSize="12sp" />
 
-            <Spinner
-                android:id="@+id/workers"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp" />
+                android:layout_marginBottom="10dp">
+
+                <CheckBox
+                    android:id="@+id/selfCheckBox"
+                    android:layout_width="110dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_below="@id/workers"
+                    android:checked="true"
+                    android:text="Assign Self"
+                    android:textColor="@color/black" />
+
+                <Spinner
+                    android:id="@+id/workers"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="30dp" />
+            </RelativeLayout>
+
 
             <TextView
                 android:layout_width="wrap_content"
@@ -113,6 +131,7 @@
                     android:textSize="12sp" />
 
                 <TextView
+                    android:id="@+id/selectLocation"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
@@ -120,7 +139,6 @@
                     android:gravity="center_vertical"
                     android:text="@string/click_to_select"
                     android:textColor="@color/black"
-                    android:id="@+id/selectLocation"
                     android:textSize="12sp" />
 
             </LinearLayout>
@@ -131,9 +149,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:inputType=""
-                android:enabled="false"
                 android:editable="false"
+                android:enabled="false"
+                android:inputType=""
 
                 android:singleLine="true" />
 
@@ -157,59 +175,57 @@
             <GridLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:alignmentMode="alignBounds"
                 android:columnCount="3"
                 android:rowCount="2"
-                android:alignmentMode="alignBounds"
+                android:useDefaultMargins="true">
 
-                android:useDefaultMargins="true"
-                android:layout_marginBottom="10dp">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
 
                     android:text="State:"
                     android:textColor="@color/black"
-                    android:textSize="12sp"
-                    />
+                    android:textSize="12sp" />
+
                 <ProgressBar
+                    android:id="@+id/lgaLoading"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:id="@+id/lgaLoading"
 
-                    android:visibility="invisible"
-                    />
+                    android:visibility="invisible" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
 
                     android:text="LGA:"
                     android:textColor="@color/black"
-                    android:textSize="12sp"
-                    />
+                    android:textSize="12sp" />
+
                 <Spinner
                     android:id="@+id/state"
                     android:layout_width="130dp"
                     android:layout_height="wrap_content"
 
-                    android:entries="@array/states"
+                    android:entries="@array/states" />
+
+
+                <TextView
+                    android:id="@+id/view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="hi"
+                    android:visibility="invisible" />
+
+
+                <Spinner
+                    android:id="@+id/lga"
+                    android:layout_width="130dp"
+                    android:layout_height="wrap_content"
+
                     />
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/view"
-                android:text="hi"
-                android:visibility="invisible"
-                />
-
-
-                    <Spinner
-                        android:id="@+id/lga"
-                        android:layout_width="130dp"
-                        android:layout_height="wrap_content"
-
-                        />
 
 
             </GridLayout>
@@ -268,41 +284,40 @@
             <GridLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:rowCount="2"
-                android:columnCount="2"
+                android:layout_marginBottom="20dp"
                 android:alignmentMode="alignBounds"
-                android:layout_marginBottom="20dp">
+                android:columnCount="2"
+                android:rowCount="2">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
 
+                    android:layout_gravity="top|start"
                     android:text="Date:"
                     android:textColor="@color/black"
-                    android:textSize="12sp"
-                    android:layout_gravity="top|start"/>
+                    android:textSize="12sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
 
+                    android:layout_gravity="top|center"
                     android:text="Time:"
                     android:textColor="@color/black"
-                    android:textSize="12sp"
-                    android:layout_gravity="top|center"/>
+                    android:textSize="12sp" />
 
                 <EditText
                     android:id="@+id/dateText"
                     android:layout_width="130dp"
                     android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
+                    android:layout_gravity="bottom|start"
                     android:drawableEnd="@android:drawable/arrow_down_float"
-                    android:hint="@string/date_format"
                     android:editable="false"
                     android:focusable="false"
-                    android:inputType="text"
-                    android:layout_gravity="bottom|start"/>
-
+                    android:gravity="center_horizontal"
+                    android:hint="@string/date_format"
+                    android:inputType="text" />
 
 
                 <EditText
@@ -310,31 +325,30 @@
                     android:layout_width="130dp"
                     android:layout_height="wrap_content"
 
+                    android:layout_gravity="center|bottom"
                     android:drawableEnd="@android:drawable/arrow_down_float"
                     android:editable="false"
+                    android:focusable="false"
                     android:gravity="center_horizontal"
                     android:hint="@string/date_format"
-                    android:focusable="false"
-                    android:inputType="none"
-                    android:layout_gravity="center|bottom"/>
+                    android:inputType="none" />
 
             </GridLayout>
-
 
 
             <Button
                 android:id="@+id/assignTaskBut"
 
-                android:background="@color/colorPrimary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="10dp"
-                android:padding="2dp"
-                android:textColor="@color/white"
+                android:background="@color/colorPrimary"
                 android:elevation="@dimen/cardview_default_elevation"
+                android:padding="2dp"
                 android:tag="add"
-                android:text="@string/assignTask" />
+                android:text="@string/assignTask"
+                android:textColor="@color/white" />
         </LinearLayout>
     </ScrollView>
 
