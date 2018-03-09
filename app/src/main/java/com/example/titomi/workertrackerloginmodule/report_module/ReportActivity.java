@@ -261,7 +261,20 @@ System.out.println(this.getClass().getPackage());
                     postData.put("stop_time",stopTime);
                     postData.put("stop_latitude",stopLat);
                     postData.put("stop_longitude",stopLong);
-                    postData.put("product_id",""+selectedTask.getProductId());
+
+                    int productId = 0;
+
+
+                    switch (selectedTask.getWorkType()) {
+                        case "Always School Program":
+                            productId = 1;
+                            break;
+                        case "Pampers Hospital Program":
+                            productId = 3;
+                            break;
+                    }
+
+                    postData.put("product_id", "" + productId);
 
                     postData.put("participants", InputValidator.validateText(participantsEdit,1));
                     postData.put("quantity_sold", InputValidator.validateText(quantitySoldEdit,1));

@@ -243,6 +243,7 @@ public class FragmentTask extends Fragment{
                     task.setStopLatitude(obj.getDouble("stopLatitude"));
                     task.setStartLongitude(obj.getDouble("startLongitude"));
                     task.setStopLongitude(obj.getDouble("stopLongitude"));
+                    task.setVideo(obj.getString("video"));
 
                  taskList.add(task);
                 }

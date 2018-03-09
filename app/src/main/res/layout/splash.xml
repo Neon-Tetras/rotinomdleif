@@ -2,14 +2,27 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#efefefef"
+
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.titomi.workertrackerloginmodule.HomeSplashActivity">
+    <!--
+        <FrameLayout
+            android:layout_width="fill_parent" android:layout_height="fill_parent">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        ></FrameLayout>
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:adjustViewBounds="true"
+                android:paddingStart="450dp"
+                android:paddingEnd="200dp"
+
+                android:scaleType="centerCrop"
+
+                android:src="@drawable/black_nurse" />
+
+              <LinearLayout>your views</LinearLayout> -->
+    <!--</FrameLayout>-->
+
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -18,10 +31,11 @@
 
         <TextView
             android:id="@+id/create"
-            android:text="setting things up..."
+            android:text="Loading..."
             android:layout_centerHorizontal="true"
             android:layout_alignParentBottom="true"
             android:layout_width="wrap_content"
+            android:textColor="@color/white"
             android:layout_height="wrap_content" />
 
         <TextView
@@ -54,6 +68,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:src="@drawable/logo1"
+                android:layout_marginStart="0dp"
                 android:layout_marginTop="150dp"/>
         </LinearLayout>
     </RelativeLayout>

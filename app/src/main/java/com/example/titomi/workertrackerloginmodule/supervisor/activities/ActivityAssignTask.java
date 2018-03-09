@@ -483,6 +483,7 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
                         taskData.put(getString(R.string.worker_id), "" +
                                 workerIds.get(InputValidator.validateSpinner(workerSpinner, -1)));
                     }
+
                     taskData.put(getString(R.string._task_type), taskTypeSpinner.getSelectedItem().toString());
                     taskData.put(getString(R.string.task_title), InputValidator.validateText(taskTitleEdit, 2));
                     taskData.put(getString(R.string.task_description), InputValidator.validateText(taskDescriptionEdit, 3));

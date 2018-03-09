@@ -287,6 +287,7 @@ public class InventoryReportActivity extends AppCompatActivity implements OnChar
                     TextView quantityText = convertView.findViewById(R.id.quantityText);
                     TextView commentText = convertView.findViewById(R.id.commentText);
                     TextView dateTimeText = convertView.findViewById(R.id.dateTimeText);
+                    TextView status = convertView.findViewById(R.id.inventoryStatusText);
 
 
                     //   Toast.makeText(cxt,requests.getName(),Toast.LENGTH_SHORT).show();
@@ -294,6 +295,7 @@ public class InventoryReportActivity extends AppCompatActivity implements OnChar
                     distributorText.setText(requests.getDistributor().getName());
                     quantityText.setText("" + requests.getQuantity());
                     commentText.setText(requests.getSupervisorMessage());
+                    //if(requests.get
                     dateTimeText.setText(DateFormat.getDateTimeInstance().format(requests.getCreated()));
 
 

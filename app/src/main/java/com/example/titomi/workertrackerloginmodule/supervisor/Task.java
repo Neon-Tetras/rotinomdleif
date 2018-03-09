@@ -2,10 +2,6 @@ package com.example.titomi.workertrackerloginmodule.supervisor;
 
 import java.util.Date;
 
-import com.example.titomi.workertrackerloginmodule.supervisor.Entity;
-import com.example.titomi.workertrackerloginmodule.supervisor.User;
-import com.google.android.gms.maps.model.LatLng;
-
 /**
  * Created by NeonTetras on 22-Feb-18.
  */
@@ -298,6 +294,14 @@ public class Task extends Entity {
         this.stopTime = stopTime;
     }
 
+    public String getVideo() {
+        return video;
+    }
+
+    public void setVideo(String video) {
+        this.video = video;
+    }
+
     private User supervisor;
     private User worker;
     public Date dateGiven;
@@ -327,6 +331,7 @@ public class Task extends Entity {
     public String sales;
     private String description;
     private String images;
+    private String video;
 
     public static final int PENDING = 0;
     public static final int ONGOING = 1;

@@ -2,6 +2,7 @@ package com.example.titomi.workertrackerloginmodule.supervisor.activities;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.titomi.workertrackerloginmodule.R;
+import com.example.titomi.workertrackerloginmodule.report_module.VideoPlayer;
 import com.example.titomi.workertrackerloginmodule.supervisor.Entity;
 import com.example.titomi.workertrackerloginmodule.supervisor.Task;
 import com.example.titomi.workertrackerloginmodule.supervisor.User;
@@ -40,10 +42,11 @@ public class ActivityViewReport extends AppCompatActivity implements View.OnClic
     Task selectedTask;
 
     ImageView userImage;
-    TextView username,dateSubmitted,taskTitle,taskTypeText,institutionText,addressText,stateText,contactFullName,contactPhone,quantityGivenText, participantsText,quantityDistributedText,balanceText,exportText,approveText,commentText;
+    TextView username, dateSubmitted, taskTitle, taskTypeText, institutionText, addressText, stateText, contactFullName, contactPhone, quantityGivenText, participantsText, quantityDistributedText, balanceText, exportText, approveText, commentText, playVideo;
     LinearLayout reportImagesLayout;
     static Context cxt;
     User loggedInUser;
+    String videoUrl;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,7 +89,8 @@ public class ActivityViewReport extends AppCompatActivity implements View.OnClic
         approveText = findViewById(R.id.approveText);
         commentText = findViewById(R.id.commentText);
         approveText.setOnClickListener(this);
-
+        playVideo = findViewById(R.id.videoText);
+        playVideo.setOnClickListener(this);
         exportText.setOnClickListener(this);
     }
     private void setupView(final Task task){
@@ -111,6 +115,12 @@ public class ActivityViewReport extends AppCompatActivity implements View.OnClic
         //balanceText.setText(numberFormat.format(task.getInventoryBalance()));
         participantsText.setText(numberFormat.format(task.getParticipants()));
         commentText.setText(task.getWorkerComment() == null ? "" : task.getWorkerComment());
+        if (task.getVideo() != null && !task.getVideo().isEmpty()) {
+            playVideo.setVisibility(View.VISIBLE);
+            videoUrl = getString(R.string.server_url) + task.getVideo();
+        } else {
+            playVideo.setVisibility(View.GONE);
+        }
 
 
 
@@ -208,6 +218,13 @@ public class ActivityViewReport extends AppCompatActivity implements View.OnClic
                 break;
             case R.id.approveText:
                 new ApproveTaskNetwork().execute(getString(R.string.api_url)+getString(R.string.approve_task_url)+"?key="+getString(R.string.field_worker_api_key)+"&id="+selectedTask.getId());
+                break;
+            case R.id.videoText:
+                if (videoUrl != null) {
+                    Intent i = new Intent(cxt, VideoPlayer.class);
+                    i.putExtra("videoUrl", videoUrl);
+                    startActivity(i);
+                }
                 break;
         }
     }

@@ -643,6 +643,7 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
                     task.setWorkerComment(obj.getString("workerComment"));
                     task.setStartTime(startTime);
                     task.setStopTime(stopTime);
+                    task.setVideo(obj.getString("video"));
 
 
                     taskList.add(task);
