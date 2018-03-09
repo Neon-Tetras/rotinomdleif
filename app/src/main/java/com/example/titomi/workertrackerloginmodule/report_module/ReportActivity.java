@@ -41,8 +41,7 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
 
     public static final int MEDIA_TYPE_IMAGE = 1;
     public static final int ACTIVITY_RECORD_SOUND = 0;
-    private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
-    private static final String IMAGE_DIRECTORY_NAME = "Hello Camera";
+
     private static final int TRIM_VIDEO = 10;
     FloatingActionButton fab_photo, fab_record, fab_send, fab_remove_photo,fab_video;
     FloatingActionMenu floatingActionMenu;

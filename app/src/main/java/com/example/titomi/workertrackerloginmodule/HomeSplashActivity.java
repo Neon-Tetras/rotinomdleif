@@ -28,7 +28,7 @@ public class HomeSplashActivity extends AppCompatActivity {
             public void run(){
                 User user = sharedPrefManager.getLoggedInUser();
                 try{
-                    sleep(3000);
+                    sleep(1500);
                     if (user== null || user.getId() == 0){
                         Intent i = new Intent(HomeSplashActivity.this, LoginActivity.class);
 

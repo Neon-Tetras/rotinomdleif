@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.example.titomi.workertrackerloginmodule.report_module.ReportActivity"
-    >
-
-
+    tools:context="com.example.titomi.workertrackerloginmodule.report_module.ReportActivity">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -39,9 +35,9 @@
                 android:layout_marginBottom="10dp"
                 android:editable="false"
                 android:inputType="none"
-                android:labelFor="@+id/taskType"
-                 />
+                android:labelFor="@+id/taskType" />
             `
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -149,29 +145,30 @@
 
                 android:rowCount="2"
                 android:useDefaultMargins="true">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
 
                     android:text="State:"
                     android:textColor="@color/black"
-                    android:textSize="12sp"
-                    />
+                    android:textSize="12sp" />
+
                 <ProgressBar
                     android:id="@+id/lgaLoading"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
 
-                    android:visibility="invisible"
-                    />
+                    android:visibility="invisible" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
 
                     android:text="LGA:"
                     android:textColor="@color/black"
-                    android:textSize="12sp"
-                    />
+                    android:textSize="12sp" />
+
                 <EditText
                     android:id="@+id/state"
                     android:layout_width="130dp"
@@ -188,8 +185,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text=""
-                    android:visibility="invisible"
-                    />
+                    android:visibility="invisible" />
 
 
                 <EditText
@@ -301,7 +297,6 @@
                     android:inputType="none" />
 
 
-
                 <EditText
                     android:id="@+id/timeText"
                     android:layout_width="130dp"
@@ -325,6 +320,7 @@
                 android:alignmentMode="alignBounds"
                 android:columnCount="2"
                 android:rowCount="2">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -333,6 +329,7 @@
                     android:textColor="@color/black"
 
                     android:textSize="12sp" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -394,17 +391,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-            <HorizontalScrollView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <LinearLayout
-                    android:id="@+id/imagesLayout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal" />
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:id="@+id/imagesLayout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" />
 
 
-            </HorizontalScrollView>
+                </HorizontalScrollView>
 
 
                 <TextView
@@ -417,11 +416,8 @@
                     android:gravity="center_vertical"
                     android:text="Play video"
                     android:textColor="@color/black"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
             </LinearLayout>
-
-
-
 
 
         </LinearLayout>
@@ -451,8 +447,7 @@
             android:overScrollMode="always"
             android:visibility="gone"
             app:fabSize="mini"
-            app:srcCompat="@drawable/remove_photo"
-            />
+            app:srcCompat="@drawable/remove_photo" />
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/fab_photo"
@@ -473,7 +468,7 @@
             android:id="@+id/fab_record"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
+            android:visibility="visible"
             app:fabSize="mini"
             app:srcCompat="@drawable/ic_mic" />
 
