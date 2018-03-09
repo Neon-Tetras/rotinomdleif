@@ -28,10 +28,10 @@ import java.net.URLEncoder;
  */
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
-    private static EditText lineIdEdit;
-    private static Button loginButton;
-    private static ProgressBar progressBar;
-    private static Context cxt;
+    private EditText lineIdEdit;
+    private Button loginButton;
+    private ProgressBar progressBar;
+    private Context cxt;
 
     private  void goToDashBoard(User user) {
         Intent i = new Intent(cxt, DashboardActivity.class);

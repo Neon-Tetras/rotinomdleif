@@ -37,7 +37,7 @@ import java.util.TimerTask;
  */
 
 public class FieldMonitorReportUploadService extends Service {
-    private static Context cxt;
+    private Context cxt;
     private Timer mTimer1;
     private TimerTask mTt1;
     ArrayList<String> images;

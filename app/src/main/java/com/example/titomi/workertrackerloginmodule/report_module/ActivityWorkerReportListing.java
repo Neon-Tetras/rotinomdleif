@@ -49,13 +49,13 @@ import java.util.Date;
 
 public class ActivityWorkerReportListing extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
-    static SwipeRefreshLayout swipeRefreshLayout;
-    private static ProgressBar progressBar;
-    private static ListView reportList;
-    static Context cxt;
-    private static MenuItem exportItem;
+    SwipeRefreshLayout swipeRefreshLayout;
+    private ProgressBar progressBar;
+    private ListView reportList;
+    Context cxt;
+    private MenuItem exportItem;
 
-    private static User loggedInUser;
+    private User loggedInUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -247,7 +247,7 @@ public class ActivityWorkerReportListing extends AppCompatActivity implements Ad
                             obj.getString("address"),
                             obj.getString("sales"),
                             obj.getString("images"),
-                            obj.getInt("quantity"),
+                            0,
                             obj.getInt("inventoryBalance"),
                             obj.getInt("quantitySold"),
                             obj.getInt("participants"),

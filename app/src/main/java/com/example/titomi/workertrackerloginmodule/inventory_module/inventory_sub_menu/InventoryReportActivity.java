@@ -308,5 +308,5 @@ public class InventoryReportActivity extends AppCompatActivity implements OnChar
 
     }
 
-    private static ArrayList<Inventory.InventoryRequests> requestsList = new ArrayList<>();
+    private ArrayList<Inventory.InventoryRequests> requestsList = new ArrayList<>();
 }

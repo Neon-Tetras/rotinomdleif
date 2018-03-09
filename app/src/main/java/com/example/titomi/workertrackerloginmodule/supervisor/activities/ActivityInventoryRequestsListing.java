@@ -19,10 +19,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.titomi.workertrackerloginmodule.R;
-import com.example.titomi.workertrackerloginmodule.supervisor.Entity;
+import com.example.titomi.workertrackerloginmodule.supervisor.Inventory;
 import com.example.titomi.workertrackerloginmodule.supervisor.User;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.Network;
-import com.example.titomi.workertrackerloginmodule.supervisor.Inventory;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,11 +39,11 @@ import java.util.ArrayList;
 
 public class ActivityInventoryRequestsListing extends AppCompatActivity implements View.OnClickListener {
 
-    private static ListView listView;
+    private ListView listView;
     private FloatingActionButton actionButton;
-    private static SwipeRefreshLayout swipeRefreshLayout;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
-    private static Context cxt;
+    private Context cxt;
     private User loggedInUser;
 
     @Override
@@ -96,7 +95,7 @@ public class ActivityInventoryRequestsListing extends AppCompatActivity implemen
                         loggedInUser));
     }
 
-    private static class InventoryRequestNetwork extends android.os.AsyncTask<String, Void, String> {
+    private class InventoryRequestNetwork extends android.os.AsyncTask<String, Void, String> {
 
 
         @Override

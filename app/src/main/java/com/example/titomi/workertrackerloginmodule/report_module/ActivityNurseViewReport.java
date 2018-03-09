@@ -42,7 +42,7 @@ public class ActivityNurseViewReport extends AppCompatActivity implements View.O
     ImageView userImage;
     TextView username, dateSubmitted, taskTitle, taskTypeText, institutionText, addressText, stateText, contactFullName, contactPhone, quantityGivenText, participantsText, quantityDistributedText, balanceText, exportText, approveText, commentText;
     LinearLayout reportImagesLayout;
-    static Context cxt;
+    Context cxt;
     User loggedInUser;
 
     @Override
@@ -246,7 +246,7 @@ public class ActivityNurseViewReport extends AppCompatActivity implements View.O
         return super.onOptionsItemSelected(item);
     }
 
-    private static class ApproveTaskNetwork extends AsyncTask<String, Void, String> {
+    private class ApproveTaskNetwork extends AsyncTask<String, Void, String> {
         ProgressDialog progressDialog;
 
         @Override

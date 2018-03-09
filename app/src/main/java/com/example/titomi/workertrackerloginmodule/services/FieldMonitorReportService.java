@@ -13,6 +13,14 @@ import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 
+import com.example.titomi.workertrackerloginmodule.R;
+import com.example.titomi.workertrackerloginmodule.supervisor.DatabaseAdapter;
+import com.example.titomi.workertrackerloginmodule.supervisor.Messages;
+import com.example.titomi.workertrackerloginmodule.supervisor.User;
+import com.example.titomi.workertrackerloginmodule.supervisor.activities.ActivityReportListing;
+import com.example.titomi.workertrackerloginmodule.supervisor.util.ImageUtils;
+import com.example.titomi.workertrackerloginmodule.supervisor.util.Network;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,21 +30,12 @@ import java.text.SimpleDateFormat;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import com.example.titomi.workertrackerloginmodule.R;
-import com.example.titomi.workertrackerloginmodule.supervisor.DatabaseAdapter;
-import com.example.titomi.workertrackerloginmodule.supervisor.Messages;
-
-import com.example.titomi.workertrackerloginmodule.supervisor.User;
-import com.example.titomi.workertrackerloginmodule.supervisor.activities.ActivityReportListing;
-import com.example.titomi.workertrackerloginmodule.supervisor.util.ImageUtils;
-import com.example.titomi.workertrackerloginmodule.supervisor.util.Network;
-
 /**
  * Created by NeonTetras on 27-Feb-18.
  */
 
 public class FieldMonitorReportService extends Service {
-    private static Context cxt;
+    private Context cxt;
     private Timer mTimer1;
     private TimerTask mTt1;
 

@@ -50,12 +50,12 @@ import java.util.Date;
 public class ActivityReportListing extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
     static SwipeRefreshLayout swipeRefreshLayout;
-    private static ProgressBar progressBar;
-    private static ListView reportList;
+    private ProgressBar progressBar;
+    private ListView reportList;
     static Context cxt;
-    private static MenuItem exportItem;
+    private MenuItem exportItem;
 
-    private static User loggedInUser;
+    private User loggedInUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

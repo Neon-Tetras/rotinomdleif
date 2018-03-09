@@ -627,7 +627,7 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
                             obj.getString("address"),
                             obj.getString("sales"),
                             obj.getString("images"),
-                            obj.getInt("quantity"),
+                            0,
                             obj.getInt("inventoryBalance"),
                             obj.getInt("quantitySold"),
                             obj.getInt("participants"),
