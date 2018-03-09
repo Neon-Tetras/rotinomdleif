@@ -10,25 +10,18 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.text.DateFormat;
-
-import de.hdodenhof.circleimageview.CircleImageView;import com.example.titomi.workertrackerloginmodule.R;
+import com.example.titomi.workertrackerloginmodule.R;
 import com.example.titomi.workertrackerloginmodule.supervisor.Action;
 import com.example.titomi.workertrackerloginmodule.supervisor.ConfirmDialog;
 import com.example.titomi.workertrackerloginmodule.supervisor.DatabaseAdapter;
-import com.example.titomi.workertrackerloginmodule.supervisor.Entity;
-
 import com.example.titomi.workertrackerloginmodule.supervisor.Messages;
 import com.example.titomi.workertrackerloginmodule.supervisor.User;
-import com.example.titomi.workertrackerloginmodule.supervisor.Task;
-import com.example.titomi.workertrackerloginmodule.supervisor.util.DrawableManager;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.ImageUtils;
-import com.example.titomi.workertrackerloginmodule.supervisor.util.InputValidator;
-import com.example.titomi.workertrackerloginmodule.supervisor.util.DateTimeUtil;
-import com.example.titomi.workertrackerloginmodule.supervisor.util.Network;
-import com.example.titomi.workertrackerloginmodule.supervisor.util.NetworkChecker;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.Util;
-import static com.example.titomi.workertrackerloginmodule.supervisor.util.Network.backgroundTask;
+
+import java.text.DateFormat;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by NeonTetras on 13-Feb-18.
@@ -62,14 +55,18 @@ public class ActivityViewMessage extends AppCompatActivity implements View.OnCli
 
         }
 
-        usernameTv = (TextView)findViewById(R.id.username);
-        posterIv = (CircleImageView)findViewById(R.id.user_icon);
-        dateTimeTv = (TextView)findViewById(R.id.dateTime);
-        messageTitleTv = (TextView)findViewById(R.id.title);
-        messageBodyTv = (TextView)findViewById(R.id.messageBody);
+        usernameTv = findViewById(R.id.username);
+        posterIv = findViewById(R.id.user_icon);
+        dateTimeTv = findViewById(R.id.dateTime);
+        messageTitleTv = findViewById(R.id.title);
+        messageBodyTv = findViewById(R.id.messageBody);
         priorityImage = findViewById(R.id.priorityImage);
-        resend = (TextView)findViewById(R.id.resend);
-        delete = (TextView)findViewById(R.id.delete);
+        resend = findViewById(R.id.resend);
+        delete = findViewById(R.id.delete);
+        if (message.isRead()) {
+            findViewById(R.id.newText).setVisibility(View.GONE);
+
+        }
 
         if(user != null) {
             switch (user.getUserLevel()) {

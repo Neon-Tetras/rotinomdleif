@@ -32,7 +32,6 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
-import com.github.mikephil.charting.utils.ColorTemplate;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -42,7 +41,6 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class InventoryReportActivity extends AppCompatActivity implements OnChartValueSelectedListener, View.OnClickListener {
 
@@ -126,7 +124,7 @@ public class InventoryReportActivity extends AppCompatActivity implements OnChar
         protected void onPreExecute() {
             super.onPreExecute();
 //            pb.setVisibility(View.VISIBLE);
-            //   refreshLayout.setRefreshing(true);
+
         }
 
         @Override
@@ -134,113 +132,35 @@ public class InventoryReportActivity extends AppCompatActivity implements OnChar
             super.onPostExecute(s);
 //            pb.setVisibility(View.GONE);
 
-            //  refreshLayout.setRefreshing(false);
+
             if (s == null) {
 
                 return;
             }
 
             try {
-                JSONArray jsonArray = new JSONArray(s);
-                taskList.clear();
-
-                if (jsonArray.length() > 0) {
-
-                } else {
-                    // noTaskNotif.setVisibility(View.GONE);
-                }
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    JSONObject obj = jsonArray.getJSONObject(i);
-                    JSONObject supervisorObj = obj.getJSONObject("supervisor");
-                    JSONObject workerObj = obj.getJSONObject("worker");
-                    User supervisor = new User();
-                    supervisor.setUserLevel(supervisorObj.getInt("roleId"));
-                    supervisor.setUserLevelText(supervisorObj.getString("role"));
-                    supervisor.setFeaturedImage(supervisorObj.getString("photo"));
-                    supervisor.setName(String.format("%s %s", supervisorObj.getString("first_name"), supervisorObj.getString("last_name")));
-                    supervisor.setEmail(supervisorObj.getString("email"));
-                    supervisor.setId(supervisorObj.getInt("id"));
-                    User worker = new User();
-                    worker.setUserLevel(workerObj.getInt("roleId"));
-                    worker.setUserLevelText(workerObj.getString("role"));
-                    worker.setFeaturedImage(workerObj.getString("photo"));
-                    worker.setName(String.format("%s %s", workerObj.getString("first_name"), supervisorObj.getString("last_name")));
-                    worker.setEmail(workerObj.getString("email"));
-                    worker.setId(workerObj.getInt("id"));
-                    SimpleDateFormat dtf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-                    //  DateFormat dtf = DateFormat.getDateTimeInstance();
-                    SimpleDateFormat dtf2 = new SimpleDateFormat("yyyy/MM/dd");
-                    Date dateGiven = dtf2.parse(obj.getString("dateGiven"));
-//                    Date dateGiven = dtf.parse(obj.getString("dateGiven"));
-                    Date dateDelivered = dtf.parse(obj.getString("dateDelivered"));
-                    SimpleDateFormat tf = new SimpleDateFormat("H:m:s");
-                    String timeGiven = obj.getString("timeGiven");
-
-
-                    Task task = new Task(obj.getInt("id"), supervisor, worker, dateGiven, dateDelivered,
-                            obj.getString("name"), obj.getString("description"),
-                            timeGiven, obj.getString("workType"), obj.getString("contactName"),
-                            obj.getString("contactNumber"),
-                            obj.getString("institution_name"),
-                            obj.getString("location"),
-                            obj.getString("lga"),
-                            obj.getString("state"),
-                            obj.getString("address"),
-                            obj.getString("sales"),
-                            obj.getString("images"),
-                            obj.getInt("quantity"),
-                            obj.getInt("inventoryBalance"),
-                            obj.getInt("quantitySold"),
-                            obj.getInt("participants"),
-                            obj.getInt("status"), obj.getInt("productId"));
-                    task.setLatitude(obj.getDouble("latitude"));
-                    task.setLongitude(obj.getDouble("longitude"));
-                    task.setWorkerComment(obj.getString("workerComment"));
-                    /*if(obj.getDouble("startLongitude") != 0.0 && obj.getDouble("startLatitude") != 0.0 &&
-                            obj.getDouble("stopLongitude") != 0.0 && obj.getDouble("stopLatitude") != 0.0)*/
-                    task.setStartLatitude(obj.getDouble("startLatitude"));
-                    task.setStopLatitude(obj.getDouble("stopLatitude"));
-                    task.setStartLongitude(obj.getDouble("startLongitude"));
-                    task.setStopLongitude(obj.getDouble("stopLongitude"));
-
-
-                    task.setInventoryBalance(obj.getInt("inventoryBalance"));
-                    task.setQuantitySold(obj.getInt("quantity"));
-                    task.setQuantity(obj.getInt("quantitySold"));
-
-                    taskList.add(task);
-                }
-
-                loadChart(taskList);
+                JSONObject obj = new JSONObject(s);
+                loadChart(obj);
 
             } catch (JSONException e) {
                 e.printStackTrace();
                 System.err.println(s);
-            } catch (ParseException e) {
-
-                e.printStackTrace();
             }
         }
 
     }
 
-    private void loadChart(ArrayList<Task> list) {
-        for (Task task : list) {
-            if (task != null) {
-                itemBalance += task.getInventoryBalance();
-                itemQuantitySold += task.getQuantitySold();
-                itemQuantity += task.getQuantity();
+    private void loadChart(JSONObject obj) throws JSONException {
 
-                // itemQuantity++;
-                // itemQuantitySold++;
-                //itemBalance++;
-            }
-        }
+        itemBalance = obj.getInt("balance");
+        itemQuantitySold = obj.getInt("sold");
+        itemQuantity = obj.getInt("total");
+
         yVals.clear();
 
         BarEntry balanceEntry = new BarEntry(0, itemBalance);
-        BarEntry quantityEntry = new BarEntry(1, itemQuantity);
-        BarEntry quantitySoldEntry = new BarEntry(2, itemQuantitySold);
+        BarEntry quantityEntry = new BarEntry(2, itemQuantity);
+        BarEntry quantitySoldEntry = new BarEntry(1, itemQuantitySold);
         yVals.add(0, balanceEntry);
         yVals.add(1, quantitySoldEntry);
         yVals.add(2, quantityEntry);
@@ -252,7 +172,8 @@ public class InventoryReportActivity extends AppCompatActivity implements OnChar
         BarDataSet dataSet = new BarDataSet(yVals, "Inventory");
 
 
-        dataSet.setColors(ColorTemplate.LIBERTY_COLORS);
+//        dataSet.setColors(ColorTemplate.LIBERTY_COLORS);
+        dataSet.setColors(getResources().getColor(R.color.balanceColor), getResources().getColor(R.color.quantitySoldColor), getResources().getColor(R.color.quantityColor));
         dataSet.setDrawValues(true);
 
         BarData set = new BarData(dataSet);
@@ -266,6 +187,7 @@ public class InventoryReportActivity extends AppCompatActivity implements OnChar
 
         Legend legend = barInventoryChart.getLegend();
         LegendEntry le = new LegendEntry();
+//        legend.setCustom();
 
     }
 
@@ -274,10 +196,10 @@ public class InventoryReportActivity extends AppCompatActivity implements OnChar
         String url = "";
         switch (loggedInUser.getRoleId()) {
             case User.SUPERVISOR:
-                url = getString(R.string.api_url) + getString(R.string.task_url) + "?view=supervisor&key=" + getString(R.string.field_worker_api_key) + "&id=" + loggedInUser.getId();
+                url = getString(R.string.api_url) + getString(R.string.inventory_view_requests_url) + "?view=user_stock_details&key=" + getString(R.string.field_worker_api_key) + "&id=" + loggedInUser.getId();
                 break;
             case User.NURSE:
-                url = getString(R.string.api_url) + getString(R.string.task_url) + "?view=worker&key=" + getString(R.string.field_worker_api_key) + "&id=" + loggedInUser.getId();
+                url = getString(R.string.api_url) + getString(R.string.inventory_view_requests_url) + "?view=user_stock_details&key=" + getString(R.string.field_worker_api_key) + "&id=" + loggedInUser.getId();
                 break;
         }
         new InventoryNetwork().execute(url);

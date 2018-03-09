@@ -28,12 +28,9 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import jxl.write.DateTime;
 
 /**
  * Created by NeonTetras on 27-Feb-18.
@@ -50,7 +47,7 @@ public class FieldMonitorReportUploadService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        if(intent != null) return START_STICKY ;
+        if (intent == null) return START_STICKY;
         postData = ( HashMap<String,String> )intent.getSerializableExtra("postData");
         images = intent.getStringArrayListExtra("images");
         video = intent.getStringExtra("video");

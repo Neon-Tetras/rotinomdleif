@@ -192,7 +192,8 @@
                 android:orientation="horizontal"
                 android:paddingTop="5dp"
                 android:background="@drawable/line"
-                android:backgroundTint="@color/white">
+                android:backgroundTint="@color/white"
+                android:visibility="gone">
 
                 <TextView
                     android:layout_width="wrap_content"

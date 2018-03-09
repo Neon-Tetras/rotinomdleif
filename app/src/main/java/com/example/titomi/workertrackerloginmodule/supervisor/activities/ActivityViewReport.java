@@ -17,7 +17,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.titomi.workertrackerloginmodule.R;
+import com.example.titomi.workertrackerloginmodule.supervisor.Entity;
 import com.example.titomi.workertrackerloginmodule.supervisor.Task;
+import com.example.titomi.workertrackerloginmodule.supervisor.User;
+import com.example.titomi.workertrackerloginmodule.supervisor.util.DrawableManager;
+import com.example.titomi.workertrackerloginmodule.supervisor.util.ExcelExporter;
+import com.example.titomi.workertrackerloginmodule.supervisor.util.ImageUtils;
+import com.example.titomi.workertrackerloginmodule.supervisor.util.Network;
+import com.example.titomi.workertrackerloginmodule.supervisor.util.Util;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,14 +33,6 @@ import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Locale;
-
-import com.example.titomi.workertrackerloginmodule.supervisor.Entity;
-import com.example.titomi.workertrackerloginmodule.supervisor.User;
-import com.example.titomi.workertrackerloginmodule.supervisor.util.DrawableManager;
-import com.example.titomi.workertrackerloginmodule.supervisor.util.ExcelExporter;
-import com.example.titomi.workertrackerloginmodule.supervisor.util.ImageUtils;
-import com.example.titomi.workertrackerloginmodule.supervisor.util.Network;
-import com.example.titomi.workertrackerloginmodule.supervisor.util.Util;
 
 
 public class ActivityViewReport extends AppCompatActivity implements View.OnClickListener {
@@ -109,7 +108,7 @@ public class ActivityViewReport extends AppCompatActivity implements View.OnClic
         quantityGivenText.setText(numberFormat.format(task.getQuantity()));
 
         quantityDistributedText.setText(numberFormat.format(task.getQuantitySold()));
-        balanceText.setText(numberFormat.format(task.getInventoryBalance()));
+        //balanceText.setText(numberFormat.format(task.getInventoryBalance()));
         participantsText.setText(numberFormat.format(task.getParticipants()));
         commentText.setText(task.getWorkerComment() == null ? "" : task.getWorkerComment());
 
@@ -184,7 +183,8 @@ public class ActivityViewReport extends AppCompatActivity implements View.OnClic
     @Override
     protected void onResume() {
         super.onResume();
-
+        String url = getString(R.string.api_url) + getString(R.string.inventory_view_requests_url) + "?view=user_stock_details&key=" + getString(R.string.field_worker_api_key) + "&id=" + loggedInUser.getId();
+        new InventoryNetwork().execute(url);
        // setupView(selectedTask);
     }
 
@@ -289,6 +289,41 @@ public class ActivityViewReport extends AppCompatActivity implements View.OnClic
     }
 
 
+    private class InventoryNetwork extends android.os.AsyncTask<String, Void, String> {
+
+
+        @Override
+        protected String doInBackground(String... strings) {
+            return Network.backgroundTask(null, strings[0]);
+        }
+
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+//            pb.setVisibility(View.GONE);
+
+
+            if (s == null) {
+
+                return;
+            }
+
+            try {
+                JSONObject obj = new JSONObject(s);
+                setBalanceText(obj);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+                System.err.println(s);
+            }
+        }
+
+    }
+
+    private void setBalanceText(JSONObject obj) throws JSONException {
+        balanceText.setText(obj.getString("balance"));
+    }
 
 
 }

@@ -304,9 +304,9 @@
                     </GridLayout>
 
                     <GridLayout
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-
+                        android:layout_centerHorizontal="true"
                         android:padding="5dp"
                         android:layout_below="@id/contactPersonLayout"
                         android:layout_marginTop="5dp"
@@ -322,7 +322,7 @@
                             android:layout_height="wrap_content"
                             android:text="Quantity Given"
                             android:textSize="12sp"
-
+                            android:visibility="gone"
                             android:layout_marginTop="5dp"
                             />
 
@@ -331,7 +331,7 @@
                             android:layout_height="wrap_content"
                             android:text="Persons met"
                             android:textSize="12sp"
-
+                            android:layout_gravity="top|start"
 
                             android:layout_marginStart="20dp"
                             />
@@ -341,8 +341,8 @@
                             android:layout_height="wrap_content"
                             android:text="Distributed"
                             android:textSize="12sp"
-
-                            android:layout_marginStart="20dp"
+                            android:layout_gravity="center|top"
+                            android:layout_marginStart="50dp"
                             />
 
                         <TextView
@@ -352,18 +352,18 @@
 
                             android:text="Balance"
                             android:textSize="12sp"
-
+                            android:layout_marginStart="50dp"
 
                             android:layout_marginTop="5dp"
-                            android:layout_gravity="end|top"
-                            android:layout_marginEnd="20dp"
+                            android:layout_gravity="center|top"
+
 
                             />
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
 
-
+                            android:visibility="gone"
                             android:text="20"
                             android:layout_gravity="center"
                             android:textSize="14sp"
@@ -405,15 +405,14 @@
                             android:layout_height="wrap_content"
 
 
-                            android:text="6"
+
 
                             android:textSize="14sp"
                             android:textColor="@color/black"
 
                             android:id="@+id/balanceText"
-                            android:layout_gravity="end|bottom"
-                            android:paddingEnd="20dp"
-                            android:paddingStart="20dp"
+                            android:layout_gravity="center|bottom"
+
 
 
 

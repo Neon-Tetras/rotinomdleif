@@ -122,9 +122,8 @@ public class FragmentAttendance extends Fragment implements SwipeRefreshLayout.O
         int lateCount = 0;
         int earlyCount = 0;
             for (Task task : taskList) {
-                if (task != null) {
-                    SimpleDateFormat dtf2 = new SimpleDateFormat("yyyy/MM/dd");
-                    SimpleDateFormat dtf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                if (task != null && task.getStatus() == Task.COMPLETED) {
+
                     if (task.getStartTime().after(task.getDateGiven())) {
                         lateCount++;
                     }else{

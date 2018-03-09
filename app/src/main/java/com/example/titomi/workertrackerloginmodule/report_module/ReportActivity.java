@@ -164,7 +164,7 @@ System.out.println(this.getClass().getPackage());
         taskDescriptionEdit.setText(task.getDescription());
         institutionNameEdit.setText(task.getInstitution_name());
         fullAddressEdit.setText(task.getAddress());
-        quantityEdit.setText(""+task.getQuantity());
+        // quantityEdit.setText(""+task.getQuantity());
         contactFullNameEdit.setText(task.getContactName());
         contactNumberEdit.setText(task.getContactNumber());
 
@@ -180,8 +180,6 @@ System.out.println(this.getClass().getPackage());
         file = Uri.fromFile(outputMedia);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, file);
         startActivityForResult(intent, 100);
-      //dispatchTakePictureIntent();
-       // onLaunchCamera(findViewById(R.id.image));
 
     }
 
