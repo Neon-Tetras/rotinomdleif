@@ -85,6 +85,23 @@ public class ActivityInventoryRequestsListing extends AppCompatActivity implemen
         new InventoryRequestNetwork().execute(getString(R.string.api_url)+getString(R.string.inventory_view_requests_url)+"?key="+getString(R.string.field_worker_api_key)+"&view=supervisor_requests&id="+ loggedInUser.getId());
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if(loggedInUser != null) {
+            outState.putSerializable(getString(R.string.loggedInUser), loggedInUser);
+        }
+
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if(savedInstanceState != null) {
+            loggedInUser = (User) savedInstanceState.getSerializable(getString(R.string.loggedInUser));
+        }
+
+    }
 
 
 

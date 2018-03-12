@@ -1,5 +1,6 @@
 package com.example.titomi.workertrackerloginmodule.supervisor.activities;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -48,6 +49,9 @@ import com.example.titomi.workertrackerloginmodule.supervisor.User;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.DrawableManager;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.Network;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.Util;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONArray;
@@ -73,7 +77,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ActivityTaskListing extends AppCompatActivity implements View.OnClickListener,
         AdapterView.OnItemClickListener,
-        SwipeRefreshLayout.OnRefreshListener, AdapterView.OnItemLongClickListener {
+        SwipeRefreshLayout.OnRefreshListener, AdapterView.OnItemLongClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     static Context cxt;
@@ -105,6 +109,7 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
 //        if(loggedInUser != null && loggedInUser.getRoleId() != User.SUPERVISOR){
 //            findViewById(R.id.newTaskButton).setVisibility(View.GONE);
 //        }
+        googleApiClient = new GoogleApiClient.Builder(this, this, this).addApi(LocationServices.API).build();
 
     }
 
@@ -127,6 +132,21 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
         taskListView.setOnItemLongClickListener(this);
     }
 
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (googleApiClient != null) {
+            googleApiClient.connect();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        googleApiClient.disconnect();
+        super.onStop();
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -134,13 +154,46 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
     }
 
     @Override
+    public void onConnected(Bundle bundle) {
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+             lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+
+            double lat = lastLocation.getLatitude(), lon = lastLocation.getLongitude();
+            String units = "imperial";
+          //  String url = String.format("http://api.openweathermap.org/data/2.5/weather?lat=%f&lon=%f&units=%s&appid=%s",
+                    //lat, lon, units, getString(R.string.google_api_key);
+            Toast.makeText(cxt,""+lat+"\t"+lon,Toast.LENGTH_LONG).show();
+            //new GetWeatherTask(textView).execute(url);
+        }else{
+                ActivityCompat.requestPermissions(((Activity)cxt),
+                        new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                        PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+            }
+
+    }
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        if(loggedInUser != null) {
+            outState.putSerializable(getString(R.string.loggedInUser), loggedInUser);
+        }
+        if(selectedTask != null){
+            outState.putSerializable(getString(R.string.task),selectedTask);
+        }
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
+        if(savedInstanceState != null) {
+            loggedInUser = (User) savedInstanceState.getSerializable(getString(R.string.loggedInUser));
+        }
+
+        if(savedInstanceState.getSerializable(getString(R.string.task)) != null){
+            selectedTask = (Task)savedInstanceState.getSerializable(getString(R.string.task));
+        }
     }
 
     @Override
@@ -241,12 +294,34 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
                 if (ContextCompat.checkSelfPermission(cxt,
                         android.Manifest.permission.ACCESS_FINE_LOCATION)
                         == PackageManager.PERMISSION_GRANTED) {
-                    pg = new ProgressDialog(cxt);
+
+                    final AlertDialog alertDialog = new AlertDialog.Builder(cxt).create();
+                    if (isWithinClockInRange(selectedTask.getLatitude(), selectedTask.getLongitude(), lastLocation.getLatitude(), lastLocation.getLongitude())) {
+                        if (clockInText == null) {
+                            return;
+                        }
+
+                        if (clockInText.getTag().toString().equalsIgnoreCase(getString(R.string.clockOut))) {
+                            Intent i = new Intent(cxt, ReportActivity.class);
+                            i.putExtra("task", selectedTask);
+                            i.putExtra(getString(R.string.loggedInUser), loggedInUser);
+                            i.putExtra("stop_lat", "" + lastLocation.getLatitude());
+                            i.putExtra("stop_long", "" + lastLocation.getLongitude());
+
+
+                            startActivity(i);
+                            return;
+                        }
+                  /*  pg = new ProgressDialog(cxt);
                     pg.setCancelable(false);
                     pg.setMessage(getString(R.string.please_wait));
-                    pg.show();
-                    getLocation(selectedTask);
+                    pg.show();*/
+                    //getLocation(selectedTask);
 
+
+                }else{
+                        Toast.makeText(cxt, "Clock-in/Clock-out failed", Toast.LENGTH_SHORT).show();
+                    }
                 }
                 else{
                     ActivityCompat.requestPermissions(((Activity)cxt),
@@ -537,9 +612,16 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
         if (grantResults.length > 0
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+    if(lastLocation != null) {
 
+    double lat = lastLocation.getLatitude(), lon = lastLocation.getLongitude();
+
+
+    Toast.makeText(cxt, "" + lat + "\t" + lon, Toast.LENGTH_LONG).show();
+    }
 
         } else {
             Toast.makeText(cxt, "You need to grant location permission", Toast.LENGTH_LONG).show();
@@ -547,6 +629,17 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
                 pg.dismiss();
             }
         }
+    }
+
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
     }
 
     private static class AssignedTaskNetwork extends android.os.AsyncTask<String,Void,String>{
@@ -656,26 +749,26 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
                     @Override
                     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
                         LayoutInflater inflater = (LayoutInflater)cxt.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                        convertView = inflater.inflate(R.layout.task_listing_single_item_layout,null);
+                      View myView  = View.inflate(cxt,R.layout.task_listing_single_item_layout,null);
                         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                         layoutParams.setMargins(0,10,0,5);
 
-                        convertView.setLayoutParams(layoutParams);
+                        myView.setLayoutParams(layoutParams);
 
                         final Task task = taskList.get(position);
 
-                        ImageView userImage = convertView.findViewById(R.id.userImage);
-                        TextView usernameText = convertView.findViewById(R.id.username);
-                        TextView dateAssignedText = convertView.findViewById(R.id.dateTimeText);
-                        TextView taskTitle = convertView.findViewById(R.id.taskTitleText);
-                        TextView statusText =convertView.findViewById(R.id.taskStatusText);
-                        TextView taskType = convertView.findViewById(R.id.taskTypeText);
-                        TextView taskDescription = convertView.findViewById(R.id.taskDescriptionText);
-                        TextView institutionName = convertView.findViewById(R.id.institutionText);
-                        TextView locationText = convertView.findViewById(R.id.locationText);
-                        TextView contactPersonText =  convertView.findViewById(R.id.contactPersonText);
-                        TextView quantityGivenText = convertView.findViewById(R.id.quantityGivenText);
-                        TextView getDirections = convertView.findViewById(R.id.getDirection);
+                        ImageView userImage = myView.findViewById(R.id.userImage);
+                        TextView usernameText = myView.findViewById(R.id.username);
+                        TextView dateAssignedText = myView.findViewById(R.id.dateTimeText);
+                        TextView taskTitle = myView.findViewById(R.id.taskTitleText);
+                        TextView statusText =myView.findViewById(R.id.taskStatusText);
+                        TextView taskType = myView.findViewById(R.id.taskTypeText);
+                        TextView taskDescription = myView.findViewById(R.id.taskDescriptionText);
+                        TextView institutionName = myView.findViewById(R.id.institutionText);
+                        TextView locationText = myView.findViewById(R.id.locationText);
+                        TextView contactPersonText =  myView.findViewById(R.id.contactPersonText);
+                        TextView quantityGivenText = myView.findViewById(R.id.quantityGivenText);
+                        TextView getDirections = myView.findViewById(R.id.getDirection);
 
 
                           institutionName.setText(task.getInstitution_name());
@@ -725,7 +818,7 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
                             }
                         });
 
-                        return convertView;
+                        return myView;
                     }
                 };
 
@@ -740,4 +833,6 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
             }
         }
     }
+    Location lastLocation;
+    private GoogleApiClient googleApiClient;
 }

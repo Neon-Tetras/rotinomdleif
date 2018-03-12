@@ -138,6 +138,25 @@ public class ActivityReportListing extends AppCompatActivity implements AdapterV
         return super.onPrepareOptionsMenu(menu);
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if(loggedInUser != null) {
+            outState.putSerializable(getString(R.string.loggedInUser), loggedInUser);
+        }
+
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if(savedInstanceState != null) {
+            loggedInUser = (User) savedInstanceState.getSerializable(getString(R.string.loggedInUser));
+        }
+
+    }
+
+
     private void exportReport() {
 
         String[] reportHeader = getResources().getStringArray(R.array.header);
