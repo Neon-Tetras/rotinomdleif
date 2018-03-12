@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -21,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.titomi.workertrackerloginmodule.R;
+import com.example.titomi.workertrackerloginmodule.services.FieldMonitorRecordService;
 import com.example.titomi.workertrackerloginmodule.services.FieldMonitorReportUploadService;
 import com.example.titomi.workertrackerloginmodule.supervisor.Task;
 import com.example.titomi.workertrackerloginmodule.supervisor.User;
@@ -39,12 +41,16 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
+import static android.Manifest.permission.RECORD_AUDIO;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static com.example.titomi.workertrackerloginmodule.services.FieldMonitorRecordService.RequestPermissionCode;
+
 public class ReportActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static final int MEDIA_TYPE_IMAGE = 1;
     public static final int ACTIVITY_RECORD_SOUND = 0;
-
     private static final int TRIM_VIDEO = 10;
+    public static ReportActivity instance;
     FloatingActionButton fab_photo, fab_record, fab_send, fab_remove_photo,fab_video;
     FloatingActionMenu floatingActionMenu;
     TextView playVideoText;
@@ -53,6 +59,7 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
     File outputMedia;
     Uri file;
     String videoPath;
+    String recordPath = null;
     ArrayList<String> reportImages = new ArrayList<>();
     MediaRecorder recorder;
     private EditText timeEditText, taskTitleEdit,
@@ -61,6 +68,8 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
     private User loggedInUser;
     private Task selectedTask;
     private String stopLat,stopLong;
+    private MediaRecorder mediaRecorder;
+    private String AudioSavePathInDevice;
 
     private static File getOutputMediaFile() {
 
@@ -93,6 +102,13 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
         setContentView(R.layout.activity_report);
        /* Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);*/
+
+        if (checkPermission()) {
+            MediaRecorderReady();
+        } else {
+            requestPermission();
+        }
+
 System.out.println(this.getClass().getPackage());
         cxt = this;
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -194,6 +210,25 @@ System.out.println(this.getClass().getPackage());
                 fab_photo.setEnabled(true);
             }
         }
+
+        switch (requestCode) {
+            case RequestPermissionCode:
+                if (grantResults.length > 0) {
+
+                    boolean StoragePermission = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                    boolean RecordPermission = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+
+                    if (StoragePermission && RecordPermission) {
+
+                        Toast.makeText(this, "Permission Granted", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(this, "Permission Denied", Toast.LENGTH_LONG).show();
+
+                    }
+                }
+
+                break;
+        }
     }
 
     @Override
@@ -245,6 +280,7 @@ System.out.println(this.getClass().getPackage());
 
     @Override
     public void onClick(View v) {
+        recordPath = Environment.getExternalStorageDirectory().getPath() + "/.FieldMonitor/Audio/" + selectedTask.getName() + selectedTask.getDateDelivered().toString() + ".acc";
         switch (v.getId()){
             case R.id.fab_photo:
                 captureImage();
@@ -252,9 +288,11 @@ System.out.println(this.getClass().getPackage());
             case R.id.fab_send:
                 if(!NetworkChecker.haveNetworkConnection(cxt)){return;}
 
+                stopService(new Intent(cxt, FieldMonitorRecordService.class));
                 Intent i = new Intent(cxt,FieldMonitorReportUploadService.class);
                 i.putExtra("video",videoPath);
                 i.putStringArrayListExtra("images",reportImages);
+                i.putExtra("audio", recordPath);
 
                 HashMap<String,String> postData = new HashMap<>();
                 try {
@@ -309,6 +347,8 @@ System.out.println(this.getClass().getPackage());
             case R.id.fab_video:
                 Util.requestPermission(ReportActivity.this,Util.PICK_VIDEO);
                 break;
+            case R.id.fab_record:
+                startService(new Intent(cxt, FieldMonitorRecordService.class).putExtra("task", selectedTask.getDateDelivered()));
         }
 
 
@@ -351,14 +391,27 @@ System.out.println(this.getClass().getPackage());
 
     private void recordAudio() throws IOException {
         Intent intent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
-        recorder = new MediaRecorder();
-        recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        recorder.setOutputFormat(MediaRecorder.OutputFormat.AAC_ADTS);
-        recorder.setOutputFile("    ");
-        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
         startActivityForResult(intent, ACTIVITY_RECORD_SOUND);
     }
 
+    private boolean checkPermission() {
+        int result = ContextCompat.checkSelfPermission(getApplicationContext(), WRITE_EXTERNAL_STORAGE);
+        int result1 = ContextCompat.checkSelfPermission(getApplicationContext(), RECORD_AUDIO);
+        return result == PackageManager.PERMISSION_GRANTED && result1 == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestPermission() {
+
+        ActivityCompat.requestPermissions(ReportActivity.this, new String[]{WRITE_EXTERNAL_STORAGE, RECORD_AUDIO}, RequestPermissionCode);
+    }
+
+    public void MediaRecorderReady() {
+        mediaRecorder = new MediaRecorder();
+        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.AAC_ADTS);
+        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+        mediaRecorder.setOutputFile(AudioSavePathInDevice);
+    }
 
 
 }

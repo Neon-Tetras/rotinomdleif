@@ -1,23 +1,24 @@
 package com.example.titomi.workertrackerloginmodule.services;
 
 import android.annotation.SuppressLint;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
+import android.media.MediaRecorder;
 import android.os.Binder;
+import android.os.Environment;
 import android.os.IBinder;
-import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
+import android.widget.Toast;
 
 import com.example.titomi.workertrackerloginmodule.R;
+import com.example.titomi.workertrackerloginmodule.report_module.ReportActivity;
 import com.example.titomi.workertrackerloginmodule.supervisor.DatabaseAdapter;
 import com.example.titomi.workertrackerloginmodule.supervisor.Messages;
+import com.example.titomi.workertrackerloginmodule.supervisor.Task;
 import com.example.titomi.workertrackerloginmodule.supervisor.User;
-import com.example.titomi.workertrackerloginmodule.supervisor.activities.ActivityReportListing;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.ImageUtils;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.Network;
 
@@ -25,6 +26,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Timer;
@@ -36,16 +38,46 @@ import java.util.TimerTask;
 
 public class FieldMonitorRecordService extends Service {
 
+    public static final int RequestPermissionCode = 1;
     private final IBinder binder = new FieldMonitorRecordService.MyBinder();
+    private final int notification_id = 32;
+    public String AudioSavePathInDevice = null;
+    MediaRecorder mediaRecorder;
+    ReportActivity activity;
+    NotificationManagerCompat managerCompat;
+    Task task;
+    NotificationCompat.Builder mBuilder;
     private Context cxt;
     private Timer mTimer1;
     private TimerTask mTt1;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        cxt = this;
-        startTimer();
 
+        mBuilder = new NotificationCompat.Builder(getBaseContext(), "Record")
+                .setSmallIcon(R.mipmap.app_logo)
+                .setContentTitle("FieldMonitor Record")
+                .setContentText("Recording Session")
+                .setPriority(NotificationCompat.PRIORITY_HIGH);
+
+        managerCompat = NotificationManagerCompat.from(getBaseContext());
+        managerCompat.notify(notification_id, mBuilder.build());
+
+        String t;
+        t = intent.getStringExtra("task");
+        AudioSavePathInDevice = Environment.getExternalStorageDirectory().getPath() + "/.FieldMonitor/Audio/" + t + ".acc";
+
+        MediaRecorderReady();
+
+        try {
+            mediaRecorder.prepare();
+            mediaRecorder.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        }
+//            Toast.makeText(cxt, "Recording", Toast.LENGTH_SHORT).show();
         return START_STICKY;
 
     }
@@ -53,6 +85,18 @@ public class FieldMonitorRecordService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mediaRecorder.stop();
+        managerCompat.cancel(32);
+        Toast.makeText(this, "Recording Stopped", Toast.LENGTH_SHORT).show();
+    }
+
+
+    public void MediaRecorderReady() {
+        mediaRecorder = new MediaRecorder();
+        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.AAC_ADTS);
+        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+        mediaRecorder.setOutputFile(AudioSavePathInDevice);
     }
 
     @Nullable
@@ -155,36 +199,6 @@ public class FieldMonitorRecordService extends Service {
         }
     }
 
-    private void showNotification() {
-        NotificationCompat.Builder notifBuilder =
-                new NotificationCompat
-                        .Builder(cxt, getString(R.string.new_message))
-                        .setSmallIcon(R.mipmap.app_logo)
-                        .setContentText(String.format("%s", "You have new report(s)"))
-                        .setContentTitle("New Report(s)");
-
-        Intent resultIntent = new Intent(cxt, ActivityReportListing.class);
-
-        // Because clicking the notification opens a new ("special") activity, there's
-        // no need to create an artificial back stack.
-        PendingIntent pendingIntent =
-                PendingIntent.getActivity(
-                        cxt,
-                        0,
-                        resultIntent,
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                );
-
-        notifBuilder.setContentIntent(pendingIntent);
-        notifBuilder.setAutoCancel(true);
-        notifBuilder.setLights(Color.GREEN, 60000, 60000);
-        notifBuilder.setSound(Settings.System.DEFAULT_NOTIFICATION_URI);
-        notifBuilder.setVibrate(new long[]{1000, 1000, 1000, 1000, 1000});
-
-        int notificationId = 001;
-        NotificationManager notifManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notifManager.notify(notificationId, notifBuilder.build());
-    }
 
     private void startTimer() {
         mTimer1 = new Timer();

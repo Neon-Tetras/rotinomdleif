@@ -37,13 +37,21 @@ import java.util.TimerTask;
  */
 
 public class FieldMonitorReportUploadService extends Service {
+    private static int actionCount = 0;
+    private static int NUM_ACTIONS = 3;
+    private final IBinder binder = new MyBinder();
+    ArrayList<String> images;
+    String video;
+    String audio;
+    HashMap<String,String> postData;
+    User loggedInUser;
+    NotificationManager notifManager;
+    int submittingReportNotif = 001;
+    int submissionComplete = 002;
     private Context cxt;
     private Timer mTimer1;
     private TimerTask mTt1;
-    ArrayList<String> images;
-    String video;
-    HashMap<String,String> postData;
-    User loggedInUser;
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
@@ -51,6 +59,7 @@ public class FieldMonitorReportUploadService extends Service {
         postData = ( HashMap<String,String> )intent.getSerializableExtra("postData");
         images = intent.getStringArrayListExtra("images");
         video = intent.getStringExtra("video");
+        audio = intent.getStringExtra("audio");
         loggedInUser = (User)intent.getSerializableExtra(getString(R.string.loggedInUser));
         cxt = this;
 
@@ -79,6 +88,7 @@ public class FieldMonitorReportUploadService extends Service {
         sb.deleteCharAt(sb.toString().lastIndexOf(","));
         postData.put("photo",sb.toString());
         postData.put("video",String.format("videos/%s",new File(video).getName()));
+
         if (video == null || Objects.equals(video,"")) {
             NUM_ACTIONS = 2;
         }
@@ -94,8 +104,6 @@ public class FieldMonitorReportUploadService extends Service {
 
     }
 
-
-
     private void uploadImages(){
 
         ImageUploader imageUploader = new ImageUploader(this, String.format("%s%s", getString(R.string.api_url), getString(R.string.image_upload_url)));
@@ -109,6 +117,7 @@ public class FieldMonitorReportUploadService extends Service {
         VideoUploader videoUploader = new VideoUploader(this, String.format("%s%s", getString(R.string.api_url), getString(R.string.video_upload_url)));
         videoUploader.execute(videos);
     }
+
     private void sendReport() {
         try {
             ReportSubmitNetwork network = new ReportSubmitNetwork();
@@ -125,7 +134,6 @@ public class FieldMonitorReportUploadService extends Service {
     public void onDestroy() {
         super.onDestroy();
     }
-    private final IBinder binder = new MyBinder();
 
     @Nullable
     @Override
@@ -134,6 +142,40 @@ public class FieldMonitorReportUploadService extends Service {
             return binder;
     }
 
+    private void notifyCompletion() {
+
+        notifManager.cancel(submittingReportNotif);
+        NotificationCompat.Builder notifBuilder =
+                new NotificationCompat
+                        .Builder(cxt, getString(R.string.submitting_report))
+                        .setSmallIcon(R.mipmap.app_logo)
+                        .setContentText("Submitting complete")
+                        .setContentTitle("Field monitor");
+
+        Intent resultIntent = new Intent(cxt, ActivityTaskListing.class);
+        resultIntent.putExtra(getString(R.string.loggedInUser), loggedInUser);
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(
+                cxt,
+                0,
+                resultIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+        );
+
+
+        Toast.makeText(cxt, "Report submitted successfully", Toast.LENGTH_LONG).show();
+        //  startActivity(resultIntent);
+
+        notifBuilder.setContentIntent(pendingIntent);
+        notifBuilder.setAutoCancel(true);
+        notifBuilder.setLights(Color.GREEN, 60000, 60000);
+        notifBuilder.setSound(Settings.System.DEFAULT_NOTIFICATION_URI);
+        notifBuilder.setVibrate(new long[]{1000, 1000, 1000, 1000, 1000});
+
+
+        notifManager.notify(submissionComplete, notifBuilder.build());
+
+    }
 
     public class MyBinder extends Binder {
         public FieldMonitorReportUploadService getService() {
@@ -141,7 +183,6 @@ public class FieldMonitorReportUploadService extends Service {
         }
 
     }
-
 
     private  class ReportSubmitNetwork extends AsyncTask<String,Void,String>{
 
@@ -203,47 +244,4 @@ public class FieldMonitorReportUploadService extends Service {
         }
 
     }
-
-    private void notifyCompletion(){
-
-        notifManager.cancel(submittingReportNotif);
-        NotificationCompat.Builder notifBuilder =
-                new NotificationCompat
-                        .Builder(cxt,getString(R.string.submitting_report))
-                        .setSmallIcon(R.mipmap.app_logo)
-                        .setContentText("Submitting complete")
-                        .setContentTitle("Field monitor");
-
-        Intent resultIntent = new Intent(cxt, ActivityTaskListing.class);
-         resultIntent.putExtra(getString(R.string.loggedInUser),loggedInUser);
-
-        PendingIntent pendingIntent =   PendingIntent.getActivity(
-                cxt,
-                0,
-                resultIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT
-        );
-
-
-
-        Toast.makeText(cxt,"Report submitted successfully",Toast.LENGTH_LONG).show();
-      //  startActivity(resultIntent);
-
-        notifBuilder.setContentIntent(pendingIntent);
-        notifBuilder.setAutoCancel(true);
-        notifBuilder.setLights(Color.GREEN,60000,60000);
-        notifBuilder.setSound(Settings.System.DEFAULT_NOTIFICATION_URI);
-        notifBuilder.setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 });
-
-
-
-        notifManager.notify(submissionComplete, notifBuilder.build());
-
-    }
-
-    NotificationManager notifManager;
-    int submittingReportNotif = 001;
-    int submissionComplete = 002;
-    private static int actionCount = 0;
-    private static int NUM_ACTIONS = 3;
 }
