@@ -16,9 +16,9 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.example.titomi.workertrackerloginmodule.R;
 import com.example.titomi.workertrackerloginmodule.apis.model.Users;
 import com.example.titomi.workertrackerloginmodule.apis.model.leave_model.LeaveModel;
-import com.example.titomi.workertrackerloginmodule.R;
 import com.example.titomi.workertrackerloginmodule.supervisor.User;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.Network;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.Util;
@@ -199,58 +199,5 @@ public class LeaveHistoryActivity extends AppCompatActivity {
                 Log.d(getClass().getSimpleName(), e.getMessage());
             }
         }
-
-    /*private void getLeaveList() {
-        try {
-            LeaveApiService service = LeaveApiClient.getRetrofit().create(LeaveApiService.class);
-            String userId = getIntent().getStringExtra("UserId");
-            Call<List<LeaveModel>> call = service.getLeave(API_KEY, view, userId);
-            call.enqueue(new Callback<List<LeaveModel>>() {
-                @Override
-                public void onResponse(Call<List<LeaveModel>> call, Response<List<LeaveModel>> response) {
-                    if (response.body() == null) {
-                        Log.e(TAG, "Failed");
-                        return;
-                    }
-                    BusProvider.getInstance().post(new ServerEvent(response.body()));
-                    Log.e(TAG, "Success");
-                    List<LeaveModel> leaveList = response.body();
-                    layoutManager = new LinearLayoutManager(LeaveHistoryActivity.this);
-                    RecyclerView recyclerView = findViewById(R.id.leave_history);
-                    recyclerView.setLayoutManager(layoutManager);
-
-                    LeaveAdapter leaveAdapter = new LeaveAdapter(leaveList);
-                    recyclerView.setAdapter(leaveAdapter);
-
-                }
-
-                @Override
-                public void onFailure(Call<List<LeaveModel>> call, Throwable t) {
-                    BusProvider.getInstance().post(new ErrorEvent(-2, t.getMessage()));
-
-                }
-            });
-        } catch (Exception e) {
-
-        }
-    }
-
-    private void loadLeaveData(String view, String id) {
-        communicator.leaveGet(view, id);
-    }
-
-    @Subscribe
-    public void onServerEvent(ServerEvent serverEvent) {
-        Toast.makeText(this, "" + serverEvent.getLeaveModel().get(0), Toast.LENGTH_SHORT).show();
-        if (serverEvent.getLeaveModel().get(0) != null) {
-
-
-        }
-    }
-
-    @Subscribe
-    public void onErrorEvent(ErrorEvent errorEvent) {
-        Toast.makeText(this, "" + errorEvent.getErrorMsg(), Toast.LENGTH_SHORT).show();
-    }*/
     }
 }

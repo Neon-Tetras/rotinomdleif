@@ -1,45 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.titomi.workertrackerloginmodule.LoginActivity"
-    android:background="@color/colorPrimaryLight">
+    tools:context="com.example.titomi.workertrackerloginmodule.LoginActivity">
 
 
     <ImageView
+        android:id="@+id/app_logo"
         android:layout_width="150dp"
         android:layout_height="80dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="140dp"
-        android:src="@drawable/app_logo"
-        android:id="@+id/app_logo"/>
+        android:src="@drawable/app_logo" />
     <ProgressBar
+        android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/app_logo"
         android:layout_centerHorizontal="true"
-        android:id="@+id/progressBar"
         android:visibility="gone"/>
     <EditText
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
         android:id="@+id/line_id"
         android:layout_width="200dp"
         android:layout_height="50dp"
+        android:layout_centerInParent="true"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:background="@drawable/roundrectangle"
         android:gravity="center"
         android:hint="Enter Your Code"
-        android:inputType="textPhonetic"
-        android:background="@drawable/roundrectangle"
-        android:layout_centerInParent="true"/>
+        android:inputType="textPhonetic" />
     <Button
+        android:id="@+id/login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/line_id"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="8dp"
-        android:layout_below="@id/line_id"
-        android:layout_width="wrap_content"
-        android:id="@+id/login"
-        android:layout_height="wrap_content"
         android:text="Login"/>
 
 </RelativeLayout>

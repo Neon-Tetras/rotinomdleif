@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
+import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -31,6 +32,7 @@ import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -52,6 +54,7 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
     Uri file;
     String videoPath;
     ArrayList<String> reportImages = new ArrayList<>();
+    MediaRecorder recorder;
     private EditText timeEditText, taskTitleEdit,
             taskDescriptionEdit, institutionNameEdit,
             fullAddressEdit, quantityEdit, contactFullNameEdit, contactNumberEdit, locationEdit, dateEditText, stateEdit, lgaEdit, taskTypeEdit, participantsEdit, quantitySoldEdit, commentsEdit;
@@ -346,8 +349,13 @@ System.out.println(this.getClass().getPackage());
 
     }
 
-    private void recordAudio(){
+    private void recordAudio() throws IOException {
         Intent intent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
+        recorder = new MediaRecorder();
+        recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        recorder.setOutputFormat(MediaRecorder.OutputFormat.AAC_ADTS);
+        recorder.setOutputFile("    ");
+        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
         startActivityForResult(intent, ACTIVITY_RECORD_SOUND);
     }
 

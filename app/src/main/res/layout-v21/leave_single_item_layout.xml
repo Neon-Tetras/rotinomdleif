@@ -126,7 +126,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
                     android:paddingTop="1dp"
-                    android:text="10 days"
+                    android:text=""
                     android:textColor="@color/black"
                     android:textSize="12sp"
                     android:textStyle="normal" />
@@ -171,7 +171,7 @@
                     android:background="@color/white"
                     android:paddingEnd="2dp"
                     android:paddingStart="5dp"
-                    android:text="From Date:"
+                    android:text="From:"
                     android:textColor="@color/colorPrimary"
                     android:textSize="12sp"
                     android:textStyle="bold" />
@@ -182,7 +182,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
                     android:paddingTop="1dp"
-                    android:text="10 days"
+                    android:text=""
                     android:textColor="@color/black"
                     android:textSize="12sp"
                     android:textStyle="normal" />
@@ -202,7 +202,7 @@
                     android:background="@color/white"
                     android:paddingEnd="2dp"
                     android:paddingStart="5dp"
-                    android:text="To Date:"
+                    android:text="To:"
                     android:textColor="@color/colorPrimary"
                     android:textSize="12sp"
                     android:textStyle="bold" />
@@ -213,7 +213,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="35dp"
                     android:paddingTop="1dp"
-                    android:text="10 days"
+                    android:text=""
                     android:textColor="@color/black"
                     android:textSize="12sp"
                     android:textStyle="normal" />
@@ -235,7 +235,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="end"
-                android:text="12 Apr 2018, 12:00pm"
+                android:text="N/A"
                 android:textColor="@color/black"
                 android:textSize="12sp" />
         </LinearLayout>
