@@ -164,7 +164,7 @@ public class ActivityViewReport extends AppCompatActivity implements View.OnClic
                                 if(storage.getImage(imageName) == null) return;
 
                                 imageList.add(storage.getImage(imageName).getAbsolutePath());
-                                reportImage.setImageBitmap((Bitmap) obj);
+                               reportImage.setImageBitmap((Bitmap) obj);
 
 
                             }
@@ -202,12 +202,14 @@ public class ActivityViewReport extends AppCompatActivity implements View.OnClic
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putSerializable("task",selectedTask);
+        outState.putSerializable(getString(R.string.loggedInUser),loggedInUser);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         selectedTask = (Task)savedInstanceState.getSerializable("task");
+        loggedInUser = (User)savedInstanceState.getSerializable(getString(R.string.loggedInUser));
     }
 
     @Override

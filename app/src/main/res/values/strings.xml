@@ -203,5 +203,6 @@
     <string name="enter_remittance_record">Enter Remittance Record</string>
     <string name="proof_image_uploader">work/proof_image_uploader.php</string>
     <string name="user_id">user_id</string>
+    <string name="task">task</string>
 
 </resources>

@@ -138,9 +138,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
 
                     goToDashBoard(user);
-                    //LoginActivity.cxt.fin
 
-
+                }else{
+        Toast.makeText(cxt,"Login failed\nIncorrect user credentials",Toast.LENGTH_LONG).show();
                 }
             } catch (JSONException e) {
                 e.printStackTrace();

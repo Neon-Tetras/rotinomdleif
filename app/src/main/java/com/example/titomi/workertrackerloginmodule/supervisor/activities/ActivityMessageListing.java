@@ -30,6 +30,7 @@ import android.widget.Toast;
 import com.example.titomi.workertrackerloginmodule.R;
 import com.example.titomi.workertrackerloginmodule.supervisor.DatabaseAdapter;
 import com.example.titomi.workertrackerloginmodule.supervisor.Messages;
+import com.example.titomi.workertrackerloginmodule.supervisor.Task;
 import com.example.titomi.workertrackerloginmodule.supervisor.User;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.ImageUtils;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.Network;
@@ -119,15 +120,27 @@ public class ActivityMessageListing extends AppCompatActivity implements Adapter
         getOutBoxMessages();
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-    }
+        @Override
+        protected void onSaveInstanceState(Bundle outState) {
+            super.onSaveInstanceState(outState);
+            if(loggedInUser != null) {
+                outState.putSerializable(getString(R.string.loggedInUser), loggedInUser);
+            }
+
+        }
+
+
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
+        if(savedInstanceState != null) {
+            loggedInUser = (User) savedInstanceState.getSerializable(getString(R.string.loggedInUser));
+        }
+
+
     }
+
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
