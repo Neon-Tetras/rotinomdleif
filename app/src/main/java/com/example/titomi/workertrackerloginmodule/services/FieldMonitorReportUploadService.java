@@ -38,7 +38,7 @@ import java.util.TimerTask;
 
 public class FieldMonitorReportUploadService extends Service {
     private static int actionCount = 0;
-    private static int NUM_ACTIONS = 3;
+    private static int NUM_ACTIONS = 4;
     private final IBinder binder = new MyBinder();
     ArrayList<String> images;
     String video;
@@ -88,17 +88,17 @@ public class FieldMonitorReportUploadService extends Service {
         sb.deleteCharAt(sb.toString().lastIndexOf(","));
         postData.put("photo",sb.toString());
         postData.put("video",String.format("videos/%s",new File(video).getName()));
+        postData.put("audio", String.format("audio/%s", new File(audio).getName()));
 
         if (video == null || Objects.equals(video,"")) {
-            NUM_ACTIONS = 2;
+            NUM_ACTIONS = 3;
         }
         sendReport();
 
         uploadImages();
-        if(video != null || Objects.equals(video, "")) {
+        if (video != null || Objects.equals(video, ""))
 
-            uploadVideo();
-        }
+            uploadAudio();
 
         return START_STICKY;
 
@@ -116,6 +116,12 @@ public class FieldMonitorReportUploadService extends Service {
          videos.add(video);
         VideoUploader videoUploader = new VideoUploader(this, String.format("%s%s", getString(R.string.api_url), getString(R.string.video_upload_url)));
         videoUploader.execute(videos);
+    }
+
+    private void uploadAudio() {
+        ArrayList<String> audio = new ArrayList<>();
+        AudioUploader audioUploader = new AudioUploader(this, String.format("%s%s", getString(R.string.api_url), getString(R.string.audio_upload_url)));
+        audioUploader.execute(audio);
     }
 
     private void sendReport() {
@@ -216,15 +222,30 @@ public class FieldMonitorReportUploadService extends Service {
         @Override
         protected void onPostExecute(List<String> strings) {
             super.onPostExecute(strings);
-            if(strings == null) return;
+            if (strings == null) return;
             actionCount++;
-            if(actionCount == NUM_ACTIONS){
+            if (actionCount == NUM_ACTIONS) {
                 notifyCompletion();
                 stopSelf();
             }
         }
+    }
 
+    class AudioUploader extends MediaUploader {
+        public AudioUploader(Context cxt, String uploadApiUrl) {
+            super(cxt, uploadApiUrl);
+        }
 
+        @Override
+        protected void onPostExecute(List<String> strings) {
+            super.onPostExecute(strings);
+            if (strings == null) return;
+            actionCount++;
+            if (actionCount == NUM_ACTIONS) {
+                notifyCompletion();
+                stopSelf();
+            }
+        }
     }
 
     class VideoUploader extends  MediaUploader{
