@@ -269,10 +269,11 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
                     stateSpinner.setSelection(Arrays.asList(states).indexOf(selectedInstitution.getState()));
                     String[] _lgas = new String[1];
                     _lgas[0] = selectedInstitution.getLga();
-                    ArrayAdapter<String> adapter = new ArrayAdapter<>(cxt, android.R.layout.simple_dropdown_item_1line, _lgas);
+                  /*  ArrayAdapter<String> adapter = new ArrayAdapter<>(cxt, android.R.layout.simple_dropdown_item_1line, _lgas);
                     lgaSpinner.setAdapter(adapter);
                     lgas.clear();
-                    lgas.add(selectedInstitution.getLga());
+                    lgas.add(selectedInstitution.getLga());*/
+
                     taskCoordinates = new LatLng(selectedInstitution.getLatitude(),selectedInstitution.getLongitude());
 
 
@@ -477,6 +478,7 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
 
         if(selectedInstitution !=null) {
             lgaSpinner.setSelection(Arrays.asList(lgas.toArray()).indexOf(selectedInstitution.getLga().trim()));
+            lgaSpinner.setEnabled(false);
         }
         if(selectedTask !=null) {
             lgaSpinner.setSelection(Arrays.asList(lgas.toArray()).indexOf(selectedTask.getLga().trim()));
@@ -562,6 +564,7 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
 //                break;
 //            }
         }
+
     }
 
     private void assignTask(String api_url){
