@@ -3,6 +3,7 @@ package com.example.titomi.workertrackerloginmodule.dashboard_fragments;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.RectF;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -122,9 +123,12 @@ public class FragmentInventory extends Fragment implements OnChartValueSelectedL
 
 //        dataSet.setColors(ColorTemplate.LIBERTY_COLORS);
         try {
+
 //            dataSet.setColors(getResources().getColor(R.color.balanceColor), getResources().getColor(R.color.quantitySoldColor), getResources().getColor(R.color.quantityColor));
 
-            dataSet.setColors(ColorTemplate.createColors(new int[]{R.color.balanceColor, R.color.quantitySoldColor, R.color.quantityColor}));
+            dataSet.setColors(ColorTemplate.createColors(new int[]{Color.RED, Color.BLUE, Color.GREEN}));
+
+            //TODO
 
         } catch (Resources.NotFoundException e) {
             e.printStackTrace();

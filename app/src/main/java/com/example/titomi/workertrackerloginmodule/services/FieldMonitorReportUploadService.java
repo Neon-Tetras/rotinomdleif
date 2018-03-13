@@ -122,6 +122,7 @@ public class FieldMonitorReportUploadService extends Service {
         ArrayList<String> audio = new ArrayList<>();
         AudioUploader audioUploader = new AudioUploader(this, String.format("%s%s", getString(R.string.api_url), getString(R.string.audio_upload_url)));
         audioUploader.execute(audio);
+        //TODO remember to delete this line
     }
 
     private void sendReport() {
