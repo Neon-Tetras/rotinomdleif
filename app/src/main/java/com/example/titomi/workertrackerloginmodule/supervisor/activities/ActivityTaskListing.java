@@ -468,7 +468,9 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
                  break;
          }
 
-        if(loggedInUser.getRoleId() != User.SUPERVISOR){
+        if(loggedInUser.getRoleId() ==
+                User.SUPERVISOR &&
+                selectedTask.getWorker().getId() == loggedInUser.getId()){
             editTask.setVisibility(View.GONE);
             deleteTask.setVisibility(View.GONE);
             switch (selectedTask.getStatus()){
@@ -476,19 +478,6 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
                 clockInText.setVisibility(View.VISIBLE);
                 clockInText.setTag(getString(R.string.clockIn));
                 break;
-                case Task.ONGOING:
-                    clockInText.setVisibility(View.VISIBLE);
-                    clockInText.setText(getString(R.string.writeReport));
-                    clockInText.setTag(getString(R.string.clockOut));
-            }
-        }else if(loggedInUser.getRoleId() ==
-                User.SUPERVISOR &&
-                selectedTask.getWorker().getId() == loggedInUser.getId()){
-            switch (selectedTask.getStatus()){
-                case Task.PENDING:
-                    clockInText.setVisibility(View.VISIBLE);
-                    clockInText.setTag(getString(R.string.clockIn));
-                    break;
                 case Task.ONGOING:
                     clockInText.setVisibility(View.VISIBLE);
                     clockInText.setText(getString(R.string.writeReport));
@@ -508,8 +497,6 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
         clockInText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: call loadTask(); on clockin and clockout success
-
 
                     alertDialog.dismiss();
 
