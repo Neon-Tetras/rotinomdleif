@@ -302,6 +302,14 @@ public class Task extends Entity {
         this.video = video;
     }
 
+    public String getAudio() {
+        return audio;
+    }
+
+    public void setAudio(String audio) {
+        this.audio = audio;
+    }
+
     private User supervisor;
     private User worker;
     public Date dateGiven;
@@ -332,6 +340,7 @@ public class Task extends Entity {
     private String description;
     private String images;
     private String video;
+    private String audio;
 
     public static final int PENDING = 0;
     public static final int ONGOING = 1;

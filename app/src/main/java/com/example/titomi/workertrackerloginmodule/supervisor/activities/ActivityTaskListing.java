@@ -1033,6 +1033,7 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
                     task.setStartTime(startTime);
                     task.setStopTime(stopTime);
                     task.setVideo(obj.getString("video"));
+                    task.setAudio(obj.getString("audio"));
 
 
                     if(task.getStatus() == Task.ONGOING){

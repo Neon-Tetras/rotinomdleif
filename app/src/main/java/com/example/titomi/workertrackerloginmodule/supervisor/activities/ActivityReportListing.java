@@ -275,6 +275,7 @@ public class ActivityReportListing extends AppCompatActivity implements AdapterV
                     task.setStartTime(startTime);
                     task.setStopTime(stopTime);
                     task.setVideo(obj.getString("video"));
+                    task.setAudio(obj.getString("audio"));
 
 
                         taskList.add(task);
