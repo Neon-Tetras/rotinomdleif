@@ -455,10 +455,10 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
          /*
          * if user has uploaded images, then the selectedTask has been done
          *So the selectedTask cannot be deleted or edited*/
-         switch (selectedTask.getStatus()){
+     /*    switch (selectedTask.getStatus()){
              case Task.PENDING:
 
-                 //editTask.setVisibility(View.VISIBLE);
+                 editTask.setVisibility(View.VISIBLE);
                  deleteTask.setVisibility(View.VISIBLE);
                  break;
 
@@ -466,13 +466,10 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
              case Task.COMPLETED:
                  viewReport.setVisibility(View.VISIBLE);
                  break;
-         }
+         }*/
 
-        if(loggedInUser.getRoleId() ==
-                User.SUPERVISOR &&
-                selectedTask.getWorker().getId() == loggedInUser.getId()){
-            editTask.setVisibility(View.GONE);
-            deleteTask.setVisibility(View.GONE);
+        if(selectedTask.getWorker().getId() == loggedInUser.getId()){
+
             switch (selectedTask.getStatus()){
                 case Task.PENDING:
                 clockInText.setVisibility(View.VISIBLE);
@@ -482,7 +479,36 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
                     clockInText.setVisibility(View.VISIBLE);
                     clockInText.setText(getString(R.string.writeReport));
                     clockInText.setTag(getString(R.string.clockOut));
+                    break;
+                case Task.PENDING_APPROVAL:
+                    case Task.COMPLETED:
+                    viewReport.setVisibility(View.VISIBLE);
+                    break;
             }
+
+        }
+        if(loggedInUser.getRoleId() == User.SUPERVISOR) {
+            editTask.setVisibility(View.VISIBLE);
+            deleteTask.setVisibility(View.VISIBLE);
+
+            if(selectedTask.getWorker().getId() == loggedInUser.getId()){
+
+                switch (selectedTask.getStatus()){
+                    case Task.PENDING:
+                        clockInText.setVisibility(View.VISIBLE);
+                        clockInText.setTag(getString(R.string.clockIn));
+                        break;
+                    case Task.ONGOING:
+                        clockInText.setVisibility(View.VISIBLE);
+                        clockInText.setText(getString(R.string.writeReport));
+                        clockInText.setTag(getString(R.string.clockOut));
+                }
+                if(selectedTask.getStatus() == Task.PENDING_APPROVAL || selectedTask.getStatus() == Task.COMPLETED){
+                    viewReport.setVisibility(View.VISIBLE);
+                }
+
+            }
+           // clockInText.setText(getString(R.string.writeReport));
         }
 
 
@@ -506,6 +532,12 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
                         == PackageManager.PERMISSION_GRANTED) {
 
                     final AlertDialog alertDialog = new AlertDialog.Builder(cxt).create();
+                    if(isClockedInOnATask){
+                        Toast.makeText(cxt,
+                                "Please complete the ongoing task first before beginning another",
+                                Toast.LENGTH_LONG).show();
+                        return;
+                    }
                     if (isWithinClockInRange(selectedTask.getLatitude(), selectedTask.getLongitude(), mLastLocation.getLatitude(), mLastLocation.getLongitude())) {
                         if (clockInText == null) {
                             return;
@@ -523,12 +555,7 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
                             return;
                         }
 
-                        if(isClockedInOnATask){
-                            Toast.makeText(cxt,
-                                    "Please complete the ongoing task first before beginning another",
-                                    Toast.LENGTH_LONG).show();
-                            return;
-                        }
+
                         RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
                         Date date = new Date(mLastLocation.getTime());
                         SimpleDateFormat dtf = new SimpleDateFormat("yyyy/M/dd HH:mm:ss");

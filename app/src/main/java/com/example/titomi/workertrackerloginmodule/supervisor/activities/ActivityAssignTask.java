@@ -113,6 +113,7 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
         actionBar.setLogo(R.drawable.app_logo);
         actionBar.setDisplayUseLogoEnabled(true);
         selfAssignCheck.setOnClickListener(this);
+
         taskTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -478,6 +479,7 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
     @SuppressLint("StaticFieldLeak")
     private void loadLgaSpinner(String state) throws UnsupportedEncodingException {
         selectedState = Network.encodeUrl(state);
+        Toast.makeText(cxt,selectedState,Toast.LENGTH_SHORT).show();
         //  final ProgressDialog d = new ProgressDialog(cxt);
         new android.os.AsyncTask<String,Void,String>(){
             @Override
