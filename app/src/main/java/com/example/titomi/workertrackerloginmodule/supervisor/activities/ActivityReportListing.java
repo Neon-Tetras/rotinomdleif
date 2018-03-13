@@ -345,30 +345,16 @@ public class ActivityReportListing extends AppCompatActivity implements AdapterV
         final Button searchActionButton = view.findViewById(R.id.view_report_action_button);
         final AlertDialog alertDialog = new AlertDialog.Builder(cxt).create();
 
-         fromDate.setOnClickListener(new View.OnClickListener() {
-             @Override
-             public void onClick(View view) {
-                 DateTimeUtil.showDatePicker(cxt,fromDate);
+         fromDate.setOnClickListener(view12 -> DateTimeUtil.showDatePicker(cxt,fromDate));
+         toDate.setOnClickListener(view1 -> DateTimeUtil.showDatePicker(cxt,toDate));
+         searchActionButton.setOnClickListener(view13 -> {
 
-             }
-         });
-         toDate.setOnClickListener(new View.OnClickListener() {
-             @Override
-             public void onClick(View view) {
-                 DateTimeUtil.showDatePicker(cxt,toDate);
-             }
-         });
-         searchActionButton.setOnClickListener(new View.OnClickListener() {
-             @Override
-             public void onClick(View view) {
-
-               if(fromDate.getText().length() == 0 || toDate.getText().length() == 0){
-                   Toast.makeText(cxt,"Please fill all fields",Toast.LENGTH_SHORT).show();
-                   return;
-               }
-               alertDialog.dismiss();
-               searchAction(fromDate.getText().toString(),toDate.getText().toString());
-             }
+           if(fromDate.getText().length() == 0 || toDate.getText().length() == 0){
+               Toast.makeText(cxt,"Please fill all fields",Toast.LENGTH_SHORT).show();
+               return;
+           }
+           alertDialog.dismiss();
+           searchAction(fromDate.getText().toString(),toDate.getText().toString());
          });
 
 

@@ -24,6 +24,7 @@ import com.example.titomi.workertrackerloginmodule.report_module.ReportMainActiv
 import com.example.titomi.workertrackerloginmodule.services.FieldMonitorMessagingService;
 import com.example.titomi.workertrackerloginmodule.shared_pref_manager.SharedPrefManager;
 import com.example.titomi.workertrackerloginmodule.supervisor.User;
+import com.example.titomi.workertrackerloginmodule.supervisor.activities.ActivityInstitutionListing;
 import com.example.titomi.workertrackerloginmodule.supervisor.activities.ActivityInventoryRequestsListing;
 import com.example.titomi.workertrackerloginmodule.supervisor.activities.ActivityLeaveApplication;
 import com.example.titomi.workertrackerloginmodule.supervisor.activities.ActivityMessageListing;
@@ -49,7 +50,7 @@ public class DashboardActivity extends AppCompatActivity {
     Toolbar toolbar;
 
     String EmailHolder;
-    PrimaryDrawerItem mProfile, mTask, mInventory, mAttendance, mWorkerTrack, mSupervisorManager, mMessage, mAlert, mReport, mLiveChat,supervisorInventoryRequest,supervisorReports,supervisorTasks,leaveApplication;
+    PrimaryDrawerItem mProfile, mTask, mInventory, mAttendance, mWorkerTrack, mSupervisorManager, mMessage, mAlert, mReport, mLiveChat,supervisorInventoryRequest,supervisorReports,supervisorTasks,leaveApplication,institutionManager;
     SecondaryDrawerItem mSettings, mLogout;
     SharedPrefManager sharedPrefManager;
 
@@ -176,6 +177,7 @@ public class DashboardActivity extends AppCompatActivity {
         supervisorReports  = new PrimaryDrawerItem().withIdentifier(14).withName("Reports");
         supervisorTasks = new PrimaryDrawerItem().withIdentifier(15).withName("Tasks");
         leaveApplication = new PrimaryDrawerItem().withIdentifier(16).withName("Leave Application");
+        institutionManager = new PrimaryDrawerItem().withIdentifier(17).withName("Institution Manager");
 
 
         DrawerBuilder drawerBuilder = new DrawerBuilder();
@@ -226,6 +228,8 @@ public class DashboardActivity extends AppCompatActivity {
                         mInventory,
                         new DividerDrawerItem(),
                         mAttendance,
+                        new DividerDrawerItem(),
+                        institutionManager,
                         new DividerDrawerItem(),
                        /* leaveApplication,
                         new SectionDrawerItem(),*/
@@ -309,6 +313,12 @@ public class DashboardActivity extends AppCompatActivity {
                             intent = new Intent(cxt, ActivityLeaveApplication.class);
 
                            // startActivity(intent);
+                            break;
+
+                        case 17:
+                            intent = new Intent(cxt, ActivityInstitutionListing.class);
+
+                            // startActivity(intent);
                             break;
                     }
 

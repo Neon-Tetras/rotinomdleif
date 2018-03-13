@@ -64,6 +64,7 @@
         android:textStyle="bold"
         android:layout_marginTop="10dp"
         android:visibility="gone"
+        android:tag="@string/clockIn"
         android:drawableStart="@drawable/ic_clockin_black_24dp"/>
 
 </LinearLayout>

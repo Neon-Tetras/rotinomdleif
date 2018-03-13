@@ -95,10 +95,7 @@ public class FieldMonitorReportUploadService extends Service {
         }
         sendReport();
 
-        uploadImages();
-        if (video != null || Objects.equals(video, ""))
 
-            uploadAudio();
 
         return START_STICKY;
 
@@ -208,6 +205,8 @@ public class FieldMonitorReportUploadService extends Service {
             System.out.println(strings);
             if(strings == null) return;
             actionCount++;
+            uploadImages();
+
             if(actionCount == NUM_ACTIONS){
                 notifyCompletion();
                 stopSelf();
@@ -225,6 +224,9 @@ public class FieldMonitorReportUploadService extends Service {
             super.onPostExecute(strings);
             if (strings == null) return;
             actionCount++;
+            if (video != null || Objects.equals(video, ""))
+
+                uploadAudio();
             if (actionCount == NUM_ACTIONS) {
                 notifyCompletion();
                 stopSelf();

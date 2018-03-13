@@ -205,5 +205,15 @@
     <string name="proof_image_uploader">work/proof_image_uploader.php</string>
     <string name="user_id">user_id</string>
     <string name="task">task</string>
+    <string name="writeReport">Write Report</string>
+    <string name="title_activity_institution_listing">ActivityInstitutionListing</string>
+    <string name="view_institutions_api_url">institutions/view.php</string>
+    <string name="add_institution_url">institutions/add.php</string>
+    <string name="default_encoding">UTF-8</string>
+    <string name="selected_institution">Selected Institution</string>
+    <string name="update">Update</string>
+    <string name="edit_institution_url">institutions/update.php</string>
+    <string name="delete_institution_url">institutions/delete.php</string>
+    <string name="calling_activity">calling_activity</string>
 
 </resources>

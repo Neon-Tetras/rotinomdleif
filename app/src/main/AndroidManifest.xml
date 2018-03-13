@@ -176,9 +176,7 @@
         <service
             android:name=".services.FieldMonitorTaskService"
             android:enabled="true"
-            android:exported="true" />
-
-        <activity android:name=".report_module.RecordActivity"></activity>
+            android:exported="true"></service>
     </application>
 
 </manifest>
