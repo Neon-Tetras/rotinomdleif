@@ -2,6 +2,7 @@ package com.example.titomi.workertrackerloginmodule.dashboard_fragments;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.RectF;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -25,6 +26,7 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.MPPointF;
 
 import org.json.JSONException;
@@ -119,7 +121,15 @@ public class FragmentInventory extends Fragment implements OnChartValueSelectedL
 
 
 //        dataSet.setColors(ColorTemplate.LIBERTY_COLORS);
-        dataSet.setColors(getResources().getColor(R.color.balanceColor), getResources().getColor(R.color.quantitySoldColor), getResources().getColor(R.color.quantityColor));
+        try {
+//            dataSet.setColors(getResources().getColor(R.color.balanceColor), getResources().getColor(R.color.quantitySoldColor), getResources().getColor(R.color.quantityColor));
+
+            dataSet.setColors(ColorTemplate.createColors(new int[]{R.color.balanceColor, R.color.quantitySoldColor, R.color.quantityColor}));
+
+        } catch (Resources.NotFoundException e) {
+            e.printStackTrace();
+            dataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+        }
         dataSet.setDrawValues(true);
 
         BarData set = new BarData(dataSet);
