@@ -74,9 +74,12 @@ public class FieldMonitorRecordService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mediaRecorder.stop();
-        mediaRecorder.release();
-//        managerCompat.cancel(32);
+        try {
+            mediaRecorder.stop();
+            mediaRecorder.release();
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        }
         Toast.makeText(this, "Recording Stopped", Toast.LENGTH_SHORT).show();
     }
 

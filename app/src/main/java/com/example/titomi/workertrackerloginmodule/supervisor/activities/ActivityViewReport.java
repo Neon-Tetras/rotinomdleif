@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.titomi.workertrackerloginmodule.R;
+import com.example.titomi.workertrackerloginmodule.report_module.RecordActivity;
 import com.example.titomi.workertrackerloginmodule.report_module.VideoPlayer;
 import com.example.titomi.workertrackerloginmodule.supervisor.Entity;
 import com.example.titomi.workertrackerloginmodule.supervisor.Task;
@@ -39,14 +40,14 @@ import java.util.Locale;
 
 public class ActivityViewReport extends AppCompatActivity implements View.OnClickListener {
 
-    Task selectedTask;
-
-    ImageView userImage;
-    TextView username, dateSubmitted, taskTitle, taskTypeText, institutionText, addressText, stateText, contactFullName, contactPhone, quantityGivenText, participantsText, quantityDistributedText, balanceText, exportText, approveText, commentText, playVideo;
-    LinearLayout reportImagesLayout;
     static Context cxt;
+    Task selectedTask;
+    ImageView userImage;
+    TextView username, dateSubmitted, taskTitle, taskTypeText, institutionText, addressText, stateText, contactFullName, contactPhone, quantityGivenText, participantsText, quantityDistributedText, balanceText, exportText, approveText, commentText, playVideo, playAudio;
+    LinearLayout reportImagesLayout;
     User loggedInUser;
     String videoUrl;
+    String audioUrl;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,6 +91,8 @@ public class ActivityViewReport extends AppCompatActivity implements View.OnClic
         commentText = findViewById(R.id.commentText);
         approveText.setOnClickListener(this);
         playVideo = findViewById(R.id.videoText);
+        playAudio = findViewById(R.id.audioText);
+        playAudio.setOnClickListener(this);
         playVideo.setOnClickListener(this);
         exportText.setOnClickListener(this);
     }
@@ -228,6 +231,13 @@ public class ActivityViewReport extends AppCompatActivity implements View.OnClic
                     startActivity(i);
                 }
                 break;
+            case R.id.audioText:
+                if (audioUrl != null) {
+                    Intent i = new Intent(cxt, RecordActivity.class);
+                    i.putExtra("audioUrl", audioUrl);
+                    startActivity(i);
+                }
+                break;
         }
     }
 
@@ -264,6 +274,10 @@ public class ActivityViewReport extends AppCompatActivity implements View.OnClic
 
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void setBalanceText(JSONObject obj) throws JSONException {
+        balanceText.setText(obj.getString("balance"));
     }
 
     private static class ApproveTaskNetwork extends AsyncTask<String,Void,String>{
@@ -307,7 +321,6 @@ public class ActivityViewReport extends AppCompatActivity implements View.OnClic
         }
     }
 
-
     private class InventoryNetwork extends android.os.AsyncTask<String, Void, String> {
 
 
@@ -338,10 +351,6 @@ public class ActivityViewReport extends AppCompatActivity implements View.OnClic
             }
         }
 
-    }
-
-    private void setBalanceText(JSONObject obj) throws JSONException {
-        balanceText.setText(obj.getString("balance"));
     }
 
 
