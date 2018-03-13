@@ -116,10 +116,11 @@ public class FieldMonitorReportUploadService extends Service {
     }
 
     private void uploadAudio() {
-        ArrayList<String> audio = new ArrayList<>();
+        ArrayList<String> audios = new ArrayList<>();
+        audios.add(audio);
         AudioUploader audioUploader = new AudioUploader(this, String.format("%s%s", getString(R.string.api_url), getString(R.string.audio_upload_url)));
-        audioUploader.execute(audio);
-        //TODO remember to delete this line
+        audioUploader.execute(audios);
+
     }
 
     private void sendReport() {
@@ -190,9 +191,6 @@ public class FieldMonitorReportUploadService extends Service {
 
     private  class ReportSubmitNetwork extends AsyncTask<String,Void,String>{
 
-
-
-
         @Override
         protected String doInBackground(String... strings) {
             return Network.backgroundTask(null,strings[0]);//strings[0],this.postData);
@@ -234,8 +232,8 @@ public class FieldMonitorReportUploadService extends Service {
         }
     }
 
-    class AudioUploader extends MediaUploader {
-        public AudioUploader(Context cxt, String uploadApiUrl) {
+    class VideoUploader extends MediaUploader {
+        public VideoUploader(Context cxt, String uploadApiUrl) {
             super(cxt, uploadApiUrl);
         }
 
@@ -249,23 +247,25 @@ public class FieldMonitorReportUploadService extends Service {
                 stopSelf();
             }
         }
+
     }
 
-    class VideoUploader extends  MediaUploader{
-        public VideoUploader(Context cxt, String uploadApiUrl) {
+    class AudioUploader extends MediaUploader {
+        public AudioUploader(Context cxt, String uploadApiUrl) {
             super(cxt, uploadApiUrl);
         }
 
         @Override
         protected void onPostExecute(List<String> strings) {
             super.onPostExecute(strings);
-            if(strings == null) return;
+            if (strings == null) return;
             actionCount++;
-            if(actionCount == NUM_ACTIONS){
+
+            uploadVideo();
+            if (actionCount == NUM_ACTIONS) {
                 notifyCompletion();
                 stopSelf();
             }
         }
-
     }
 }

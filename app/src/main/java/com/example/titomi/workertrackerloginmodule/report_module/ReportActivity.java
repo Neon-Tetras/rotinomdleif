@@ -371,7 +371,7 @@ System.out.println(this.getClass().getPackage());
                 break;
             case R.id.fab_record:
                 Date createdTime = new Date();
-                recordPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/FieldMonitorSounds" + "/" + createdTime.getTime() + "_rec.acc";
+                recordPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + createdTime.getTime() + "_rec.acc";
                 /*File audioPath = new File(recordPath);
                 if (!audioPath.exists()){
                     audioPath.mkdir();
