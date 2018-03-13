@@ -163,6 +163,25 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
         }
 
 
+        stateSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position == 0) return;
+                selectedState = (String) parent.getItemAtPosition(position);
+
+                try {
+                    loadLgaSpinner(selectedState);
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
     }
 
     @Override
@@ -294,16 +313,9 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        if(view == stateSpinner) {
-            if (position == 0) return;
-            selectedState = (String) parent.getItemAtPosition(position);
+       /* if(view == stateSpinner) {
 
-            try {
-                loadLgaSpinner(selectedState);
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-        }
+        }*/
 
     }
 
@@ -477,7 +489,7 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
     @SuppressLint("StaticFieldLeak")
     private void loadLgaSpinner(String state) throws UnsupportedEncodingException {
         selectedState = Network.encodeUrl(state);
-        Toast.makeText(cxt,selectedState,Toast.LENGTH_SHORT).show();
+        //Toast.makeText(cxt,selectedState,Toast.LENGTH_SHORT).show();
         //  final ProgressDialog d = new ProgressDialog(cxt);
         new android.os.AsyncTask<String,Void,String>(){
             @Override
