@@ -249,6 +249,14 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
                     institutionNameEdit.setText(selectedInstitution.getName());
                     String states[] = getResources().getStringArray(R.array.states);
                     stateSpinner.setSelection(Arrays.asList(states).indexOf(selectedInstitution.getState()));
+                    String[] _lgas = new String[1];
+                    _lgas[0] = selectedInstitution.getLga();
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(cxt, android.R.layout.simple_dropdown_item_1line, _lgas);
+                    lgaSpinner.setAdapter(adapter);
+                    lgas.clear();
+                    lgas.add(selectedInstitution.getLga());
+                    taskCoordinates = new LatLng(selectedInstitution.getLatitude(),selectedInstitution.getLongitude());
+
 
                 }
                 break;
@@ -306,7 +314,7 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
                 institutionNameEdit.setInputType(InputType.TYPE_NULL);
                 institutionNameEdit.setEnabled(false);
                 stateSpinner.setEnabled(false);
-               // lgaSpinner.setEnabled(false);
+               lgaSpinner.setEnabled(false);
                 locationEdit.setVisibility(View.GONE);
                 selectLocationText.setText("Click to select Institution");
                 selectLocationText.setTag("institution");

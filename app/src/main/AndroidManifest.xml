@@ -173,10 +173,19 @@
             android:label="View Report"
             android:theme="@style/AppTheme.DarkActionBar" />
 
+        <activity android:name=".supervisor.activities.ActivityInstitutionListing"
+            android:theme="@style/AppTheme"
+            android:label="Institutions"/>
+
+        <activity android:name=".supervisor.activities.ActivityAddInstitution"
+            android:label="New Institution"
+            android:theme="@style/AppTheme.DarkActionBar"/>
+
         <service
             android:name=".services.FieldMonitorTaskService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true"/>
+
     </application>
 
 </manifest>

@@ -481,6 +481,19 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
                     clockInText.setText(getString(R.string.writeReport));
                     clockInText.setTag(getString(R.string.clockOut));
             }
+        }else if(loggedInUser.getRoleId() ==
+                User.SUPERVISOR &&
+                selectedTask.getWorker().getId() == loggedInUser.getId()){
+            switch (selectedTask.getStatus()){
+                case Task.PENDING:
+                    clockInText.setVisibility(View.VISIBLE);
+                    clockInText.setTag(getString(R.string.clockIn));
+                    break;
+                case Task.ONGOING:
+                    clockInText.setVisibility(View.VISIBLE);
+                    clockInText.setText(getString(R.string.writeReport));
+                    clockInText.setTag(getString(R.string.clockOut));
+            }
         }
 
 

@@ -227,9 +227,10 @@ public class DashboardActivity extends AppCompatActivity {
                         new DividerDrawerItem(),
                         mInventory,
                         new DividerDrawerItem(),
-                        mAttendance,
-                        new DividerDrawerItem(),
+
                         institutionManager,
+                        new DividerDrawerItem(),
+                        mAttendance,
                         new DividerDrawerItem(),
                        /* leaveApplication,
                         new SectionDrawerItem(),*/
