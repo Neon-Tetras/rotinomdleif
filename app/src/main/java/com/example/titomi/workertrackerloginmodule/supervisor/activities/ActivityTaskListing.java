@@ -910,11 +910,11 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
 
     }
 
-    private static class AssignedTaskNetwork extends android.os.AsyncTask<String,Void,String>{
+    private class AssignedTaskNetwork extends android.os.AsyncTask<String,Void,String>{
 
 
-        static ArrayList<Task> taskList = new ArrayList<>();
-        static ArrayAdapter<Task> taskArrayAdapter;
+         ArrayList<Task> taskList = new ArrayList<>();
+         ArrayAdapter<Task> taskArrayAdapter;
 
         @Override
         protected String doInBackground(String... strings) {
@@ -947,6 +947,7 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
                 }else{
                     noTaskNotif.setVisibility(View.GONE);
                 }
+                int clockedInTasks = 0;
                 for(int i = 0; i<jsonArray.length(); i++) {
                     JSONObject obj = jsonArray.getJSONObject(i);
                     JSONObject supervisorObj = obj.getJSONObject("supervisor");
@@ -1008,11 +1009,14 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
 
 
                     if(task.getStatus() == Task.ONGOING){
-                        isClockedInOnATask = true;
+                       clockedInTasks++;
                     }
+
+
                     taskList.add(task);
                 }
 
+                isClockedInOnATask = clockedInTasks != 0;
                 taskArrayAdapter = new ArrayAdapter<Task>(cxt,R.layout.report_single_item_layout,taskList){
 
 
@@ -1128,5 +1132,5 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
     LocationRequest locationRequest;
     Location lastLocation = null;
     Location currentLocation = null;
-    private static boolean isClockedInOnATask;
+    private  boolean isClockedInOnATask;
 }
