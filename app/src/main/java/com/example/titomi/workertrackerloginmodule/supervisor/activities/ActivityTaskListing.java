@@ -532,12 +532,7 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
                         == PackageManager.PERMISSION_GRANTED) {
 
                     final AlertDialog alertDialog = new AlertDialog.Builder(cxt).create();
-                    if(isClockedInOnATask){
-                        Toast.makeText(cxt,
-                                "Please complete the ongoing task first before beginning another",
-                                Toast.LENGTH_LONG).show();
-                        return;
-                    }
+
                     if (isWithinClockInRange(selectedTask.getLatitude(), selectedTask.getLongitude(), mLastLocation.getLatitude(), mLastLocation.getLongitude())) {
                         if (clockInText == null) {
                             return;
@@ -553,6 +548,13 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
 
                             startActivity(i);
                             return;
+                        }else if (clockInText.getTag().toString().equalsIgnoreCase(getString(R.string.clockIn))){
+                            if(isClockedInOnATask){
+                                Toast.makeText(cxt,
+                                        "Please complete the ongoing task first before beginning another",
+                                        Toast.LENGTH_LONG).show();
+                                return;
+                            }
                         }
 
 
