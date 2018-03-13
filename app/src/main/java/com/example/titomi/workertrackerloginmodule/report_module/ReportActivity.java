@@ -12,6 +12,8 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -51,6 +53,9 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
     public static final int ACTIVITY_RECORD_SOUND = 0;
     private static final int TRIM_VIDEO = 10;
     public static ReportActivity instance;
+    private final int notification_id = 32;
+    NotificationManagerCompat managerCompat;
+    NotificationCompat.Builder mBuilder;
     FloatingActionButton fab_photo, fab_record, fab_send, fab_remove_photo,fab_video;
     FloatingActionMenu floatingActionMenu;
     TextView playVideoText;
@@ -218,6 +223,7 @@ System.out.println(this.getClass().getPackage());
                     boolean StoragePermission = grantResults[0] == PackageManager.PERMISSION_GRANTED;
                     boolean RecordPermission = grantResults[1] == PackageManager.PERMISSION_GRANTED;
 
+
                     if (StoragePermission && RecordPermission) {
 
                         Toast.makeText(this, "Permission Granted", Toast.LENGTH_LONG).show();
@@ -249,6 +255,22 @@ System.out.println(this.getClass().getPackage());
 
             }
         }
+
+        /*if (resultCode == RESULT_OK){
+            if(requestCode == 0){
+                AlertDialog d = new AlertDialog.Builder(this).setTitle("Stop Recording").setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        stopService(new Intent(getBaseContext(),FieldMonitorRecordService.class));
+                    }
+                }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).show();
+            }
+        }*/
         switch (requestCode){
             case Util.PICK_VIDEO:
                 Uri videoUri = data.getData();
@@ -280,7 +302,6 @@ System.out.println(this.getClass().getPackage());
 
     @Override
     public void onClick(View v) {
-        recordPath = Environment.getExternalStorageDirectory().getPath() + "/.FieldMonitor/Audio/" + selectedTask.getName() + selectedTask.getDateDelivered().toString() + ".acc";
         switch (v.getId()){
             case R.id.fab_photo:
                 captureImage();
@@ -289,6 +310,7 @@ System.out.println(this.getClass().getPackage());
                 if(!NetworkChecker.haveNetworkConnection(cxt)){return;}
 
                 stopService(new Intent(cxt, FieldMonitorRecordService.class));
+                managerCompat.cancel(32);
                 Intent i = new Intent(cxt,FieldMonitorReportUploadService.class);
                 i.putExtra("video",videoPath);
                 i.putStringArrayListExtra("images",reportImages);
@@ -348,7 +370,27 @@ System.out.println(this.getClass().getPackage());
                 Util.requestPermission(ReportActivity.this,Util.PICK_VIDEO);
                 break;
             case R.id.fab_record:
-                startService(new Intent(cxt, FieldMonitorRecordService.class).putExtra("task", selectedTask.getDateDelivered()));
+                Date createdTime = new Date();
+                recordPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/FieldMonitorSounds" + "/" + createdTime + "_rec.acc";
+                /*File audioPath = new File(recordPath);
+                if (!audioPath.exists()){
+                    audioPath.mkdir();
+                }*/
+                /*Intent intent = new Intent(this, ReportActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);*/
+
+                mBuilder = new NotificationCompat.Builder(getBaseContext(), "Record")
+                        .setSmallIcon(R.mipmap.app_logo)
+                        .setContentTitle("FieldMonitor Record")
+                        .setContentText("Recording Session")
+                        .setPriority(NotificationCompat.PRIORITY_DEFAULT).setUsesChronometer(true);
+
+
+                managerCompat = NotificationManagerCompat.from(getBaseContext());
+                managerCompat.notify(notification_id, mBuilder.build());
+
+                startService(new Intent(cxt, FieldMonitorRecordService.class).putExtra("filePath", recordPath));
         }
 
 
@@ -384,14 +426,12 @@ System.out.println(this.getClass().getPackage());
             reportImagesLayout.addView(view);
         }
 
-
-
-
     }
 
     private void recordAudio() throws IOException {
-        Intent intent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
-        startActivityForResult(intent, ACTIVITY_RECORD_SOUND);
+        Intent intent = new Intent(this, FieldMonitorRecordService.class);
+//        intent.putExtra();
+        startActivityForResult(intent, 300);
     }
 
     private boolean checkPermission() {

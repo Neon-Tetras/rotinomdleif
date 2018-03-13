@@ -80,7 +80,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:inputType="textEmailSubject"
+                android:inputType="textCapWords"
                 android:singleLine="true" />
 
             <TextView
@@ -96,7 +96,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:inputType="textMultiLine"
+                android:inputType="textCapSentences|textMultiLine"
                 android:singleLine="true" />
 
             <TextView
@@ -112,7 +112,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:inputType="textEmailSubject"
+                android:inputType="textCapWords"
                 android:singleLine="true" />
 
             <LinearLayout
@@ -167,7 +167,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:inputType="textMultiLine"
+                android:inputType="textCapWords"
                 android:singleLine="true" />
 
 
@@ -243,7 +243,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:inputType="textEmailSubject"
+                android:inputType="textPersonName"
                 android:singleLine="true" />
 
 
@@ -251,6 +251,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
+                android:maxLength="11"
                 android:text="Contact Number:"
                 android:textColor="@color/black"
                 android:textSize="12sp" />
@@ -261,6 +262,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:inputType="phone"
+                android:maxLength="11"
                 android:singleLine="true" />
 
             <GridLayout
@@ -274,7 +276,6 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-
                     android:layout_gravity="top|start"
                     android:text="Date:"
                     android:textColor="@color/black"
@@ -283,7 +284,6 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-
                     android:layout_gravity="top|center"
                     android:text="Time:"
                     android:textColor="@color/black"
@@ -299,7 +299,7 @@
                     android:focusable="false"
                     android:gravity="center_horizontal"
                     android:hint="@string/date_format"
-                    android:inputType="text" />
+                    android:inputType="date|none" />
 
 
                 <EditText
@@ -313,7 +313,7 @@
                     android:focusable="false"
                     android:gravity="center_horizontal"
                     android:hint="@string/date_format"
-                    android:inputType="none" />
+                    android:inputType="time|none" />
 
             </GridLayout>
 

@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.MediaRecorder;
 import android.os.Binder;
-import android.os.Environment;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
@@ -54,19 +53,10 @@ public class FieldMonitorRecordService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        mBuilder = new NotificationCompat.Builder(getBaseContext(), "Record")
-                .setSmallIcon(R.mipmap.app_logo)
-                .setContentTitle("FieldMonitor Record")
-                .setContentText("Recording Session")
-                .setPriority(NotificationCompat.PRIORITY_HIGH);
-
-        managerCompat = NotificationManagerCompat.from(getBaseContext());
-        managerCompat.notify(notification_id, mBuilder.build());
-
         String t;
-        t = intent.getStringExtra("task");
-        AudioSavePathInDevice = Environment.getExternalStorageDirectory().getPath() + "/.FieldMonitor/Audio/" + t + ".acc";
+        t = intent.getStringExtra("filePath");
 
+        AudioSavePathInDevice = t;
         MediaRecorderReady();
 
         try {
@@ -77,7 +67,6 @@ public class FieldMonitorRecordService extends Service {
         } catch (IllegalStateException e) {
             e.printStackTrace();
         }
-//            Toast.makeText(cxt, "Recording", Toast.LENGTH_SHORT).show();
         return START_STICKY;
 
     }
@@ -94,7 +83,7 @@ public class FieldMonitorRecordService extends Service {
     public void MediaRecorderReady() {
         mediaRecorder = new MediaRecorder();
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.AAC_ADTS);
+        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
         mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
         mediaRecorder.setOutputFile(AudioSavePathInDevice);
     }
