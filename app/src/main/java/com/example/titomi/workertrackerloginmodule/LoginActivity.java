@@ -94,7 +94,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             progressBar.setVisibility(View.GONE);
 
             if (s == null) {
+                findViewById(R.id.loginInfo).setVisibility(View.VISIBLE);
                 return;
+
             }
 
             System.err.println(s);
@@ -143,8 +145,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         Toast.makeText(cxt,"Login failed\nIncorrect user credentials",Toast.LENGTH_LONG).show();
                 }
             } catch (JSONException e) {
+              findViewById(R.id.loginInfo).setVisibility(View.VISIBLE);
                 e.printStackTrace();
                 System.err.println(s);
+
+
+
             }
 
         }

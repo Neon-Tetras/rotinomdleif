@@ -320,6 +320,7 @@ public class ActivityViewReport extends AppCompatActivity implements View.OnClic
                     task.getState(),
                     task.getLga(),
                     task.getInstitution_name(),
+                    task.getAddress(),
                     task.getContactName(),
                     task.getContactNumber(),
                     NumberFormat.getInstance().format(task.getParticipants()),

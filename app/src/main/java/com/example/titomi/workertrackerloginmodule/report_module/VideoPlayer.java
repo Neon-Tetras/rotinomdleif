@@ -64,6 +64,7 @@ public class VideoPlayer extends AppCompatActivity implements MediaPlayer.OnPrep
         super.onResume();
         videoView.resume();
         videoView.seekTo(currentPosition);
+       // currentPosition = videoView.getCurrentPosition()
 
 
     }
@@ -104,9 +105,7 @@ public class VideoPlayer extends AppCompatActivity implements MediaPlayer.OnPrep
                 loadingVideoFrame.setVisibility(View.VISIBLE);
             }
         });
-        mp.setOnSeekCompleteListener(mp12 -> {
-            videoView.seekTo(videoView.getCurrentPosition());
-        });
+        mp.setOnSeekCompleteListener(mp12 -> videoView.seekTo(currentPosition));
     }
 
     private int currentPosition;

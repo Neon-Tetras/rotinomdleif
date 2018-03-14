@@ -170,6 +170,7 @@ public class ActivityReportListing extends AppCompatActivity implements AdapterV
                             task.getState(),
                             task.getLga(),
                             task.getInstitution_name(),
+                            task.getAddress(),
                             task.getContactName(),
                             task.getContactNumber(),
                             NumberFormat.getInstance().format(task.getParticipants()),
@@ -210,8 +211,18 @@ public class ActivityReportListing extends AppCompatActivity implements AdapterV
             super.onPostExecute(s);
           //  progressBar.setVisibility(View.GONE);
             swipeRefreshLayout.setRefreshing(false);
-            if(s == null) return;
+            if(s == null) {
 
+                exportItem.setVisible(false);
+                return;
+            }else{
+                exportItem.setVisible(true);
+            }
+
+            if( s.equalsIgnoreCase("null")) {
+                exportItem.setVisible(false);
+                return;
+            }
             try {
                 JSONArray jsonArray = new JSONArray(s);
                 if (jsonArray.length() == 0) {
@@ -233,14 +244,16 @@ public class ActivityReportListing extends AppCompatActivity implements AdapterV
                     supervisor.setUserLevel(supervisorObj.getInt("roleId"));
                     supervisor.setUserLevelText(supervisorObj.getString("role"));
                     supervisor.setFeaturedImage(supervisorObj.getString("photo"));
-                    supervisor.setName(String.format("%s %s",supervisorObj.getString("first_name"),supervisorObj.getString("last_name")));
+                    supervisor.setName(String.format("%s %s",supervisorObj.getString("first_name")
+                            ,supervisorObj.getString("last_name")));
                     supervisor.setEmail(supervisorObj.getString("email"));
                     supervisor.setId(supervisorObj.getInt("id"));
                     User worker = new User();
                     worker.setUserLevel(workerObj.getInt("roleId"));
                     worker.setUserLevelText(workerObj.getString("role"));
                     worker.setFeaturedImage(workerObj.getString("photo"));
-                    worker.setName(String.format("%s %s",workerObj.getString("first_name"),supervisorObj.getString("last_name")));
+                    worker.setName(String.format("%s %s",workerObj.getString("first_name"),
+                            supervisorObj.getString("last_name")));
                     worker.setEmail(workerObj.getString("email"));
                     worker.setId(workerObj.getInt("id"));
                     SimpleDateFormat dtf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
@@ -333,8 +346,9 @@ public class ActivityReportListing extends AppCompatActivity implements AdapterV
             }
         }
     }
-    static ArrayList<Task> taskList = new ArrayList<>();
-    static ArrayAdapter<Task> taskArrayAdapter;
+
+     ArrayList<Task> taskList = new ArrayList<>();
+     ArrayAdapter<Task> taskArrayAdapter;
 
     private void reportDateDialog(){
         View view = getLayoutInflater().inflate(R.layout.search_report_layout,null);
