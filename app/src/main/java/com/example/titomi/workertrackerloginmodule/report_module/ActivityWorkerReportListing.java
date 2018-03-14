@@ -73,12 +73,7 @@ public class ActivityWorkerReportListing extends AppCompatActivity implements Ad
         if (extras != null) {
             loggedInUser = (User) extras.getSerializable(getString(R.string.loggedInUser));
         }
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                getReports();
-            }
-        });
+        swipeRefreshLayout.setOnRefreshListener(() -> getReports());
 
 
     }
@@ -151,6 +146,7 @@ public class ActivityWorkerReportListing extends AppCompatActivity implements Ad
                     task.getState(),
                     task.getLga(),
                     task.getInstitution_name(),
+                    task.getAddress(),
                     task.getContactName(),
                     task.getContactNumber(),
                     NumberFormat.getInstance().format(task.getParticipants()),
@@ -191,8 +187,17 @@ public class ActivityWorkerReportListing extends AppCompatActivity implements Ad
             super.onPostExecute(s);
             //  progressBar.setVisibility(View.GONE);
             swipeRefreshLayout.setRefreshing(false);
-            if (s == null) return;
+            if (s == null ) {
+                exportItem.setVisible(false);
+                return;
+            }else{
+                exportItem.setVisible(true);
+            }
 
+            if( s.equalsIgnoreCase("null")) {
+                exportItem.setVisible(false);
+                return;
+            }
             try {
                 JSONArray jsonArray = new JSONArray(s);
                 if (jsonArray.length() == 0) {

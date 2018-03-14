@@ -224,6 +224,7 @@ public class ActivityNurseViewReport extends AppCompatActivity implements View.O
                 task.getState(),
                 task.getLga(),
                 task.getInstitution_name(),
+                task.getAddress(),
                 task.getContactName(),
                 task.getContactNumber(),
                 NumberFormat.getInstance().format(task.getParticipants()),
