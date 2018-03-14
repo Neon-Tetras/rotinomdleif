@@ -13,7 +13,7 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:srcCompat="@drawable/bg2"
+            app:srcCompat="@drawable/login_bg"
             android:id="@+id/background"
             android:scaleType="centerCrop"/>
     </FrameLayout>
@@ -21,9 +21,9 @@
     <ImageView
         android:id="@+id/app_logo"
         android:layout_width="150dp"
-        android:layout_height="80dp"
+        android:layout_height="60dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="160dp"
+        android:layout_marginTop="180dp"
         android:src="@drawable/app_logo" />
     <ProgressBar
         android:id="@+id/progressBar"
@@ -45,8 +45,10 @@
     <EditText
         android:id="@+id/line_id"
         android:layout_width="200dp"
-        android:layout_height="50dp"
-        android:layout_centerInParent="true"
+
+        android:layout_height="wrap_content"
+        android:layout_below="@id/loginInfo"
+        android:layout_centerHorizontal="true"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:background="@drawable/roundrectangle"

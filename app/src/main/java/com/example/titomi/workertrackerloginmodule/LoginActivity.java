@@ -66,7 +66,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             progressBar.setVisibility(View.VISIBLE);
             new LoginNetworkTask().execute(getString(R.string.api_url) + getString(R.string.login_url) + "?key=" + getString(R.string.field_worker_api_key) + "&username=" + username);
         } catch (InputValidator.InvalidInputException | UnsupportedEncodingException e) {
-            Toast.makeText(cxt, "" + getClass().getName() + "\n" + e.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(cxt,  e.getMessage(), Toast.LENGTH_LONG).show();
+          // lineIdEdit.setBackground(getResources().getDrawable(android.R.drawable.editbox_background));
             e.printStackTrace();
 
 
