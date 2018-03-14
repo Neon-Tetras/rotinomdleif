@@ -8,8 +8,8 @@ import android.graphics.drawable.Drawable;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
@@ -392,6 +392,7 @@ System.out.println(this.getClass().getPackage());
                 managerCompat.notify(notification_id, mBuilder.build());
 
                 startService(new Intent(cxt, FieldMonitorRecordService.class).putExtra("filePath", recordPath));
+
         }
 
 
