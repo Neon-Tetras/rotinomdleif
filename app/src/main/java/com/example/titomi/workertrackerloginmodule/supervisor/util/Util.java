@@ -2,6 +2,7 @@ package com.example.titomi.workertrackerloginmodule.supervisor.util;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
@@ -297,6 +298,16 @@ public class Util {
 
     }
 
+    public static boolean isMyServiceRunning(Context cxt,Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) cxt.getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static void requestPermission(Context cxt, int requestCode) {
         // this.video_map_or_image = requestCode;
 
@@ -307,6 +318,7 @@ public class Util {
 
 
                 Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+                takeVideoIntent.putExtra("android.intent.extra.durationLimit", 10);
                 if (takeVideoIntent.resolveActivity(cxt.getPackageManager()) != null) {
                     ((Activity)cxt).startActivityForResult(takeVideoIntent, PICK_VIDEO);
                 }

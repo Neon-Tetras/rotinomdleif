@@ -8,8 +8,9 @@ import android.graphics.drawable.Drawable;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
+import android.os.Environment;
+import android.os.PersistableBundle;
 import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
@@ -63,7 +64,7 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
     TextView playVideoText;
     Context cxt;
     LinearLayout reportImagesLayout;
-    File outputMedia;
+    File outputImageMedia;
     Uri file;
     String videoPath;
     String recordPath = null;
@@ -176,6 +177,8 @@ System.out.println(this.getClass().getPackage());
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
         }
 
+       enableRecordAudioButton();
+
     }
 
     private void setupView(Task task){
@@ -203,8 +206,8 @@ System.out.println(this.getClass().getPackage());
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        outputMedia = getOutputMediaFile();
-        file = Uri.fromFile(outputMedia);
+        outputImageMedia = getOutputMediaFile();
+        file = Uri.fromFile(outputImageMedia);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, file);
         startActivityForResult(intent, 100);
 
@@ -241,6 +244,29 @@ System.out.println(this.getClass().getPackage());
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        videoPath = savedInstanceState.getString(getString(R.string.videoUrl));
+        reportImages = savedInstanceState.getStringArrayList(getString(R.string.images));
+        outputImageMedia = (File)savedInstanceState.getSerializable(getString(R.string.taken_picture));
+        loggedInUser = (User)savedInstanceState.getSerializable(getString(R.string.loggedInUser));
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+        outState.putSerializable(getString(R.string.loggedInUser),loggedInUser);
+        outState.putSerializable(getString(R.string.taken_picture),outputImageMedia);
+        outState.putStringArrayList(getString(R.string.images),reportImages);
+        outState.putString(getString(R.string.videoUrl),videoPath);
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (resultCode == RESULT_OK) {
@@ -248,44 +274,46 @@ System.out.println(this.getClass().getPackage());
 
 
                 ImageUtils.ImageStorage storage = new ImageUtils.ImageStorage(new Task());
-                if(storage.imageExists(outputMedia.getName())) {
+                if(storage.imageExists(outputImageMedia.getName())) {
                     //  Util.getRealPathFromURI(cxt, file);
-                    if(!reportImages.contains(outputMedia.getAbsolutePath())){
-                        reportImages.add(outputMedia.getAbsolutePath());
+                    if(!reportImages.contains(outputImageMedia.getAbsolutePath())){
+                        reportImages.add(outputImageMedia.getAbsolutePath());
                         loadReportImages(reportImages);
                     }
                 }
 
             }
-        }
+
 
 
         switch (requestCode){
             case Util.PICK_VIDEO:
                 Uri videoUri = data.getData();
-                Intent i = new Intent(this, ActivityVideoTrimmer.class);
-                if (videoUri != null) {
+              //  Intent i = new Intent(this, ActivityVideoTrimmer.class);
+                videoPath =  Util.getVideoPath(cxt,videoUri);
+                if(videoPath != null){
+
+                    playVideoText.setVisibility(View.VISIBLE);
+                    playVideoText.setOnClickListener(v -> {
+                        Intent i1 = new Intent(ReportActivity.this,VideoPlayer.class);
+                        i1.putExtra("videoUrl",videoPath);
+                        startActivity(i1);
+                    });
+                }
+              /*  if (videoUri != null) {
                     i.putExtra("video",videoUri.toString());
                     startActivityForResult(i,TRIM_VIDEO);
-                }
+                }*/
 
                 break;
             case TRIM_VIDEO:
                 String uri = data.getExtras().getString("video");
                 videoPath =  Util.getVideoPath(this,Uri.parse(uri));
 
-                if(videoPath != null){
-                    playVideoText.setVisibility(View.VISIBLE);
-                    playVideoText.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent i = new Intent(ReportActivity.this,VideoPlayer.class);
-                            i.putExtra("videoUrl",videoPath);
-                            startActivity(i);
-                        }
-                    });
-                }
+
+
                 break;
+        }
         }
     }
 
@@ -354,9 +382,6 @@ System.out.println(this.getClass().getPackage());
                     handler.postDelayed(this::finish,4000);
 
 
-
-
-
                     if(!snackbar.isShown()){
                         finish();
                     }
@@ -371,6 +396,7 @@ System.out.println(this.getClass().getPackage());
                 Util.requestPermission(ReportActivity.this,Util.PICK_VIDEO);
                 break;
             case R.id.fab_record:
+
                 Date createdTime = new Date();
                 recordPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + createdTime.getTime() + "_rec.acc";
                 /*File audioPath = new File(recordPath);
@@ -392,7 +418,7 @@ System.out.println(this.getClass().getPackage());
                 managerCompat.notify(notification_id, mBuilder.build());
 
                 startService(new Intent(cxt, FieldMonitorRecordService.class).putExtra("filePath", recordPath));
-
+                enableRecordAudioButton();
         }
 
 
@@ -459,6 +485,15 @@ System.out.println(this.getClass().getPackage());
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+    }
+
+    private void enableRecordAudioButton(){
+        if(Util.isMyServiceRunning(this,FieldMonitorRecordService.class)){
+            fab_record.setEnabled(false);
+            return;
+        }else{
+            fab_record.setEnabled(true);
+        }
     }
 }
 
