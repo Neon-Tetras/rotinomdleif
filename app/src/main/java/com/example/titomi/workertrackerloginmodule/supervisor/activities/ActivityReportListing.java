@@ -266,7 +266,7 @@ public class ActivityReportListing extends AppCompatActivity implements AdapterV
                             obj.getString("address"),
                             obj.getString("sales"),
                             obj.getString("images"),
-                            obj.getInt("quantity"),
+                            0,
                             obj.getInt("inventoryBalance"),
                             obj.getInt("quantitySold"),
                             obj.getInt("participants"),

@@ -217,5 +217,8 @@
     <string name="calling_activity">calling_activity</string>
     <string name="videoUrl">videoUrl</string>
     <string name="currentPosition">current position</string>
+    <string name="taken_picture">taken_picture</string>
+    <string name="report_images">report_images</string>
+    <string name="images">Images</string>
 
 </resources>

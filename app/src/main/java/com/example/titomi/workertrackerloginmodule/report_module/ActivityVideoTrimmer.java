@@ -41,6 +41,18 @@ public class ActivityVideoTrimmer extends AppCompatActivity implements OnTrimVid
 
 
             videoTrimmer.setVideoURI(Uri.parse(getIntent().getExtras().getString("video")));
+
+            File directory = new File(Environment
+                    .getExternalStorageDirectory()
+                    .getPath(),
+                   ".FieldMonitor/videos/".toLowerCase()
+                           );
+            if (!directory.exists()) directory.mkdirs();
+
+            videoTrimmer.setDestinationPath(directory.getAbsolutePath());
+
+
+
         }
     }
 
