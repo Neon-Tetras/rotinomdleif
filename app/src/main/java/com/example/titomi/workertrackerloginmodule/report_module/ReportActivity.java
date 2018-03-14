@@ -8,7 +8,9 @@ import android.graphics.drawable.Drawable;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Environment;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -198,7 +200,8 @@ System.out.println(this.getClass().getPackage());
     }
 
     private void captureImage() {
-
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         outputMedia = getOutputMediaFile();
         file = Uri.fromFile(outputMedia);
@@ -256,21 +259,7 @@ System.out.println(this.getClass().getPackage());
             }
         }
 
-        /*if (resultCode == RESULT_OK){
-            if(requestCode == 0){
-                AlertDialog d = new AlertDialog.Builder(this).setTitle("Stop Recording").setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        stopService(new Intent(getBaseContext(),FieldMonitorRecordService.class));
-                    }
-                }).setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                }).show();
-            }
-        }*/
+
         switch (requestCode){
             case Util.PICK_VIDEO:
                 Uri videoUri = data.getData();
@@ -309,8 +298,7 @@ System.out.println(this.getClass().getPackage());
             case R.id.fab_send:
                 if(!NetworkChecker.haveNetworkConnection(cxt)){return;}
 
-                stopService(new Intent(cxt, FieldMonitorRecordService.class));
-                managerCompat.cancel(32);
+
                 Intent i = new Intent(cxt,FieldMonitorReportUploadService.class);
                 i.putExtra("video",videoPath);
                 i.putStringArrayListExtra("images",reportImages);
@@ -346,19 +334,32 @@ System.out.println(this.getClass().getPackage());
                     i.putExtra("postData",postData);
                     i.putExtra(getString(R.string.loggedInUser),loggedInUser);
 
-
+                    stopService(new Intent(cxt, FieldMonitorRecordService.class));
+                    managerCompat.cancel(32);
                     startService(i);
 
                     Snackbar snackbar = Snackbar
                             .make(findViewById(R.id.coordinator), "Report will be submitted in the background.\nPlease do not resend", Snackbar.LENGTH_LONG);
-                    snackbar.show();
+
                     fab_send.setEnabled(false);
                     fab_photo.setEnabled(false);
                     fab_record.setEnabled(false);
                     fab_video.setEnabled(false);
                     fab_remove_photo.setEnabled(false);
 
+
                     snackbar.show();
+
+                    Handler handler = new Handler();
+                    handler.postDelayed(this::finish,4000);
+
+
+
+
+
+                    if(!snackbar.isShown()){
+                        finish();
+                    }
                 } catch (InputValidator.InvalidInputException e) {
                     Toast.makeText(cxt,e.getMessage(),Toast.LENGTH_LONG).show();
                 }

@@ -23,6 +23,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:hardwareAccelerated="false"
+        android:largeHeap="true"
         android:theme="@style/AppTheme">
         <meta-data
             android:name="com.google.android.gms.version"
@@ -184,6 +186,7 @@
         <service
             android:name=".services.FieldMonitorTaskService"
             android:enabled="true"
+            android:label="FieldMonitorTaskService"
             android:exported="true"/>
 
     </application>

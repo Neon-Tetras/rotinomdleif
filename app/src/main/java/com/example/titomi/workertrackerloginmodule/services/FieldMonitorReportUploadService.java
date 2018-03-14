@@ -77,6 +77,8 @@ public class FieldMonitorReportUploadService extends Service {
 
         notifBuilder.setAutoCancel(true);
         notifBuilder.setLights(Color.GREEN,60000,60000);
+        notifBuilder.setSound(Settings.System.DEFAULT_NOTIFICATION_URI);
+        notifBuilder.setVibrate(new long[]{1000, 1000, 1000, 1000, 1000});
 
         notifManager.notify(submittingReportNotif, notifBuilder.build());
 
@@ -93,7 +95,8 @@ public class FieldMonitorReportUploadService extends Service {
         if (video == null || Objects.equals(video,"")) {
             NUM_ACTIONS = 3;
         }
-        sendReport();
+
+        uploadVideo();
 
 
 
@@ -242,6 +245,7 @@ public class FieldMonitorReportUploadService extends Service {
             super.onPostExecute(strings);
             if (strings == null) return;
             actionCount++;
+            uploadAudio();
             if (actionCount == NUM_ACTIONS) {
                 notifyCompletion();
                 stopSelf();
@@ -261,7 +265,7 @@ public class FieldMonitorReportUploadService extends Service {
             if (strings == null) return;
             actionCount++;
 
-            uploadVideo();
+            sendReport();
             if (actionCount == NUM_ACTIONS) {
                 notifyCompletion();
                 stopSelf();

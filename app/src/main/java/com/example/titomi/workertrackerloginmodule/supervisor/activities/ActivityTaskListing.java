@@ -533,6 +533,11 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
 
                     final AlertDialog alertDialog = new AlertDialog.Builder(cxt).create();
 
+                  if  (mLastLocation == null) {
+                      callCurrentLocation(null);
+                      Toast.makeText(cxt,"Sorry we could not assertain your location.\nPlease try again",Toast.LENGTH_LONG).show();
+                        return;
+                    }
                     if (isWithinClockInRange(selectedTask.getLatitude(), selectedTask.getLongitude(), mLastLocation.getLatitude(), mLastLocation.getLongitude())) {
                         if (clockInText == null) {
                             return;

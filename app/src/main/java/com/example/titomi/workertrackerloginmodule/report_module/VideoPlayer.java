@@ -1,25 +1,30 @@
 package com.example.titomi.workertrackerloginmodule.report_module;
 
 import android.content.res.Configuration;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.MediaController;
 import android.widget.VideoView;
 
 import com.example.titomi.workertrackerloginmodule.R;
 
 
-public class VideoPlayer extends AppCompatActivity {
+public class VideoPlayer extends AppCompatActivity implements MediaPlayer.OnPreparedListener{
 
     VideoView videoView;
+    FrameLayout loadingVideoFrame;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_player);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         videoView = (VideoView)findViewById(R.id.videoView);
+        loadingVideoFrame = findViewById(R.id.loadingVideoFrame);
         if(getIntent() != null){
             Bundle extras = getIntent().getExtras();
 
@@ -27,6 +32,7 @@ public class VideoPlayer extends AppCompatActivity {
              videoView.setVideoURI(Uri.parse(videoUrl));
             MediaController vidControl = new MediaController(this);
 
+            videoView.setOnPreparedListener(this);
              vidControl.setAnchorView(videoView);
             videoView.setMediaController(vidControl);
             videoView.start();
@@ -66,5 +72,17 @@ public class VideoPlayer extends AppCompatActivity {
         videoView.stopPlayback();
         super.onDestroy();
 
+    }
+
+    @Override
+    public void onPrepared(MediaPlayer mp) {
+        loadingVideoFrame.setVisibility(View.GONE);
+        mp.setOnBufferingUpdateListener((mp1, percent) -> {
+            if(percent == 100){
+                loadingVideoFrame.setVisibility(View.GONE);
+            }else{
+                loadingVideoFrame.setVisibility(View.VISIBLE);
+            }
+        });
     }
 }
