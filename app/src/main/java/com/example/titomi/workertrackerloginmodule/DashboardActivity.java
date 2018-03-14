@@ -47,17 +47,15 @@ import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
 public class DashboardActivity extends AppCompatActivity {
 
+    private static Context cxt;
     Toolbar toolbar;
-
     String EmailHolder;
     PrimaryDrawerItem mProfile, mTask, mInventory, mAttendance, mWorkerTrack, mSupervisorManager, mMessage, mAlert, mReport, mLiveChat,supervisorInventoryRequest,supervisorReports,supervisorTasks,leaveApplication,institutionManager;
     SecondaryDrawerItem mSettings, mLogout;
-    SharedPrefManager sharedPrefManager;
 
 //    Toolbar toolbar;
-
+SharedPrefManager sharedPrefManager;
     User loggedInUser;
-    private static Context cxt;
 
     @Override
     public void onBackPressed() {
@@ -162,7 +160,7 @@ public class DashboardActivity extends AppCompatActivity {
 
 
         mProfile = new PrimaryDrawerItem().withIdentifier(1).withName("My Profile");
-        mTask = new PrimaryDrawerItem().withIdentifier(2).withName("Tasks");
+        mTask = new PrimaryDrawerItem().withIdentifier(2).withName("Tasks").withIcon(R.drawable.task_nav_icon_512);
         mInventory = new PrimaryDrawerItem().withIdentifier(3).withName("Inventory Manager");
         mAttendance = new PrimaryDrawerItem().withIdentifier(4).withName("Attendance Report");
         mWorkerTrack = new PrimaryDrawerItem().withIdentifier(5).withName("Worker Tracking");
