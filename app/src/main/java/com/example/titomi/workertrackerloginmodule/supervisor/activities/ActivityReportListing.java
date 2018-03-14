@@ -215,7 +215,7 @@ public class ActivityReportListing extends AppCompatActivity implements AdapterV
             try {
                 JSONArray jsonArray = new JSONArray(s);
                 if (jsonArray.length() == 0) {
-                    Snackbar snackbar = Snackbar.make(findViewById(R.id.parent), "No submitted report today", Snackbar.LENGTH_LONG);
+                    Snackbar snackbar = Snackbar.make(findViewById(R.id.parent), "No report found", Snackbar.LENGTH_LONG);
                     snackbar.show();
                 }
                 taskList.clear();
@@ -313,11 +313,8 @@ public class ActivityReportListing extends AppCompatActivity implements AdapterV
                          dateSubmittedText.setText(String.format("Submitted on %s",dtf.format(task.getDateDelivered())));
                          taskTitle.setText(task.getName());
 
-                        viewReportText.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                //TODO: Take to view report activity
-                            }
+                        viewReportText.setOnClickListener(view -> {
+                            //TODO: Take to view report activity
                         });
 
                         return convertView;
