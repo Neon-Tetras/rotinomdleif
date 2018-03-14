@@ -215,5 +215,7 @@
     <string name="edit_institution_url">institutions/update.php</string>
     <string name="delete_institution_url">institutions/delete.php</string>
     <string name="calling_activity">calling_activity</string>
+    <string name="videoUrl">videoUrl</string>
+    <string name="currentPosition">current position</string>
 
 </resources>

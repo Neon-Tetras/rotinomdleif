@@ -18,6 +18,8 @@ public class VideoPlayer extends AppCompatActivity implements MediaPlayer.OnPrep
 
     VideoView videoView;
     FrameLayout loadingVideoFrame;
+    private String videoUrl;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,7 +30,7 @@ public class VideoPlayer extends AppCompatActivity implements MediaPlayer.OnPrep
         if(getIntent() != null){
             Bundle extras = getIntent().getExtras();
 
-            String videoUrl = extras.getString("videoUrl");
+             videoUrl = extras.getString("videoUrl");
              videoView.setVideoURI(Uri.parse(videoUrl));
             MediaController vidControl = new MediaController(this);
 
@@ -36,6 +38,8 @@ public class VideoPlayer extends AppCompatActivity implements MediaPlayer.OnPrep
              vidControl.setAnchorView(videoView);
             videoView.setMediaController(vidControl);
             videoView.start();
+            videoView.getCurrentPosition();
+
         }
     }
     @Override
@@ -57,8 +61,10 @@ public class VideoPlayer extends AppCompatActivity implements MediaPlayer.OnPrep
     }
     @Override
     public void onResume() {
-        videoView.resume();
         super.onResume();
+        videoView.resume();
+        videoView.seekTo(currentPosition);
+
 
     }
     @Override
@@ -75,6 +81,20 @@ public class VideoPlayer extends AppCompatActivity implements MediaPlayer.OnPrep
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(getString(R.string.videoUrl),videoUrl);
+        outState.putInt(getString(R.string.currentPosition),videoView.getCurrentPosition());
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        videoUrl = savedInstanceState.getString(getString(R.string.videoUrl));
+        currentPosition = savedInstanceState.getInt(getString(R.string.currentPosition));
+    }
+
+    @Override
     public void onPrepared(MediaPlayer mp) {
         loadingVideoFrame.setVisibility(View.GONE);
         mp.setOnBufferingUpdateListener((mp1, percent) -> {
@@ -84,5 +104,10 @@ public class VideoPlayer extends AppCompatActivity implements MediaPlayer.OnPrep
                 loadingVideoFrame.setVisibility(View.VISIBLE);
             }
         });
+        mp.setOnSeekCompleteListener(mp12 -> {
+            videoView.seekTo(videoView.getCurrentPosition());
+        });
     }
+
+    private int currentPosition;
 }
