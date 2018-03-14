@@ -26,9 +26,9 @@ public class InputValidator {
         if(matcher.find()){
             return email;
         }else{
-            editText.setBackgroundColor(Color.RED);
+
             editText.requestFocus();
-            refreshEditTextBackgroundColor(editText);
+
             throw new InvalidInputException(String.format("Email '%s' is invalid.\nSupply email as %s",email,sampleEmail));
 
         }
@@ -46,9 +46,9 @@ public class InputValidator {
         if(matcher.find()){
             return phone;
         }else{
-            editText.setBackgroundColor(Color.RED);
+
             editText.requestFocus();
-            refreshEditTextBackgroundColor(editText);
+
             throw new InvalidInputException(String.format("Phone number '%s' is invalid.\nSupply number as %s",phone,samplePhone));
         }
 
@@ -61,9 +61,9 @@ public class InputValidator {
         if(!text.isEmpty() && text.length() >= validLength){
             return text;
         }else{
-            editText.setBackgroundColor(Color.RED);
+
             editText.requestFocus();
-            refreshEditTextBackgroundColor(editText);
+
             throw new InvalidInputException(String.format("Input '%s' is too short.\n" +
                     "Input should be longer than %d characters",
                     text,
@@ -83,9 +83,9 @@ public class InputValidator {
         if(!text.isEmpty() && text.length() >= validLength){
             return new SimpleDateFormat("yyyy-mm-dd").parse(text);
         }else{
-            editText.setBackgroundColor(Color.RED);
+
             editText.requestFocus();
-            refreshEditTextBackgroundColor(editText);
+
             throw new InvalidInputException(String.format("Input '%s' is too short.\n" +
                             "Input should be longer than %d characters",
                     text,
@@ -122,9 +122,9 @@ public class InputValidator {
         if(matcher.find()){
             return website;
         }else{
-            editText.setBackgroundColor(Color.RED);
+
             editText.requestFocus();
-            refreshEditTextBackgroundColor(editText);
+
             throw new InvalidInputException(String.format("Website '%s' is invalid.\nSupply website as %s",website,sampleWebsite));
 
         }
@@ -140,9 +140,9 @@ public class InputValidator {
         if(matcher.find()){
             return password;
         }else{
-            editText.setBackgroundColor(Color.RED);
+
             editText.requestFocus();
-            refreshEditTextBackgroundColor(editText);
+
             throw new InvalidInputException(String.format("%s not valid.\nPassword should contain alphanumeric characters.\ne.g %s",password,
                     samplePassword));
         }
@@ -155,7 +155,7 @@ public class InputValidator {
 
         }else{
             spinner.requestFocus();
-            spinner.setBackgroundColor(Color.RED);
+
             throw new InvalidInputException("Invalid selection");
         }
 
@@ -180,7 +180,7 @@ public class InputValidator {
             @Override
             public void onClick(View v) {
 
-                v.setBackgroundColor(Color.WHITE);
+               // v.setBackgroundColor(android.R.drawable.editbox_background);
             }
         });
     }
