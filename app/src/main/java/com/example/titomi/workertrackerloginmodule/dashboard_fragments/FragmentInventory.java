@@ -128,8 +128,6 @@ public class FragmentInventory extends Fragment implements OnChartValueSelectedL
 
             dataSet.setColors(ColorTemplate.createColors(new int[]{Color.RED, Color.BLUE, Color.GREEN}));
 
-            //TODO
-
         } catch (Resources.NotFoundException e) {
             e.printStackTrace();
             dataSet.setColors(ColorTemplate.COLORFUL_COLORS);
