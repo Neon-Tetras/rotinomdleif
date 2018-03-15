@@ -138,6 +138,25 @@ public class ActivityReportListing extends AppCompatActivity implements AdapterV
         return super.onPrepareOptionsMenu(menu);
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if(loggedInUser != null) {
+            outState.putSerializable(getString(R.string.loggedInUser), loggedInUser);
+        }
+
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if(savedInstanceState != null) {
+            loggedInUser = (User) savedInstanceState.getSerializable(getString(R.string.loggedInUser));
+        }
+
+    }
+
+
     private void exportReport() {
 
         String[] reportHeader = getResources().getStringArray(R.array.header);
@@ -151,6 +170,7 @@ public class ActivityReportListing extends AppCompatActivity implements AdapterV
                             task.getState(),
                             task.getLga(),
                             task.getInstitution_name(),
+                            task.getAddress(),
                             task.getContactName(),
                             task.getContactNumber(),
                             NumberFormat.getInstance().format(task.getParticipants()),
@@ -191,12 +211,22 @@ public class ActivityReportListing extends AppCompatActivity implements AdapterV
             super.onPostExecute(s);
           //  progressBar.setVisibility(View.GONE);
             swipeRefreshLayout.setRefreshing(false);
-            if(s == null) return;
+            if(s == null) {
 
+                exportItem.setVisible(false);
+                return;
+            }else{
+                exportItem.setVisible(true);
+            }
+
+            if( s.equalsIgnoreCase("null")) {
+                exportItem.setVisible(false);
+                return;
+            }
             try {
                 JSONArray jsonArray = new JSONArray(s);
                 if (jsonArray.length() == 0) {
-                    Snackbar snackbar = Snackbar.make(findViewById(R.id.parent), "No submitted report today", Snackbar.LENGTH_LONG);
+                    Snackbar snackbar = Snackbar.make(findViewById(R.id.parent), "No report found", Snackbar.LENGTH_LONG);
                     snackbar.show();
                 }
                 taskList.clear();
@@ -214,14 +244,16 @@ public class ActivityReportListing extends AppCompatActivity implements AdapterV
                     supervisor.setUserLevel(supervisorObj.getInt("roleId"));
                     supervisor.setUserLevelText(supervisorObj.getString("role"));
                     supervisor.setFeaturedImage(supervisorObj.getString("photo"));
-                    supervisor.setName(String.format("%s %s",supervisorObj.getString("first_name"),supervisorObj.getString("last_name")));
+                    supervisor.setName(String.format("%s %s",supervisorObj.getString("first_name")
+                            ,supervisorObj.getString("last_name")));
                     supervisor.setEmail(supervisorObj.getString("email"));
                     supervisor.setId(supervisorObj.getInt("id"));
                     User worker = new User();
                     worker.setUserLevel(workerObj.getInt("roleId"));
                     worker.setUserLevelText(workerObj.getString("role"));
                     worker.setFeaturedImage(workerObj.getString("photo"));
-                    worker.setName(String.format("%s %s",workerObj.getString("first_name"),supervisorObj.getString("last_name")));
+                    worker.setName(String.format("%s %s",workerObj.getString("first_name"),
+                            supervisorObj.getString("last_name")));
                     worker.setEmail(workerObj.getString("email"));
                     worker.setId(workerObj.getInt("id"));
                     SimpleDateFormat dtf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
@@ -247,7 +279,7 @@ public class ActivityReportListing extends AppCompatActivity implements AdapterV
                             obj.getString("address"),
                             obj.getString("sales"),
                             obj.getString("images"),
-                            obj.getInt("quantity"),
+                            0,
                             obj.getInt("inventoryBalance"),
                             obj.getInt("quantitySold"),
                             obj.getInt("participants"),
@@ -256,6 +288,7 @@ public class ActivityReportListing extends AppCompatActivity implements AdapterV
                     task.setStartTime(startTime);
                     task.setStopTime(stopTime);
                     task.setVideo(obj.getString("video"));
+                    task.setAudio(obj.getString("audio"));
 
 
                         taskList.add(task);
@@ -293,11 +326,8 @@ public class ActivityReportListing extends AppCompatActivity implements AdapterV
                          dateSubmittedText.setText(String.format("Submitted on %s",dtf.format(task.getDateDelivered())));
                          taskTitle.setText(task.getName());
 
-                        viewReportText.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                //TODO: Take to view report activity
-                            }
+                        viewReportText.setOnClickListener(view -> {
+                            //TODO: Take to view report activity
                         });
 
                         return convertView;
@@ -316,8 +346,9 @@ public class ActivityReportListing extends AppCompatActivity implements AdapterV
             }
         }
     }
-    static ArrayList<Task> taskList = new ArrayList<>();
-    static ArrayAdapter<Task> taskArrayAdapter;
+
+     ArrayList<Task> taskList = new ArrayList<>();
+     ArrayAdapter<Task> taskArrayAdapter;
 
     private void reportDateDialog(){
         View view = getLayoutInflater().inflate(R.layout.search_report_layout,null);
@@ -326,30 +357,16 @@ public class ActivityReportListing extends AppCompatActivity implements AdapterV
         final Button searchActionButton = view.findViewById(R.id.view_report_action_button);
         final AlertDialog alertDialog = new AlertDialog.Builder(cxt).create();
 
-         fromDate.setOnClickListener(new View.OnClickListener() {
-             @Override
-             public void onClick(View view) {
-                 DateTimeUtil.showDatePicker(cxt,fromDate);
+         fromDate.setOnClickListener(view12 -> DateTimeUtil.showDatePicker(cxt,fromDate));
+         toDate.setOnClickListener(view1 -> DateTimeUtil.showDatePicker(cxt,toDate));
+         searchActionButton.setOnClickListener(view13 -> {
 
-             }
-         });
-         toDate.setOnClickListener(new View.OnClickListener() {
-             @Override
-             public void onClick(View view) {
-                 DateTimeUtil.showDatePicker(cxt,toDate);
-             }
-         });
-         searchActionButton.setOnClickListener(new View.OnClickListener() {
-             @Override
-             public void onClick(View view) {
-
-               if(fromDate.getText().length() == 0 || toDate.getText().length() == 0){
-                   Toast.makeText(cxt,"Please fill all fields",Toast.LENGTH_SHORT).show();
-                   return;
-               }
-               alertDialog.dismiss();
-               searchAction(fromDate.getText().toString(),toDate.getText().toString());
-             }
+           if(fromDate.getText().length() == 0 || toDate.getText().length() == 0){
+               Toast.makeText(cxt,"Please fill all fields",Toast.LENGTH_SHORT).show();
+               return;
+           }
+           alertDialog.dismiss();
+           searchAction(fromDate.getText().toString(),toDate.getText().toString());
          });
 
 

@@ -208,8 +208,8 @@
                 android:layout_marginBottom="10dp"
                 android:text="Quantity Given:"
                 android:textColor="@color/black"
-                android:visibility="gone"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                android:visibility="gone" />
 
             <EditText
                 android:id="@+id/quantity"
@@ -218,8 +218,8 @@
                 android:layout_marginBottom="10dp"
                 android:editable="false"
                 android:inputType="none"
-                android:visibility="gone"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:visibility="gone" />
 
 
             <TextView
@@ -376,7 +376,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-
                 android:lines="3" />
 
 
@@ -403,11 +402,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal" />
-
-
                 </HorizontalScrollView>
-
-
                 <TextView
                     android:id="@+id/playVideoText"
                     android:layout_width="wrap_content"
@@ -420,8 +415,6 @@
                     android:textColor="@color/black"
                     android:visibility="gone" />
             </LinearLayout>
-
-
         </LinearLayout>
     </ScrollView>
 
@@ -447,40 +440,44 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:overScrollMode="always"
+            android:src="@drawable/remove_photo"
             android:visibility="gone"
             app:fabSize="mini"
-            android:src="@drawable/remove_photo" />
+            tools:ignore="VectorDrawableCompat" />
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/fab_photo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:src="@drawable/ic_photo_camera"
             app:fabSize="mini"
-            android:src="@drawable/ic_photo_camera" />
+            tools:ignore="VectorDrawableCompat" />
 
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/fab_video"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:src="@drawable/ic_videocam_white_24dp"
             app:fabSize="mini"
-            android:src="@drawable/ic_videocam_white_24dp" />
+            tools:ignore="VectorDrawableCompat" />
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/fab_record"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:src="@drawable/ic_mic"
             android:visibility="visible"
             app:fabSize="mini"
-            android:src="@drawable/ic_mic" />
+            tools:ignore="VectorDrawableCompat" />
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/fab_send"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:src="@drawable/ic_send"
             app:fabSize="mini"
-
-            android:src="@drawable/ic_send" />
+            tools:ignore="VectorDrawableCompat" />
     </com.github.clans.fab.FloatingActionMenu>
 
 

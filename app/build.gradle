@@ -22,6 +22,10 @@ android {
         }
     }
     buildToolsVersion '27.0.1'
+    compileOptions {
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
+    }
 }
 
 dependencies {
@@ -62,6 +66,7 @@ dependencies {
     implementation files('libs/opencsv2.4.jar')
     implementation files('libs/jxl.jar')
     implementation 'life.knowledge4:k4l-video-trimmer:1.0'
+
 }
 configurations {
     all {

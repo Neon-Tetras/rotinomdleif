@@ -21,4 +21,19 @@
         android:saveEnabled="true"
         android:contentDescription="Atrium Event Video"
         />
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+
+        android:id="@+id/loadingVideoFrame">
+
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            />
+
+    </FrameLayout>
 </RelativeLayout>

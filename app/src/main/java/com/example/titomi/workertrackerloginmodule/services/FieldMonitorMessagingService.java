@@ -99,6 +99,9 @@ public class FieldMonitorMessagingService extends Service {
                     return;
                 }
 
+                if(s.equalsIgnoreCase("null")){
+                    return;
+                }
 
                 try {
                     JSONArray jsonArray = new JSONArray(s);

@@ -4,14 +4,18 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -31,22 +35,23 @@ import com.example.titomi.workertrackerloginmodule.supervisor.util.Util;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Locale;
 
 
-public class ActivityViewReport extends AppCompatActivity implements View.OnClickListener {
+public class ActivityViewReport extends AppCompatActivity implements View.OnClickListener,MediaPlayer.OnCompletionListener {
 
-    Task selectedTask;
-
-    ImageView userImage;
-    TextView username, dateSubmitted, taskTitle, taskTypeText, institutionText, addressText, stateText, contactFullName, contactPhone, quantityGivenText, participantsText, quantityDistributedText, balanceText, exportText, approveText, commentText, playVideo;
-    LinearLayout reportImagesLayout;
     static Context cxt;
+    Task selectedTask;
+    ImageView userImage;
+    TextView username, dateSubmitted, taskTitle, taskTypeText, institutionText, addressText, stateText, contactFullName, contactPhone, quantityGivenText, participantsText, quantityDistributedText, balanceText, exportText, approveText, commentText, playVideo, playAudio;
+    LinearLayout reportImagesLayout;
     User loggedInUser;
     String videoUrl;
+    String audioUrl;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +65,15 @@ public class ActivityViewReport extends AppCompatActivity implements View.OnClic
             selectedTask = (Task) extras.getSerializable("task");
             loggedInUser = (User)extras.getSerializable(getString(R.string.loggedInUser));
             setupView(selectedTask);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(audiPlayer != null && audiPlayer.isPlaying()){
+            audiPlayer.stop();
+            audiPlayer = null;
         }
     }
 
@@ -90,6 +104,8 @@ public class ActivityViewReport extends AppCompatActivity implements View.OnClic
         commentText = findViewById(R.id.commentText);
         approveText.setOnClickListener(this);
         playVideo = findViewById(R.id.videoText);
+        playAudio = findViewById(R.id.audioText);
+        playAudio.setOnClickListener(this);
         playVideo.setOnClickListener(this);
         exportText.setOnClickListener(this);
     }
@@ -122,6 +138,12 @@ public class ActivityViewReport extends AppCompatActivity implements View.OnClic
             playVideo.setVisibility(View.GONE);
         }
 
+        if(task.getAudio() != null && !task.getAudio().isEmpty()){
+            audioUrl = getString(R.string.server_url)+task.getAudio();
+            playAudio.setVisibility(View.VISIBLE);
+        }else{
+            playAudio.setVisibility(View.GONE);
+        }
 
 
         if(selectedTask.getStatus() == Task.COMPLETED || loggedInUser.getRoleId() == User.NURSE){
@@ -144,6 +166,7 @@ public class ActivityViewReport extends AppCompatActivity implements View.OnClic
 
 
                     final ImageView reportImage = view.findViewById(R.id.reportImage);
+                    final FrameLayout loadingFrame =    view.findViewById(R.id.loadingImageFrame);
 
                     String fullImageUrl = getString(R.string.server_url)+image;
 
@@ -153,18 +176,28 @@ public class ActivityViewReport extends AppCompatActivity implements View.OnClic
                     if(storage.imageExists(imageName)){
                         if(storage.getImage(imageName) == null) return;
                         reportImage.setImageURI(Uri.parse(storage.getImage(imageName).getAbsolutePath()));
+                        reportImage.setOnClickListener(view1 -> Util.viewImages(cxt, reportImage, imageList));
                         imageList.add(storage.getImage(imageName).getAbsolutePath());
                     }else {
 
                         final ImageUtils.GetImages getImages = new ImageUtils.GetImages(task, fullImageUrl, imageName) {
                             @Override
+                            protected void onPreExecute() {
+                                super.onPreExecute();
+                                loadingFrame.setVisibility(View.VISIBLE);
+                            }
+
+                            @Override
                             protected void onPostExecute(Object obj) {
                                 super.onPostExecute(obj);
 
+                                reportImage.setImageBitmap((Bitmap) obj);
                                 if(storage.getImage(imageName) == null) return;
 
                                 imageList.add(storage.getImage(imageName).getAbsolutePath());
-                                reportImage.setImageBitmap((Bitmap) obj);
+
+                             loadingFrame.setVisibility(View.GONE);
+                                reportImage.setOnClickListener(view1 -> Util.viewImages(cxt, reportImage, imageList));
 
 
                             }
@@ -173,12 +206,7 @@ public class ActivityViewReport extends AppCompatActivity implements View.OnClic
                         getImages.execute();
                     }
 
-                    reportImage.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            Util.viewImages(cxt, reportImage, imageList);
-                        }
-                    });
+
 
                     // reportImage.setOnClickListener();
                     reportImagesLayout.addView(view);
@@ -202,12 +230,14 @@ public class ActivityViewReport extends AppCompatActivity implements View.OnClic
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putSerializable("task",selectedTask);
+        outState.putSerializable(getString(R.string.loggedInUser),loggedInUser);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         selectedTask = (Task)savedInstanceState.getSerializable("task");
+        loggedInUser = (User)savedInstanceState.getSerializable(getString(R.string.loggedInUser));
     }
 
     @Override
@@ -221,9 +251,57 @@ public class ActivityViewReport extends AppCompatActivity implements View.OnClic
                 break;
             case R.id.videoText:
                 if (videoUrl != null) {
+                    //Stop playing audio when video is clicked
+                    if(audiPlayer != null && audiPlayer.isPlaying()){
+                        audiPlayer.stop();
+                    }
                     Intent i = new Intent(cxt, VideoPlayer.class);
                     i.putExtra("videoUrl", videoUrl);
                     startActivity(i);
+                }
+                break;
+            case R.id.audioText:
+                if (audioUrl != null) {
+                     audiPlayer = new MediaPlayer();
+                     audiPlayer.setOnCompletionListener(this);
+                    try {
+                        audiPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                        audiPlayer.setDataSource(audioUrl);
+                        audiPlayer.prepare();
+
+                        audiPlayer.start();
+
+                        audioPlaybackSnack = Snackbar.make(findViewById(R.id.parent),"Playing audio",Snackbar.LENGTH_INDEFINITE);
+                        if(audiPlayer.isPlaying()) {
+                            audioPlaybackSnack.setAction("Stop playback", v->{
+                                audiPlayer.stop();
+                            });
+                            audioPlaybackSnack.show();
+                        }
+
+
+
+
+                         /*   while (audiPlayer.isPlaying()){
+                                if(!audiPlayer.isPlaying()){
+                                    snackbar.dismiss();
+                                    break;
+
+                                }
+                            }
+*/
+
+
+
+
+
+
+                    } catch (IOException e) {
+                        Toast.makeText(cxt,"Error playing audio",Toast.LENGTH_LONG).show();
+                    }
+                    /*Intent i = new Intent(cxt, RecordActivity.class);
+                    i.putExtra("audioUrl", audioUrl);
+                    startActivity(i);*/
                 }
                 break;
         }
@@ -242,6 +320,7 @@ public class ActivityViewReport extends AppCompatActivity implements View.OnClic
                     task.getState(),
                     task.getLga(),
                     task.getInstitution_name(),
+                    task.getAddress(),
                     task.getContactName(),
                     task.getContactNumber(),
                     NumberFormat.getInstance().format(task.getParticipants()),
@@ -262,6 +341,17 @@ public class ActivityViewReport extends AppCompatActivity implements View.OnClic
 
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void setBalanceText(JSONObject obj) throws JSONException {
+        balanceText.setText(obj.getString("balance"));
+    }
+
+    @Override
+    public void onCompletion(MediaPlayer mp) {
+        if(audioPlaybackSnack != null && audioPlaybackSnack.isShown()){
+            audioPlaybackSnack.dismiss();
+        }
     }
 
     private static class ApproveTaskNetwork extends AsyncTask<String,Void,String>{
@@ -305,7 +395,6 @@ public class ActivityViewReport extends AppCompatActivity implements View.OnClic
         }
     }
 
-
     private class InventoryNetwork extends android.os.AsyncTask<String, Void, String> {
 
 
@@ -338,9 +427,7 @@ public class ActivityViewReport extends AppCompatActivity implements View.OnClic
 
     }
 
-    private void setBalanceText(JSONObject obj) throws JSONException {
-        balanceText.setText(obj.getString("balance"));
-    }
-
+    MediaPlayer audiPlayer;
+    Snackbar audioPlaybackSnack;
 
 }

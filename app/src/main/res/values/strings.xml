@@ -190,6 +190,7 @@
     <string name="alert_api">alert/add.php</string>
     <string name="submitting_report">Submitting report</string>
     <string name="image_upload_url">task/image_uploader.php</string>
+    <string name="audio_upload_url">task/audio_uploader.php</string>
     <string name="video_upload_url">task/video_uploader.php</string>
     <string name="clockOutUrl">task/clock_out.php</string>
     <string name="noLeave">No leave application available</string>
@@ -203,5 +204,23 @@
     <string name="enter_remittance_record">Enter Remittance Record</string>
     <string name="proof_image_uploader">work/proof_image_uploader.php</string>
     <string name="user_id">user_id</string>
+    <string name="task">task</string>
+    <string name="writeReport">Write Report</string>
+    <string name="title_activity_institution_listing">ActivityInstitutionListing</string>
+    <string name="view_institutions_api_url">institutions/view.php</string>
+    <string name="add_institution_url">institutions/add.php</string>
+    <string name="default_encoding">UTF-8</string>
+    <string name="selected_institution">Selected Institution</string>
+    <string name="update">Update</string>
+    <string name="edit_institution_url">institutions/update.php</string>
+    <string name="delete_institution_url">institutions/delete.php</string>
+    <string name="calling_activity">calling_activity</string>
+    <string name="videoUrl">videoUrl</string>
+    <string name="currentPosition">current position</string>
+    <string name="taken_picture">taken_picture</string>
+    <string name="report_images">report_images</string>
+    <string name="images">Images</string>
+    <string name="approved">Approved</string>
+
 
 </resources>

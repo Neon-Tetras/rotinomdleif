@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +38,7 @@ import java.util.Date;
  * Created by Titomi on 2/8/2018.
  */
 
-public class FragmentTask extends Fragment{
+public class FragmentTask extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private static ProgressBar progressBar;
     private static TextView taskAssignedCount, unexecutedTasksCount, executedTasksCount;
@@ -45,7 +46,7 @@ public class FragmentTask extends Fragment{
      PieChart pieChart;
     Context cxt;
     ArrayList<PieEntry> yValues = new ArrayList<>();
-
+    private SwipeRefreshLayout refreshLayout;
     private User loggedInUser;
     public FragmentTask() {
     }
@@ -67,6 +68,8 @@ public class FragmentTask extends Fragment{
         taskAssignedCount = view.findViewById(R.id.taskAssignedCount);
         executedTasksCount = view.findViewById(R.id.executedTaskCount);
         unexecutedTasksCount = view.findViewById(R.id.unexecutedTasksCount);
+        refreshLayout = view.findViewById(R.id.swipe_task_chart);
+        refreshLayout.setOnRefreshListener(this);
         pieChart = view.findViewById(R.id.piechart);
         pieChart.setUsePercentValues(true);
         pieChart.getDescription().setEnabled(true);
@@ -139,7 +142,7 @@ public class FragmentTask extends Fragment{
         PieDataSet dataSet = new PieDataSet(yValues, "Tasks");
         dataSet.setSliceSpace(3f);
         dataSet.setSelectionShift(5f);
-        dataSet.setColors(ColorTemplate.JOYFUL_COLORS);
+        dataSet.setColors(ColorTemplate.createColors(new int[]{R.color.primary_dark,R.color.graylight}));
 
         PieData data = new PieData((dataSet));
         data.setValueTextSize(40f);
@@ -155,6 +158,11 @@ public class FragmentTask extends Fragment{
 
     }
 
+    @Override
+    public void onRefresh() {
+        loadTasks();
+    }
+
     private  class AssignedTaskNetwork extends AsyncTask<String,Void,String>{
 
 
@@ -168,15 +176,15 @@ public class FragmentTask extends Fragment{
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progressBar.setVisibility(View.VISIBLE);
-
+//            progressBar.setVisibility(View.VISIBLE);
+            refreshLayout.setRefreshing(true);
         }
 
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-             progressBar.setVisibility(View.GONE);
-
+//             progressBar.setVisibility(View.GONE);
+            refreshLayout.setRefreshing(false);
             if(s == null) {
 
                 return;

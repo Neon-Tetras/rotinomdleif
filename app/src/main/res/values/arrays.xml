@@ -12,4 +12,9 @@
         <item>PARTICIPANTS</item>
         <item>TIME</item>
     </string-array>
+
+    <string-array name="institutionType">
+        <item>Hospital</item>
+        <item>School</item>
+    </string-array>
 </resources>

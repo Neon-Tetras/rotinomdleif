@@ -8,9 +8,15 @@ import android.graphics.drawable.Drawable;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Environment;
+import android.os.PersistableBundle;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -21,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.titomi.workertrackerloginmodule.R;
+import com.example.titomi.workertrackerloginmodule.services.FieldMonitorRecordService;
 import com.example.titomi.workertrackerloginmodule.services.FieldMonitorReportUploadService;
 import com.example.titomi.workertrackerloginmodule.supervisor.Task;
 import com.example.titomi.workertrackerloginmodule.supervisor.User;
@@ -39,20 +46,28 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
+import static android.Manifest.permission.RECORD_AUDIO;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static com.example.titomi.workertrackerloginmodule.services.FieldMonitorRecordService.RequestPermissionCode;
+
 public class ReportActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static final int MEDIA_TYPE_IMAGE = 1;
     public static final int ACTIVITY_RECORD_SOUND = 0;
-
     private static final int TRIM_VIDEO = 10;
+    public static ReportActivity instance;
+    private final int notification_id = 32;
+    NotificationManagerCompat managerCompat;
+    NotificationCompat.Builder mBuilder;
     FloatingActionButton fab_photo, fab_record, fab_send, fab_remove_photo,fab_video;
     FloatingActionMenu floatingActionMenu;
     TextView playVideoText;
     Context cxt;
     LinearLayout reportImagesLayout;
-    File outputMedia;
+    File outputImageMedia;
     Uri file;
     String videoPath;
+    String recordPath = null;
     ArrayList<String> reportImages = new ArrayList<>();
     MediaRecorder recorder;
     private EditText timeEditText, taskTitleEdit,
@@ -61,6 +76,8 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
     private User loggedInUser;
     private Task selectedTask;
     private String stopLat,stopLong;
+    private MediaRecorder mediaRecorder;
+    private String AudioSavePathInDevice;
 
     private static File getOutputMediaFile() {
 
@@ -93,6 +110,13 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
         setContentView(R.layout.activity_report);
        /* Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);*/
+
+        if (checkPermission()) {
+            MediaRecorderReady();
+        } else {
+            requestPermission();
+        }
+
 System.out.println(this.getClass().getPackage());
         cxt = this;
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -153,6 +177,8 @@ System.out.println(this.getClass().getPackage());
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
         }
 
+       enableRecordAudioButton();
+
     }
 
     private void setupView(Task task){
@@ -177,10 +203,11 @@ System.out.println(this.getClass().getPackage());
     }
 
     private void captureImage() {
-
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        outputMedia = getOutputMediaFile();
-        file = Uri.fromFile(outputMedia);
+        outputImageMedia = getOutputMediaFile();
+        file = Uri.fromFile(outputImageMedia);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, file);
         startActivityForResult(intent, 100);
 
@@ -194,6 +221,49 @@ System.out.println(this.getClass().getPackage());
                 fab_photo.setEnabled(true);
             }
         }
+
+        switch (requestCode) {
+            case RequestPermissionCode:
+                if (grantResults.length > 0) {
+
+                    boolean StoragePermission = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                    boolean RecordPermission = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+
+
+                    if (StoragePermission && RecordPermission) {
+
+                        Toast.makeText(this, "Permission Granted", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(this, "Permission Denied", Toast.LENGTH_LONG).show();
+
+                    }
+                }
+
+                break;
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        videoPath = savedInstanceState.getString(getString(R.string.videoUrl));
+        reportImages = savedInstanceState.getStringArrayList(getString(R.string.images));
+        outputImageMedia = (File)savedInstanceState.getSerializable(getString(R.string.taken_picture));
+        loggedInUser = (User)savedInstanceState.getSerializable(getString(R.string.loggedInUser));
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+        outState.putSerializable(getString(R.string.loggedInUser),loggedInUser);
+        outState.putSerializable(getString(R.string.taken_picture),outputImageMedia);
+        outState.putStringArrayList(getString(R.string.images),reportImages);
+        outState.putString(getString(R.string.videoUrl),videoPath);
     }
 
     @Override
@@ -204,42 +274,46 @@ System.out.println(this.getClass().getPackage());
 
 
                 ImageUtils.ImageStorage storage = new ImageUtils.ImageStorage(new Task());
-                if(storage.imageExists(outputMedia.getName())) {
+                if(storage.imageExists(outputImageMedia.getName())) {
                     //  Util.getRealPathFromURI(cxt, file);
-                    if(!reportImages.contains(outputMedia.getAbsolutePath())){
-                        reportImages.add(outputMedia.getAbsolutePath());
+                    if(!reportImages.contains(outputImageMedia.getAbsolutePath())){
+                        reportImages.add(outputImageMedia.getAbsolutePath());
                         loadReportImages(reportImages);
                     }
                 }
 
             }
-        }
+
+
+
         switch (requestCode){
             case Util.PICK_VIDEO:
                 Uri videoUri = data.getData();
-                Intent i = new Intent(this, ActivityVideoTrimmer.class);
-                if (videoUri != null) {
+              //  Intent i = new Intent(this, ActivityVideoTrimmer.class);
+                videoPath =  Util.getVideoPath(cxt,videoUri);
+                if(videoPath != null){
+
+                    playVideoText.setVisibility(View.VISIBLE);
+                    playVideoText.setOnClickListener(v -> {
+                        Intent i1 = new Intent(ReportActivity.this,VideoPlayer.class);
+                        i1.putExtra("videoUrl",videoPath);
+                        startActivity(i1);
+                    });
+                }
+              /*  if (videoUri != null) {
                     i.putExtra("video",videoUri.toString());
                     startActivityForResult(i,TRIM_VIDEO);
-                }
+                }*/
 
                 break;
             case TRIM_VIDEO:
                 String uri = data.getExtras().getString("video");
                 videoPath =  Util.getVideoPath(this,Uri.parse(uri));
 
-                if(videoPath != null){
-                    playVideoText.setVisibility(View.VISIBLE);
-                    playVideoText.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent i = new Intent(ReportActivity.this,VideoPlayer.class);
-                            i.putExtra("videoUrl",videoPath);
-                            startActivity(i);
-                        }
-                    });
-                }
+
+
                 break;
+        }
         }
     }
 
@@ -252,9 +326,11 @@ System.out.println(this.getClass().getPackage());
             case R.id.fab_send:
                 if(!NetworkChecker.haveNetworkConnection(cxt)){return;}
 
+
                 Intent i = new Intent(cxt,FieldMonitorReportUploadService.class);
                 i.putExtra("video",videoPath);
                 i.putStringArrayListExtra("images",reportImages);
+                i.putExtra("audio", recordPath);
 
                 HashMap<String,String> postData = new HashMap<>();
                 try {
@@ -286,19 +362,29 @@ System.out.println(this.getClass().getPackage());
                     i.putExtra("postData",postData);
                     i.putExtra(getString(R.string.loggedInUser),loggedInUser);
 
-
+                    stopService(new Intent(cxt, FieldMonitorRecordService.class));
+                    managerCompat.cancel(32);
                     startService(i);
 
                     Snackbar snackbar = Snackbar
                             .make(findViewById(R.id.coordinator), "Report will be submitted in the background.\nPlease do not resend", Snackbar.LENGTH_LONG);
-                    snackbar.show();
+
                     fab_send.setEnabled(false);
                     fab_photo.setEnabled(false);
                     fab_record.setEnabled(false);
                     fab_video.setEnabled(false);
                     fab_remove_photo.setEnabled(false);
 
+
                     snackbar.show();
+
+                    Handler handler = new Handler();
+                    handler.postDelayed(this::finish,4000);
+
+
+                    if(!snackbar.isShown()){
+                        finish();
+                    }
                 } catch (InputValidator.InvalidInputException e) {
                     Toast.makeText(cxt,e.getMessage(),Toast.LENGTH_LONG).show();
                 }
@@ -309,6 +395,30 @@ System.out.println(this.getClass().getPackage());
             case R.id.fab_video:
                 Util.requestPermission(ReportActivity.this,Util.PICK_VIDEO);
                 break;
+            case R.id.fab_record:
+
+                Date createdTime = new Date();
+                recordPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + createdTime.getTime() + "_rec.acc";
+                /*File audioPath = new File(recordPath);
+                if (!audioPath.exists()){
+                    audioPath.mkdir();
+                }*/
+                /*Intent intent = new Intent(this, ReportActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);*/
+
+                mBuilder = new NotificationCompat.Builder(getBaseContext(), "Record")
+                        .setSmallIcon(R.mipmap.app_logo)
+                        .setContentTitle("FieldMonitor Record")
+                        .setContentText("Recording Session")
+                        .setPriority(NotificationCompat.PRIORITY_DEFAULT).setUsesChronometer(true);
+
+
+                managerCompat = NotificationManagerCompat.from(getBaseContext());
+                managerCompat.notify(notification_id, mBuilder.build());
+
+                startService(new Intent(cxt, FieldMonitorRecordService.class).putExtra("filePath", recordPath));
+                enableRecordAudioButton();
         }
 
 
@@ -344,23 +454,47 @@ System.out.println(this.getClass().getPackage());
             reportImagesLayout.addView(view);
         }
 
-
-
-
     }
 
     private void recordAudio() throws IOException {
-        Intent intent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
-        recorder = new MediaRecorder();
-        recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        recorder.setOutputFormat(MediaRecorder.OutputFormat.AAC_ADTS);
-        recorder.setOutputFile("    ");
-        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
-        startActivityForResult(intent, ACTIVITY_RECORD_SOUND);
+        Intent intent = new Intent(this, FieldMonitorRecordService.class);
+//        intent.putExtra();
+        startActivityForResult(intent, 300);
+    }
+
+    private boolean checkPermission() {
+        int result = ContextCompat.checkSelfPermission(getApplicationContext(), WRITE_EXTERNAL_STORAGE);
+        int result1 = ContextCompat.checkSelfPermission(getApplicationContext(), RECORD_AUDIO);
+        return result == PackageManager.PERMISSION_GRANTED && result1 == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestPermission() {
+
+        ActivityCompat.requestPermissions(ReportActivity.this, new String[]{WRITE_EXTERNAL_STORAGE, RECORD_AUDIO}, RequestPermissionCode);
+    }
+
+    public void MediaRecorderReady() {
+        mediaRecorder = new MediaRecorder();
+        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.AAC_ADTS);
+        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+        mediaRecorder.setOutputFile(AudioSavePathInDevice);
     }
 
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
 
+    private void enableRecordAudioButton(){
+        if(Util.isMyServiceRunning(this,FieldMonitorRecordService.class)){
+            fab_record.setEnabled(false);
+            return;
+        }else{
+            fab_record.setEnabled(true);
+        }
+    }
 }
 
 

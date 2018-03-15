@@ -1,11 +1,13 @@
 package com.example.titomi.workertrackerloginmodule.supervisor.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,7 +15,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 
 import com.example.titomi.workertrackerloginmodule.R;
 import com.example.titomi.workertrackerloginmodule.supervisor.Entity;
+import com.example.titomi.workertrackerloginmodule.supervisor.Institutions;
 import com.example.titomi.workertrackerloginmodule.supervisor.Task;
 import com.example.titomi.workertrackerloginmodule.supervisor.User;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.DateTimeUtil;
@@ -42,12 +44,14 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Locale;
 
 import static com.example.titomi.workertrackerloginmodule.supervisor.util.Network.backgroundTask;
 
 public class ActivityAssignTask extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener{
 
     public static final String update = "update";
+    private static final int PICK_INSTITUTIONS = 200;
     final String assign = "assign";
     Context cxt;
     Boolean assignSelfChecked;
@@ -70,6 +74,7 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
     private Task selectedTask;
     private User loggedInUser;
     private LatLng taskCoordinates;
+    private Institutions selectedInstitution;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,19 +112,30 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
         actionBar.setDisplayUseLogoEnabled(true);
         selfAssignCheck.setOnClickListener(this);
 
+        taskTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                enableDisableFields(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         assignSelfChecked = selfAssignCheck.isChecked();
 
-        selfAssignCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    Toast.makeText(cxt, "Supervisor only", Toast.LENGTH_SHORT).show();
-                    workerSpinner.setEnabled(false);
-                } else if (!isChecked)
-                    Toast.makeText(cxt, "Show all Workers", Toast.LENGTH_SHORT).show();
+        selfAssignCheck.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+              //  Toast.makeText(cxt, "Supervisor only", Toast.LENGTH_SHORT).show();
+                workerSpinner.setEnabled(false);
+            } else {
+              //  Toast.makeText(cxt, "Show all Workers", Toast.LENGTH_SHORT).show();
                 workerSpinner.setEnabled(true);
             }
         });
@@ -147,6 +163,25 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
         }
 
 
+        stateSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position == 0) return;
+                selectedState = (String) parent.getItemAtPosition(position);
+
+                try {
+                    loadLgaSpinner(selectedState);
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
     }
 
     @Override
@@ -160,7 +195,14 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
                 DateTimeUtil.showTimePicker(cxt,timeEditText);
                 break;
             case R.id.selectLocation:
-                Util.showPlacesPicker(cxt);
+                if(v.getTag().toString().equalsIgnoreCase("institution")) {
+                    Intent i = new Intent(cxt, ActivityInstitutionListing.class);
+                    i.putExtra(getString(R.string.loggedInUser), loggedInUser);
+                    i.putExtra(getString(R.string.calling_activity),this.getClass().getName());
+                    startActivityForResult(i, PICK_INSTITUTIONS);
+                }else {
+                     Util.showPlacesPicker(cxt);
+                }
                 break;
             case R.id.assignTaskBut:
                 if(!NetworkChecker.haveNetworkConnection(cxt))return;
@@ -203,6 +245,7 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
 
         taskCoordinates = new LatLng(task.getLatitude(),task.getLongitude());
 
+
     }
 
     @Override
@@ -215,6 +258,26 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
                 Place place = PlacePicker.getPlace(this, data);
                 locationEdit.setText(place.getAddress());
                taskCoordinates = place.getLatLng();
+                break;
+            case PICK_INSTITUTIONS:
+                if(data.getExtras() != null){
+                     selectedInstitution = (Institutions)data.getExtras().getSerializable(getString(R.string.selected_institution));
+                    locationEdit.setText(selectedInstitution.getAddress());
+                    fullAddressEdit.setText(selectedInstitution.getAddress());
+                    institutionNameEdit.setText(selectedInstitution.getName());
+                    String states[] = getResources().getStringArray(R.array.states);
+                    stateSpinner.setSelection(Arrays.asList(states).indexOf(selectedInstitution.getState()));
+                    String[] _lgas = new String[1];
+                    _lgas[0] = selectedInstitution.getLga();
+                  /*  ArrayAdapter<String> adapter = new ArrayAdapter<>(cxt, android.R.layout.simple_dropdown_item_1line, _lgas);
+                    lgaSpinner.setAdapter(adapter);
+                    lgas.clear();
+                    lgas.add(selectedInstitution.getLga());*/
+
+                    taskCoordinates = new LatLng(selectedInstitution.getLatitude(),selectedInstitution.getLongitude());
+
+
+                }
                 break;
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -251,23 +314,48 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(position == 0) return;
-                selectedState =(String) parent.getItemAtPosition(position);
+       /* if(view == stateSpinner) {
 
-        try {
-            loadLgaSpinner(selectedState);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+        }*/
 
     }
 
+    private void enableDisableFields(int position){
+        switch (position) {
+            case 1:
+                institutionNameEdit.setInputType(InputType.TYPE_NULL);
+                institutionNameEdit.setEnabled(false);
+                stateSpinner.setEnabled(false);
+               lgaSpinner.setEnabled(false);
+                locationEdit.setVisibility(View.GONE);
+                selectLocationText.setText("Click to select Institution");
+                selectLocationText.setTag("institution");
+                fullAddressEdit.setVisibility(View.GONE);
+                findViewById(R.id.locationLabel).setVisibility(View.GONE);
+                findViewById(R.id.fullAddressLabel).setVisibility(View.GONE);
+                break;
+            case 0:
+                findViewById(R.id.fullAddressLabel).setVisibility(View.VISIBLE);
+                institutionNameEdit.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_SUBJECT);
+                institutionNameEdit.setEnabled(true);
+                stateSpinner.setEnabled(true);
+                lgaSpinner.setEnabled(true);
+                fullAddressEdit.setVisibility(View.VISIBLE);
+                locationEdit.setVisibility(View.VISIBLE);
+                selectLocationText.setText("Click to select");
+                selectLocationText.setTag("location");
+                findViewById(R.id.locationLabel).setVisibility(View.VISIBLE);
+                findViewById(R.id.fullAddressLabel).setVisibility(View.VISIBLE);
+                break;
+        }
+    }
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
 
     }
 
+    @SuppressLint("StaticFieldLeak")
     private void loadWorkerSpinner(){
         //  final ProgressDialog d = new ProgressDialog(cxt);
         switch (loggedInUser.getRoleId()) {
@@ -322,7 +410,7 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
 
                     //TODO: get the supervisor id programmatically
 
-                }.execute(String.format("%s?key=%s&view=get_workers&id=%d",getString(R.string.api_url)+getString(R.string.supervisor_view_url),getString(R.string.field_worker_api_key),loggedInUser.getId()));
+                }.execute(String.format(Locale.ENGLISH,"%s?key=%s&view=get_workers&id=%d",getString(R.string.api_url)+getString(R.string.supervisor_view_url),getString(R.string.field_worker_api_key),loggedInUser.getId()));
                 break;
 
             case User.NURSE:
@@ -388,13 +476,22 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
         ArrayAdapter<String> lgaAdapter = new ArrayAdapter<>(cxt, android.R.layout.simple_spinner_dropdown_item, lgas);
         lgaSpinner.setAdapter(lgaAdapter);
 
-        if(selectedTask !=null) {
-            lgaSpinner.setSelection(Arrays.asList(lgas.toArray()).indexOf(selectedTask.getLga()));
+        if(selectedInstitution !=null) {
+            lgaSpinner.setSelection(Arrays.asList(lgas.toArray()).indexOf(selectedInstitution.getLga().trim()));
+            lgaSpinner.setEnabled(false);
         }
+        if(selectedTask !=null) {
+            lgaSpinner.setSelection(Arrays.asList(lgas.toArray()).indexOf(selectedTask.getLga().trim()));
+        }
+
+
+
     }
 
+    @SuppressLint("StaticFieldLeak")
     private void loadLgaSpinner(String state) throws UnsupportedEncodingException {
         selectedState = Network.encodeUrl(state);
+        //Toast.makeText(cxt,selectedState,Toast.LENGTH_SHORT).show();
         //  final ProgressDialog d = new ProgressDialog(cxt);
         new android.os.AsyncTask<String,Void,String>(){
             @Override
@@ -428,7 +525,7 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
 
 
                     for(int i = 0; i<array.length(); i++){
-                        lgas.add(array.getString(i));
+                        lgas.add(array.getString(i).trim());
                     }
 
                     setupLgaSpinner();
@@ -467,6 +564,7 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
 //                break;
 //            }
         }
+
     }
 
     private void assignTask(String api_url){

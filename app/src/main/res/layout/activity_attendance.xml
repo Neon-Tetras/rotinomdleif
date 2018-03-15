@@ -109,6 +109,7 @@
                 android:background="@drawable/clock_bg"
                 android:text="Clock In"
                 android:textColor="#fff"
+                android:tag="@string/clockIn"
                 android:textSize="25sp" />
         </LinearLayout>
 

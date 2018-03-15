@@ -1,6 +1,8 @@
 package com.example.titomi.workertrackerloginmodule.supervisor;
 
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -60,6 +62,9 @@ public abstract class Entity implements Serializable {
         this.statusCode = statusCode;
     }
 
+    public static String urlEncode(String string) throws UnsupportedEncodingException {
+        return URLEncoder.encode(string.trim(),"UTF-8");
+    }
     private int statusCode;
     private Date created;
     protected String name;
