@@ -10,7 +10,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import com.example.titomi.workertrackerloginmodule.alert_manager.AlertMainActivity;
@@ -42,8 +41,6 @@ import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
-import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
-import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
 public class DashboardActivity extends AppCompatActivity {
 
@@ -136,13 +133,13 @@ SharedPrefManager sharedPrefManager;
         }
 
          if(imageDrawable == null){
-            imageDrawable = getResources().getDrawable(R.drawable.profile);
+             imageDrawable = getResources().getDrawable(R.drawable.no_image);
          }
 
         // Create the AccountHeader
         AccountHeader headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
-                .withHeaderBackground(R.drawable.side_nav_bar)
+                .withHeaderBackground(R.drawable.profile_header)
                 .addProfiles(
                         new ProfileDrawerItem()
                                 .withName(loggedInUser.getFullName())
@@ -158,9 +155,7 @@ SharedPrefManager sharedPrefManager;
                 .build();
 
 
-
-<<<<<<< HEAD
-        mProfile = new PrimaryDrawerItem().withIdentifier(1).withName("My Profile");
+        mProfile = new PrimaryDrawerItem().withIdentifier(1).withName("My Profile").withIcon(R.drawable.ic_person_black_24dp);
         mTask = new PrimaryDrawerItem().withIdentifier(2).withName("Tasks").withIcon(R.drawable.task_nav_icon_512);
         mInventory = new PrimaryDrawerItem().withIdentifier(3).withName("Inventory Manager");
         mAttendance = new PrimaryDrawerItem().withIdentifier(4).withName("Attendance Report");
@@ -177,7 +172,6 @@ SharedPrefManager sharedPrefManager;
         supervisorTasks = new PrimaryDrawerItem().withIdentifier(15).withName("Tasks");
         leaveApplication = new PrimaryDrawerItem().withIdentifier(16).withName("Leave Application");
         institutionManager = new PrimaryDrawerItem().withIdentifier(17).withName("Institution Manager");
-=======
 
         mProfile = new PrimaryDrawerItem().withIdentifier(1).withName("My Profile")
                 .withTextColor(getResources().getColor(R.color.primary_dark));
@@ -213,7 +207,6 @@ SharedPrefManager sharedPrefManager;
                 .withTextColor(getResources().getColor(R.color.primary_dark));
         institutionManager = new PrimaryDrawerItem().withIdentifier(17).withName("Institution Manager")
                 .withTextColor(getResources().getColor(R.color.primary_dark));
->>>>>>> origin/navigation_branch
 
 
         DrawerBuilder drawerBuilder = new DrawerBuilder();
