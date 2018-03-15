@@ -528,17 +528,21 @@ public class Util {
      */
     public static String toSentenceCase(String text) {
         if (text.isEmpty()) return null;
-        String[] strs = text.split("\\s");
         StringBuilder sb = new StringBuilder();
+        try {
+            String[] strs = text.split("\\s");
 
-        for (String textString : strs) {
-            String firstCharacter = textString.substring(0, 1);
-            String newS = firstCharacter.toUpperCase() + textString.substring(1);
-            sb.append(newS);
-            sb.append(" ");
+
+            for (String textString : strs) {
+                String firstCharacter = textString.substring(0, 1);
+                String newS = firstCharacter.toUpperCase() + textString.substring(1);
+                sb.append(newS);
+                sb.append(" ");
+            }
+            sb.deleteCharAt(sb.lastIndexOf(" "));
+        }catch (Exception e){
+            e.printStackTrace();
         }
-        sb.deleteCharAt(sb.lastIndexOf(" "));
-
         return sb.toString();
     }
 

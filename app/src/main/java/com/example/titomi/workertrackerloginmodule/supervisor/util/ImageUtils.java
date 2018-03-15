@@ -85,9 +85,9 @@ public class ImageUtils {
                 compressedImages.add(imageCompressor.compressImage(img));
                 File file = new File(img);
                 file.delete();
-            }/*else{
+            }else{
                 compressedImages.add(storage.getImage(ImageUtils.getImageNameFromUrlWithExtension(img)).getAbsolutePath());
-            }*/
+            }
         }
         return compressedImages;
     }

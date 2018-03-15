@@ -91,7 +91,7 @@ public class ActivityAddRemit extends AppCompatActivity implements View.OnClickL
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
+        super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == RESULT_OK && data !=null)
         {
             switch (requestCode){
@@ -122,7 +122,7 @@ public class ActivityAddRemit extends AppCompatActivity implements View.OnClickL
                     break;
             }
         }
-        super.onActivityResult(requestCode, resultCode, data);
+
     }
 
     private boolean canTakeImages(){
@@ -179,12 +179,23 @@ public class ActivityAddRemit extends AppCompatActivity implements View.OnClickL
         postData.put("amount", InputValidator.validateText(amountText, 2));
         postData.put("worker_id", "" + loggedInUser.getId());
 
-        proofImages = ImageUtils.compressImages(cxt, new Remittance(), proofImages);
+
+
+        ArrayList<String> images = ImageUtils.compressImages(cxt, new Remittance(), proofImages);
+        //Toast.makeText(cxt,""+images.size(),Toast.LENGTH_LONG).show();
         StringBuilder sb = new StringBuilder();
-        for (String im : proofImages) {
-            sb.append("images/remittance/" + new File(im).getName()).append(",");
+        for (String im : images) {
+            sb.append("images/remittance/").append(new File(im).getName()).append(",");
         }
-        postData.put("proof", sb.deleteCharAt(sb.toString().lastIndexOf(",")).toString());
+
+
+            String s = sb.deleteCharAt(sb.lastIndexOf(",")).toString();
+        if(s.isEmpty()){
+            Toast.makeText(cxt,"You must attach a proof of payment",Toast.LENGTH_LONG).show();
+            return;
+        }
+            postData.put("proof", s);
+
 
         String remitUrl = loggedInUser.getRoleId() == User.SUPERVISOR ?
                 "work/supervisor_add_remit.php" : "work/worker_add_remit.php";
@@ -192,7 +203,7 @@ public class ActivityAddRemit extends AppCompatActivity implements View.OnClickL
 
 
         try {
-            System.err.println(Network.getPostDataString(postData));
+          //  System.err.println(Network.getPostDataString(postData));
             new RemittanceNetwork(cxt, proofImages).execute(url + "&" + Network.getPostDataString(postData));
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -200,7 +211,7 @@ public class ActivityAddRemit extends AppCompatActivity implements View.OnClickL
 
     }
 
-    private static class RemittanceNetwork extends AsyncTask<String, Void, String> {
+    private class RemittanceNetwork extends AsyncTask<String, Void, String> {
 
         ArrayList<String> images;
         HashMap<String, String> postData;
@@ -235,6 +246,9 @@ public class ActivityAddRemit extends AppCompatActivity implements View.OnClickL
             }
 
             // if(s == null) return;
+
+
+
 
 
             try {
@@ -284,7 +298,7 @@ public class ActivityAddRemit extends AppCompatActivity implements View.OnClickL
 
         }
     }
-    ArrayList<String> proofImages = new ArrayList<>();
+  private  ArrayList<String> proofImages = new ArrayList<>();
 
 
 }

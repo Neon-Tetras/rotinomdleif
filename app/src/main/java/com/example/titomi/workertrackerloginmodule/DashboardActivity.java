@@ -154,9 +154,10 @@ SharedPrefManager sharedPrefManager;
                 })
                 .build();
 
+/*
 
         mProfile = new PrimaryDrawerItem().withIdentifier(1).withName("My Profile").withIcon(R.drawable.ic_person_black_24dp);
-        mTask = new PrimaryDrawerItem().withIdentifier(2).withName("Tasks").withIcon(R.drawable.task_nav_icon_512);
+      //  mTask = new PrimaryDrawerItem().withIdentifier(2).withName("Route Plans").withIcon(R.drawable.task_nav_icon_512);
         mInventory = new PrimaryDrawerItem().withIdentifier(3).withName("Inventory Manager");
         mAttendance = new PrimaryDrawerItem().withIdentifier(4).withName("Attendance Report");
         mWorkerTrack = new PrimaryDrawerItem().withIdentifier(5).withName("Worker Tracking");
@@ -172,10 +173,11 @@ SharedPrefManager sharedPrefManager;
         supervisorTasks = new PrimaryDrawerItem().withIdentifier(15).withName("Tasks");
         leaveApplication = new PrimaryDrawerItem().withIdentifier(16).withName("Leave Application");
         institutionManager = new PrimaryDrawerItem().withIdentifier(17).withName("Institution Manager");
+*/
 
         mProfile = new PrimaryDrawerItem().withIdentifier(1).withName("My Profile")
                 .withTextColor(getResources().getColor(R.color.primary_dark));
-        mTask = new PrimaryDrawerItem().withIdentifier(2).withName("Tasks")
+        mTask = new PrimaryDrawerItem().withIdentifier(2).withName("Route Plans")
                 .withTextColor(getResources().getColor(R.color.primary_dark));
         mInventory = new PrimaryDrawerItem().withIdentifier(3).withName("Inventory Manager")
                 .withTextColor(getResources().getColor(R.color.primary_dark));
@@ -201,7 +203,7 @@ SharedPrefManager sharedPrefManager;
                 .withTextColor(getResources().getColor(R.color.primary_dark));
         supervisorReports  = new PrimaryDrawerItem().withIdentifier(14).withName("Reports")
                 .withTextColor(getResources().getColor(R.color.primary_dark));
-        supervisorTasks = new PrimaryDrawerItem().withIdentifier(15).withName("Tasks")
+        supervisorTasks = new PrimaryDrawerItem().withIdentifier(15).withName("Route Plans")
                 .withTextColor(getResources().getColor(R.color.primary_dark));
         leaveApplication = new PrimaryDrawerItem().withIdentifier(16).withName("Leave Application")
                 .withTextColor(getResources().getColor(R.color.primary_dark));

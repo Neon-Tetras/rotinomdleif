@@ -327,7 +327,7 @@
                 android:elevation="@dimen/cardview_default_elevation"
                 android:padding="2dp"
                 android:tag="add"
-                android:text="@string/assignTask"
+                android:text="@string/create"
                 android:textColor="@color/white" />
         </LinearLayout>
     </ScrollView>

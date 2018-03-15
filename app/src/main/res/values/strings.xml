@@ -222,6 +222,7 @@
     <string name="images">Images</string>
     <string name="approved">Approved</string>
     <string name="assign_self">Assign Self</string>
+    <string name="create">Create</string>
 
 
 </resources>

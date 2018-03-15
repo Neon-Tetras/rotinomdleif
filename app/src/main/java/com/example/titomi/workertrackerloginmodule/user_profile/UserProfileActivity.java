@@ -74,6 +74,21 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
             profileAddress.setText(loggedInUser.getAddress());
             profileContact.setText(loggedInUser.getPhoneNumber());
             userFullname.setText(loggedInUser.getFullName());
+           if(loggedInUser.getFeaturedImage() == null ){
+               return;
+           }
+
+            if(loggedInUser.getFeaturedImage().isEmpty() ){
+                return;
+            }
+
+            if(loggedInUser.getFeaturedImage().equalsIgnoreCase("null")){
+                return;
+            }
+            if(loggedInUser.getFeaturedImage().equalsIgnoreCase("")){
+                return;
+            }
+            ImageUtils.loadImage(cxt,loggedInUser,profileImage);
             profileImage.setOnClickListener(this);
         }
     }

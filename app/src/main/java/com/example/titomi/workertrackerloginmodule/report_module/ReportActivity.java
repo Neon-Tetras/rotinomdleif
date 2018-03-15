@@ -4,6 +4,9 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.media.MediaRecorder;
 import android.net.Uri;
@@ -208,6 +211,7 @@ System.out.println(this.getClass().getPackage());
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         outputImageMedia = getOutputMediaFile();
         file = Uri.fromFile(outputImageMedia);
+
         intent.putExtra(MediaStore.EXTRA_OUTPUT, file);
         startActivityForResult(intent, 100);
 
@@ -438,12 +442,9 @@ System.out.println(this.getClass().getPackage());
 
             reportImage.setImageDrawable(Drawable.createFromPath(image));
 
-            deleteImage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    reportImagesLayout.removeView(view);
-                    images.remove(image);
-                }
+            deleteImage.setOnClickListener(v -> {
+                reportImagesLayout.removeView(view);
+                images.remove(image);
             });
             reportImage.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -494,6 +495,26 @@ System.out.println(this.getClass().getPackage());
         }else{
             fab_record.setEnabled(true);
         }
+    }
+
+
+    public Bitmap applyWaterMarkEffect(Bitmap src, String watermark, int x, int y, int color, int alpha, int size, boolean underline) {
+        int w = src.getWidth();
+        int h = src.getHeight();
+        Bitmap result = Bitmap.createBitmap(w, h, src.getConfig());
+
+        Canvas canvas = new Canvas(result);
+        canvas.drawBitmap(src, 0, 0, null);
+
+        Paint paint = new Paint();
+        paint.setColor(color);
+        paint.setAlpha(alpha);
+        paint.setTextSize(size);
+        paint.setAntiAlias(true);
+        paint.setUnderlineText(underline);
+        canvas.drawText(watermark, x, y, paint);
+
+        return result;
     }
 }
 
