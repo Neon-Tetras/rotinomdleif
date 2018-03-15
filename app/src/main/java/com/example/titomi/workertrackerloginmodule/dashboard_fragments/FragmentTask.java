@@ -145,6 +145,7 @@ public class FragmentTask extends Fragment{
         data.setValueTextSize(40f);
         data.setValueTextColor(Color.YELLOW);
 
+        pieChart.setUsePercentValues(false);
         pieChart.setData(data);
         pieChart.requestLayout();
         // pieChart.refreshDrawableState();

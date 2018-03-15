@@ -193,6 +193,10 @@ public class ActivityReportListing extends AppCompatActivity implements AdapterV
 
     private class ReportNetwork extends android.os.AsyncTask<String, Void, String> {
 
+        private void showNoReportSnack(){
+            Snackbar snackbar = Snackbar.make(findViewById(R.id.parent), "No reports found", Snackbar.LENGTH_LONG);
+            snackbar.show();
+        }
 
         @Override
         protected String doInBackground(String... strings) {
@@ -213,29 +217,34 @@ public class ActivityReportListing extends AppCompatActivity implements AdapterV
             swipeRefreshLayout.setRefreshing(false);
             if(s == null) {
 
-                exportItem.setVisible(false);
+                showNoReportSnack();
                 return;
-            }else{
-                exportItem.setVisible(true);
             }
 
+
             if( s.equalsIgnoreCase("null")) {
-                exportItem.setVisible(false);
-                return;
+
+                    showNoReportSnack();
+                    return;
+
             }
             try {
                 JSONArray jsonArray = new JSONArray(s);
                 if (jsonArray.length() == 0) {
-                    Snackbar snackbar = Snackbar.make(findViewById(R.id.parent), "No report found", Snackbar.LENGTH_LONG);
-                    snackbar.show();
+                    showNoReportSnack();
                 }
                 taskList.clear();
              //   Toast.makeText(cxt,"Length: "+jsonArray.length(),Toast.LENGTH_SHORT).show();
-                if(jsonArray.length() > 0){
+              /*  if(jsonArray.length() > 0){
+                    if(taskList.size() != 0)
                     exportItem.setVisible(true);
                 }else{
-                    exportItem.setVisible(false);
-                }
+                    if(taskList.size() == 0) {
+                        exportItem.setVisible(false);
+                        showNoReportSnack();
+                    }
+
+                }*/
                 for(int i = 0; i<jsonArray.length(); i++) {
                     JSONObject obj = jsonArray.getJSONObject(i);
                     JSONObject supervisorObj = obj.getJSONObject("supervisor");
@@ -293,6 +302,10 @@ public class ActivityReportListing extends AppCompatActivity implements AdapterV
 
                         taskList.add(task);
                 }
+
+                if(taskList.size() != 0){
+                    exportItem.setVisible(true);
+                }
                 taskArrayAdapter = new ArrayAdapter<Task>(cxt,R.layout.report_single_item_layout,taskList){
 
 
@@ -337,7 +350,7 @@ public class ActivityReportListing extends AppCompatActivity implements AdapterV
                 reportList.setAdapter(taskArrayAdapter);
 
             } catch (JSONException e) {
-                Snackbar snackbar = Snackbar.make(findViewById(R.id.parent), "No submitted report today", Snackbar.LENGTH_LONG);
+                Snackbar snackbar = Snackbar.make(findViewById(R.id.parent), "No report found", Snackbar.LENGTH_LONG);
                 snackbar.show();
                 e.printStackTrace();
                 System.err.println(s);
@@ -345,6 +358,7 @@ public class ActivityReportListing extends AppCompatActivity implements AdapterV
                 e.printStackTrace();
             }
         }
+
     }
 
      ArrayList<Task> taskList = new ArrayList<>();

@@ -4,24 +4,9 @@
     android:layout_height="match_parent"
 
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.example.titomi.workertrackerloginmodule.HomeSplashActivity">
-    <!--
-        <FrameLayout
-            android:layout_width="fill_parent" android:layout_height="fill_parent">
+    tools:context="com.example.titomi.workertrackerloginmodule.HomeSplashActivity"
+    android:background="@drawable/login_bg">
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="fill_parent"
-                android:adjustViewBounds="true"
-                android:paddingStart="450dp"
-                android:paddingEnd="200dp"
-
-                android:scaleType="centerCrop"
-
-                android:src="@drawable/black_nurse" />
-
-              <LinearLayout>your views</LinearLayout> -->
-    <!--</FrameLayout>-->
 
 
     <RelativeLayout

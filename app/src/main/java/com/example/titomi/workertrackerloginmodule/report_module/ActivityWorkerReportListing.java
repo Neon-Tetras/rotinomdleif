@@ -188,14 +188,14 @@ public class ActivityWorkerReportListing extends AppCompatActivity implements Ad
             //  progressBar.setVisibility(View.GONE);
             swipeRefreshLayout.setRefreshing(false);
             if (s == null ) {
-                exportItem.setVisible(false);
+                //exportItem.setVisible(false);
                 return;
             }else{
                 exportItem.setVisible(true);
             }
 
             if( s.equalsIgnoreCase("null")) {
-                exportItem.setVisible(false);
+                //exportItem.setVisible(false);
                 return;
             }
             try {

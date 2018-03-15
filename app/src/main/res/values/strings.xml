@@ -221,6 +221,7 @@
     <string name="report_images">report_images</string>
     <string name="images">Images</string>
     <string name="approved">Approved</string>
+    <string name="assign_self">Assign Self</string>
 
 
 </resources>

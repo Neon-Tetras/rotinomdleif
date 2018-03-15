@@ -7,6 +7,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.titomi.workertrackerloginmodule.R;
 import com.example.titomi.workertrackerloginmodule.supervisor.User;
@@ -15,7 +16,7 @@ import com.example.titomi.workertrackerloginmodule.supervisor.util.Util;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class UserProfileActivity extends AppCompatActivity {
+public class UserProfileActivity extends AppCompatActivity implements View.OnClickListener{
 
     Button editProfileBtn;
 
@@ -59,6 +60,7 @@ public class UserProfileActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+        findViewById(R.id.change_photo_image).setOnClickListener(this);
 
 
 
@@ -72,12 +74,19 @@ public class UserProfileActivity extends AppCompatActivity {
             profileAddress.setText(loggedInUser.getAddress());
             profileContact.setText(loggedInUser.getPhoneNumber());
             userFullname.setText(loggedInUser.getFullName());
-            profileImage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Util.viewImage(cxt,profileImage);
-                }
-            });
+            profileImage.setOnClickListener(this);
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.change_photo_image:
+                Toast.makeText(this,"Feature coming soon",Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.profile_image:
+                Util.viewImage(cxt,profileImage);
+                break;
         }
     }
 }
