@@ -81,10 +81,10 @@ public class ImageUtils {
         ImageStorage storage = new ImageStorage(entity);
         for(String img : images) {
 
-            if(storage.imageExists(ImageUtils.getImageNameFromUrlWithExtension(img))) {
+            if(!storage.imageExists(ImageUtils.getImageNameFromUrlWithExtension(img))) {
                 compressedImages.add(imageCompressor.compressImage(img));
-                File file = new File(img);
-                file.delete();
+              /*  File file = new File(img);
+                file.delete();*/
             }else{
                 compressedImages.add(storage.getImage(ImageUtils.getImageNameFromUrlWithExtension(img)).getAbsolutePath());
             }
