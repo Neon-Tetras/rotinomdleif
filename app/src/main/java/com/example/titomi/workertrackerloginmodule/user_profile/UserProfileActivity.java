@@ -68,26 +68,19 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
 
     private void setupView(){
         if(loggedInUser != null){
-            ImageUtils.loadImage(cxt,loggedInUser,profileImage);
+         ///   ImageUtils.loadImage(cxt,loggedInUser,profileImage);
             profileEmail.setText(loggedInUser.getEmail());
             profileRole.setText(Util.toSentenceCase(loggedInUser.getRole()));
             profileAddress.setText(loggedInUser.getAddress());
             profileContact.setText(loggedInUser.getPhoneNumber());
             userFullname.setText(loggedInUser.getFullName());
-           if(loggedInUser.getFeaturedImage() == null ){
+           if(loggedInUser.getFeaturedImage() == null ||
+                   loggedInUser.getFeaturedImage().isEmpty() ||
+                   loggedInUser.getFeaturedImage().equalsIgnoreCase("null")){
                return;
            }
 
-            if(loggedInUser.getFeaturedImage().isEmpty() ){
-                return;
-            }
 
-            if(loggedInUser.getFeaturedImage().equalsIgnoreCase("null")){
-                return;
-            }
-            if(loggedInUser.getFeaturedImage().equalsIgnoreCase("")){
-                return;
-            }
             ImageUtils.loadImage(cxt,loggedInUser,profileImage);
             profileImage.setOnClickListener(this);
         }
