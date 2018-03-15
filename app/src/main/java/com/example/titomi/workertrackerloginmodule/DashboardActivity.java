@@ -142,23 +142,24 @@ SharedPrefManager sharedPrefManager;
         // Create the AccountHeader
         AccountHeader headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
-                .withHeaderBackground(R.drawable.header)
+                .withHeaderBackground(R.drawable.side_nav_bar)
                 .addProfiles(
                         new ProfileDrawerItem()
                                 .withName(loggedInUser.getFullName())
                                 .withEmail(Util.toSentenceCase(loggedInUser.getRole()))
                                 .withIcon(imageDrawable)
                 )
-                .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
-                    @Override
-                    public boolean onProfileChanged(View view, IProfile profile, boolean currentProfile) {
-                        return false;
-                    }
+                .withOnAccountHeaderListener((view, profile, current) -> {
+                    Intent i = new Intent(cxt,UserProfileActivity.class);
+                    i.putExtra(getString(R.string.loggedInUser),loggedInUser);
+                    startActivity(i);
+                    return false;
                 })
                 .build();
 
 
 
+<<<<<<< HEAD
         mProfile = new PrimaryDrawerItem().withIdentifier(1).withName("My Profile");
         mTask = new PrimaryDrawerItem().withIdentifier(2).withName("Tasks").withIcon(R.drawable.task_nav_icon_512);
         mInventory = new PrimaryDrawerItem().withIdentifier(3).withName("Inventory Manager");
@@ -176,12 +177,51 @@ SharedPrefManager sharedPrefManager;
         supervisorTasks = new PrimaryDrawerItem().withIdentifier(15).withName("Tasks");
         leaveApplication = new PrimaryDrawerItem().withIdentifier(16).withName("Leave Application");
         institutionManager = new PrimaryDrawerItem().withIdentifier(17).withName("Institution Manager");
+=======
+
+        mProfile = new PrimaryDrawerItem().withIdentifier(1).withName("My Profile")
+                .withTextColor(getResources().getColor(R.color.primary_dark));
+        mTask = new PrimaryDrawerItem().withIdentifier(2).withName("Tasks")
+                .withTextColor(getResources().getColor(R.color.primary_dark));
+        mInventory = new PrimaryDrawerItem().withIdentifier(3).withName("Inventory Manager")
+                .withTextColor(getResources().getColor(R.color.primary_dark));
+        mAttendance = new PrimaryDrawerItem().withIdentifier(4).withName("Attendance Report")
+                .withTextColor(getResources().getColor(R.color.primary_dark));
+        mWorkerTrack = new PrimaryDrawerItem().withIdentifier(5).withName("Worker Tracking")
+                .withTextColor(getResources().getColor(R.color.primary_dark));
+        mSupervisorManager = new PrimaryDrawerItem().withIdentifier(6).withName("Supervisor Manager")
+                .withTextColor(getResources().getColor(R.color.primary_dark));
+        mMessage = new PrimaryDrawerItem().withIdentifier(7).withName("Message & Notice")
+                .withTextColor(getResources().getColor(R.color.primary_dark));
+        mAlert = new PrimaryDrawerItem().withIdentifier(8).withName("Alert Manager")
+                .withTextColor(getResources().getColor(R.color.primary_dark));
+        mLiveChat = new PrimaryDrawerItem().withIdentifier(9).withName("Live Chat")
+                .withTextColor(getResources().getColor(R.color.primary_dark));
+        mReport = new PrimaryDrawerItem().withIdentifier(10).withName("Report & Insight")
+                .withTextColor(getResources().getColor(R.color.primary_dark));
+        mSettings = new SecondaryDrawerItem().withIdentifier(11).withName("General Settings")
+                .withTextColor(getResources().getColor(R.color.primary_dark));
+        mLogout = new SecondaryDrawerItem().withIdentifier(12).withName("Logout")
+                .withTextColor(getResources().getColor(R.color.primary_dark));
+        supervisorInventoryRequest = new PrimaryDrawerItem().withIdentifier(13).withName("Inventory Requests")
+                .withTextColor(getResources().getColor(R.color.primary_dark));
+        supervisorReports  = new PrimaryDrawerItem().withIdentifier(14).withName("Reports")
+                .withTextColor(getResources().getColor(R.color.primary_dark));
+        supervisorTasks = new PrimaryDrawerItem().withIdentifier(15).withName("Tasks")
+                .withTextColor(getResources().getColor(R.color.primary_dark));
+        leaveApplication = new PrimaryDrawerItem().withIdentifier(16).withName("Leave Application")
+                .withTextColor(getResources().getColor(R.color.primary_dark));
+        institutionManager = new PrimaryDrawerItem().withIdentifier(17).withName("Institution Manager")
+                .withTextColor(getResources().getColor(R.color.primary_dark));
+>>>>>>> origin/navigation_branch
 
 
         DrawerBuilder drawerBuilder = new DrawerBuilder();
         drawerBuilder.withActivity(this);
         drawerBuilder.withToolbar(toolbar);
         drawerBuilder.withAccountHeader(headerResult);
+    //    drawerBuilder.withSliderBackgroundColor(getResources().getColor(R.color.material_drawer_primary_light));
+
 
         switch (loggedInUser.getRoleId()){
             case User.NURSE:
@@ -241,97 +281,94 @@ SharedPrefManager sharedPrefManager;
                 );
                 break;
         }
-        drawerBuilder.withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
-            @Override
-            public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+        drawerBuilder.withOnDrawerItemClickListener((view, position, drawerItem) -> {
 
-                if (drawerItem != null) {
-                    Intent intent = null;
-                    Long identifier = drawerItem.getIdentifier();
-                    switch (identifier.intValue()){
-                        case 1:
-                            intent = new Intent(cxt, UserProfileActivity.class);
+            if (drawerItem != null) {
+                Intent intent = null;
+                Long identifier = drawerItem.getIdentifier();
+                switch (identifier.intValue()){
+                    case 1:
+                        intent = new Intent(cxt, UserProfileActivity.class);
 
-                            break;
-                        case 2:
+                        break;
+                    case 2:
 
-                            intent = new Intent(cxt, ActivityTaskListing.class);
+                        intent = new Intent(cxt, ActivityTaskListing.class);
 
-                            break;
-                        case 3:
+                        break;
+                    case 3:
 
-                            intent = new Intent(cxt, InventoryActivity.class);
+                        intent = new Intent(cxt, InventoryActivity.class);
 
-                            break;
-                        case 4:
-                            intent = new Intent(cxt, AttendanceMainActivity.class);
-                            break;
-                        case 5:
+                        break;
+                    case 4:
+                        intent = new Intent(cxt, AttendanceMainActivity.class);
+                        break;
+                    case 5:
 
-                            break;
-                            case 6:
-                                intent = new Intent(cxt, SupervisorMainActivity.class);
-                            break;
-                        case 7:
-                            intent = new Intent(cxt, ActivityMessageListing.class);
+                        break;
+                        case 6:
+                            intent = new Intent(cxt, SupervisorMainActivity.class);
+                        break;
+                    case 7:
+                        intent = new Intent(cxt, ActivityMessageListing.class);
 
-                            break;
-                        case 8:
-                            intent = new Intent(cxt, AlertMainActivity.class);
+                        break;
+                    case 8:
+                        intent = new Intent(cxt, AlertMainActivity.class);
 
-                            break;
-                        case 9:
+                        break;
+                    case 9:
 
 
-                            break;
-                        case 10:
-                            intent = new Intent(cxt, ReportMainActivity.class);
-                            break;
-                        case 12:
-                            sharedPrefManager.clearSession();
-                            sharedPrefManager.logout();
-                            startActivity(new Intent(cxt, LoginActivity.class));
-                            finish();
-                            break;
-                        case 13:
-                            intent = new Intent(cxt, ActivityInventoryRequestsListing.class);
+                        break;
+                    case 10:
+                        intent = new Intent(cxt, ReportMainActivity.class);
+                        break;
+                    case 12:
+                        sharedPrefManager.clearSession();
+                        sharedPrefManager.logout();
+                        startActivity(new Intent(cxt, LoginActivity.class));
+                        finish();
+                        break;
+                    case 13:
+                        intent = new Intent(cxt, ActivityInventoryRequestsListing.class);
 
-                           // startActivity(intent);
-                            break;
-                        case 14:
-                            intent = new Intent(cxt, ActivityReportListing.class);
+                       // startActivity(intent);
+                        break;
+                    case 14:
+                        intent = new Intent(cxt, ActivityReportListing.class);
 
-                          //  startActivity(intent);
-                            break;
-                        case 15:
-                            intent = new Intent(cxt, ActivityTaskListing.class);
+                      //  startActivity(intent);
+                        break;
+                    case 15:
+                        intent = new Intent(cxt, ActivityTaskListing.class);
 
-                         //   startActivity(intent);
-                            break;
-                        case 16:
-                            intent = new Intent(cxt, ActivityLeaveApplication.class);
+                     //   startActivity(intent);
+                        break;
+                    case 16:
+                        intent = new Intent(cxt, ActivityLeaveApplication.class);
 
-                           // startActivity(intent);
-                            break;
+                       // startActivity(intent);
+                        break;
 
-                        case 17:
-                            intent = new Intent(cxt, ActivityInstitutionListing.class);
+                    case 17:
+                        intent = new Intent(cxt, ActivityInstitutionListing.class);
 
-                            // startActivity(intent);
-                            break;
-                    }
-
-                    if (intent != null) {
-                        intent.putExtra(getString(R.string.loggedInUser),loggedInUser);
-                        intent.putExtra("UserFirstName", firstNameUser);
-                        intent.putExtra("UserLastName", lastNameUser);
-                        intent.putExtra("UserEmail", emailUser);
-                        intent.putExtra("UserId", sharedPrefManager.getSavedUserId());
-                        cxt.startActivity(intent);
-                    }
+                        // startActivity(intent);
+                        break;
                 }
-                return true;
+
+                if (intent != null) {
+                    intent.putExtra(getString(R.string.loggedInUser),loggedInUser);
+                    intent.putExtra("UserFirstName", firstNameUser);
+                    intent.putExtra("UserLastName", lastNameUser);
+                    intent.putExtra("UserEmail", emailUser);
+                    intent.putExtra("UserId", sharedPrefManager.getSavedUserId());
+                    cxt.startActivity(intent);
+                }
             }
+            return true;
         });
         Drawer mDrawer = drawerBuilder.build();
     }

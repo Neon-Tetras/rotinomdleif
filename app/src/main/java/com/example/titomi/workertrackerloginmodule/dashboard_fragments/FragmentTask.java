@@ -142,7 +142,7 @@ public class FragmentTask extends Fragment implements SwipeRefreshLayout.OnRefre
         PieDataSet dataSet = new PieDataSet(yValues, "Tasks");
         dataSet.setSliceSpace(3f);
         dataSet.setSelectionShift(5f);
-        dataSet.setColors(ColorTemplate.JOYFUL_COLORS);
+        dataSet.setColors(ColorTemplate.createColors(new int[]{R.color.primary_dark,R.color.graylight}));
 
         PieData data = new PieData((dataSet));
         data.setValueTextSize(40f);

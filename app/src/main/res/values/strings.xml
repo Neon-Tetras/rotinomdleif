@@ -220,5 +220,7 @@
     <string name="taken_picture">taken_picture</string>
     <string name="report_images">report_images</string>
     <string name="images">Images</string>
+    <string name="approved">Approved</string>
+
 
 </resources>

@@ -246,7 +246,7 @@ public class InventoryReportActivity extends AppCompatActivity implements OnChar
                     requests.setCreated(dtf.parse(obj.getString("created").replaceAll("-", "/")));
                     requests.setQuantity(obj.getInt("quantity"));
                     requests.setSupervisorMessage(obj.getString("supervisorMessage"));
-
+                    requests.setAcknowledged(obj.getInt("acknowledged") != 0);
                     User distributor = new User();
                     JSONObject dist = obj.getJSONObject("distributor");
                     distributor.setId(dist.getInt("id"));
@@ -295,6 +295,11 @@ public class InventoryReportActivity extends AppCompatActivity implements OnChar
                     distributorText.setText(requests.getDistributor().getName());
                     quantityText.setText("" + requests.getQuantity());
                     commentText.setText(requests.getSupervisorMessage());
+
+                    if(requests.isAcknowledged()){
+                        status.setText(getString(R.string.approved));
+                        status.setTextColor(getResources().getColor(R.color.md_green_700));
+                    }
                     //if(requests.get
                     dateTimeText.setText(DateFormat.getDateTimeInstance().format(requests.getCreated()));
 
