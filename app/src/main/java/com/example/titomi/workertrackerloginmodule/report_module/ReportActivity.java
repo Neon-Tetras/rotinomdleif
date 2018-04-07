@@ -11,8 +11,8 @@ import android.graphics.drawable.Drawable;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.PersistableBundle;
 import android.os.StrictMode;
 import android.provider.MediaStore;
@@ -69,7 +69,7 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
     LinearLayout reportImagesLayout;
     File outputImageMedia;
     Uri file;
-    String videoPath;
+    String videoPath = null;
     String recordPath = null;
     ArrayList<String> reportImages = new ArrayList<>();
     MediaRecorder recorder;
@@ -303,6 +303,8 @@ System.out.println(this.getClass().getPackage());
                         i1.putExtra("videoUrl",videoPath);
                         startActivity(i1);
                     });
+                } else {
+                    return;
                 }
               /*  if (videoUri != null) {
                     i.putExtra("video",videoUri.toString());
@@ -332,7 +334,11 @@ System.out.println(this.getClass().getPackage());
 
 
                 Intent i = new Intent(cxt,FieldMonitorReportUploadService.class);
-                i.putExtra("video",videoPath);
+                if (videoPath != null) {
+                    i.putExtra("video", videoPath);
+                } else {
+                    i.putExtra("video", "");
+                }
                 i.putStringArrayListExtra("images",reportImages);
                 i.putExtra("audio", recordPath);
 
