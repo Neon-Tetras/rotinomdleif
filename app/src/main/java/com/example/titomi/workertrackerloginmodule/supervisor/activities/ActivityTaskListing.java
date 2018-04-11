@@ -24,7 +24,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +33,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -427,7 +425,6 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
             case R.id.newTaskButton:
                 startActivity(new Intent(this,ActivityAssignTask.class).putExtra(getString(R.string.loggedInUser),loggedInUser));
                 break;
-
         }
     }
 
@@ -1099,28 +1096,29 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
                     @NonNull
                     @Override
                     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-                        //LayoutInflater inflater = (LayoutInflater)cxt.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                      View myView  = View.inflate(cxt,R.layout.task_listing_single_item_layout,null);
+//                        LayoutInflater inflater = (LayoutInflater)cxt.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//                      View myView  = View.inflate(cxt,R.layout.task_listing_single_item_layout,null);
+                        convertView = View.inflate(cxt, R.layout.task_listing_single_item_layout, null);
                         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                         layoutParams.setMargins(5,20,5,20);
 
 
-                        myView.setLayoutParams(layoutParams);
+                        convertView.setLayoutParams(layoutParams);
 
                         final Task task = taskList.get(position);
 
-                        ImageView userImage = myView.findViewById(R.id.userImage);
-                        TextView usernameText = myView.findViewById(R.id.username);
-                        TextView dateAssignedText = myView.findViewById(R.id.dateTimeText);
-                        TextView taskTitle = myView.findViewById(R.id.taskTitleText);
-                        TextView statusText =myView.findViewById(R.id.taskStatusText);
-                        TextView taskType = myView.findViewById(R.id.taskTypeText);
-                        TextView taskDescription = myView.findViewById(R.id.taskDescriptionText);
-                        TextView institutionName = myView.findViewById(R.id.institutionText);
-                        TextView locationText = myView.findViewById(R.id.locationText);
-                        TextView contactPersonText =  myView.findViewById(R.id.contactPersonText);
-                        TextView quantityGivenText = myView.findViewById(R.id.quantityGivenText);
-                        TextView getDirections = myView.findViewById(R.id.getDirection);
+                        ImageView userImage = convertView.findViewById(R.id.userImage);
+                        TextView usernameText = convertView.findViewById(R.id.username);
+                        TextView dateAssignedText = convertView.findViewById(R.id.dateTimeText);
+                        TextView taskTitle = convertView.findViewById(R.id.taskTitleText);
+                        TextView statusText = convertView.findViewById(R.id.taskStatusText);
+                        TextView taskType = convertView.findViewById(R.id.taskTypeText);
+                        TextView taskDescription = convertView.findViewById(R.id.taskDescriptionText);
+                        TextView institutionName = convertView.findViewById(R.id.institutionText);
+                        TextView locationText = convertView.findViewById(R.id.locationText);
+                        TextView contactPersonText = convertView.findViewById(R.id.contactPersonText);
+                        TextView quantityGivenText = convertView.findViewById(R.id.quantityGivenText);
+                        TextView getDirections = convertView.findViewById(R.id.getDirection);
 
 
                           institutionName.setText(task.getInstitution_name());
@@ -1167,7 +1165,7 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
                             }
                         });
 
-                        return myView;
+                        return convertView;
                     }
                 };
 
