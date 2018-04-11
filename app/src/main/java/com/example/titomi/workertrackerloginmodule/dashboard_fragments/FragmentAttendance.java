@@ -259,8 +259,13 @@ public class FragmentAttendance extends Fragment implements SwipeRefreshLayout.O
 
 
                     task.setInventoryBalance(obj.getInt("inventoryBalance"));
+<<<<<<< HEAD
                     task.setQuantitySold(0);
                     task.setQuantity(obj.getInt("quantitySold"));
+=======
+                    task.setQuantitySold(obj.getInt("quantitySold"));
+                    task.setQuantity(0);
+>>>>>>> 42eaab83e01f928beae56c7e8b55688a73cc6589
 
                     task.setStartTime(startTime);
                     task.setStopTime(stopTime);
