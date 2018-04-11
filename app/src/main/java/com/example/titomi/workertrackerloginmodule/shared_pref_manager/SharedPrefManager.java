@@ -11,6 +11,7 @@ import com.example.titomi.workertrackerloginmodule.supervisor.User;
 
 public class SharedPrefManager {
     private static final String SHARED_PREF_NAME = "mysharedpref";
+    private static final String KEY_INVENTORY_BALANCE = "inventory_balance";
     private static final String KEY_IS_LOGIN = "isLogin";
     //Keys for entire users table
     private static final String KEY_USER_ID = "userid";
@@ -277,5 +278,13 @@ public class SharedPrefManager {
 
     public long getSavedSupervisorId() {
         return pref.getLong(KEY_SUPERVISOR_ID, Long.parseLong("0"));
+    }
+
+    public void setSavedInventoryBalance(int balance) {
+        editor.putInt(KEY_INVENTORY_BALANCE, balance);
+    }
+
+    public int getSavedInventoryBalance() {
+        return pref.getInt(KEY_INVENTORY_BALANCE, 0);
     }
 }

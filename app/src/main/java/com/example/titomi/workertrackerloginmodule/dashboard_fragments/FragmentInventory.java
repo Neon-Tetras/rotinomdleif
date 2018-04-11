@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.example.titomi.workertrackerloginmodule.R;
+import com.example.titomi.workertrackerloginmodule.shared_pref_manager.SharedPrefManager;
 import com.example.titomi.workertrackerloginmodule.supervisor.User;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.Network;
 import com.github.mikephil.charting.charts.BarChart;
@@ -42,7 +43,7 @@ import java.util.ArrayList;
 public class FragmentInventory extends Fragment implements OnChartValueSelectedListener, SwipeRefreshLayout.OnRefreshListener {
     protected RectF mOnValueSelectedRectF = new RectF();
     View view;
-    Context ctx;
+    Context cxt;
     BarChart barInventoryChart;
     ArrayList<BarEntry> yVals = new ArrayList<>();
     float itemQuantity = 0;
@@ -65,7 +66,7 @@ public class FragmentInventory extends Fragment implements OnChartValueSelectedL
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        ctx = getActivity();
+        cxt = getActivity();
         view = inflater.inflate(R.layout.inventory_fragment, container, false);
 
         Bundle extras = getActivity().getIntent().getExtras();
@@ -104,6 +105,9 @@ public class FragmentInventory extends Fragment implements OnChartValueSelectedL
         itemBalance = obj.getInt("balance");
         itemQuantitySold = obj.getInt("sold");
         itemQuantity = obj.getInt("total");
+        SharedPrefManager pref = new SharedPrefManager(cxt);
+
+        pref.setSavedInventoryBalance((int)itemBalance);
 
         yVals.clear();
 
