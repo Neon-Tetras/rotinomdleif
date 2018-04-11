@@ -1,7 +1,10 @@
 package com.example.titomi.workertrackerloginmodule.inventory_module.inventory_sub_menu;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -24,6 +28,7 @@ import com.example.titomi.workertrackerloginmodule.R;
 import com.example.titomi.workertrackerloginmodule.supervisor.Remittance;
 import com.example.titomi.workertrackerloginmodule.supervisor.User;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.DrawableManager;
+import com.example.titomi.workertrackerloginmodule.supervisor.util.ImageUtils;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.Network;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.Util;
 
@@ -206,7 +211,9 @@ public class RemittanceRecordsActivity extends AppCompatActivity {
 
 
 
-        remAdapter = new ArrayAdapter<Remittance>(cxt,R.layout.remit_single_item_layout,remList){
+        remAdapter = new ArrayAdapter<Remittance>(cxt,R.layout.remit_single_item_layout,remList) {
+            final ArrayList<String> imageList = new ArrayList<>();
+
             @NonNull
             @Override
             public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -221,7 +228,7 @@ public class RemittanceRecordsActivity extends AppCompatActivity {
 
                 amountText.setText(String.format("N%s", NumberFormat.getInstance(Locale.getDefault()).format(rem.getAmount())));
                 DateFormat dtf = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, Locale.getDefault());
-                 dateRemitted.setText(dtf.format(rem.getRemittanceDate()));
+                dateRemitted.setText(dtf.format(rem.getRemittanceDate()));
                 if (rem.getAcknowledged() == 1) {
 
                     approvedText.setText(R.string.acknowledged);
@@ -233,31 +240,67 @@ public class RemittanceRecordsActivity extends AppCompatActivity {
 
                 if (rem.getWorker() == null) {
                     remittedToText.setText(R.string.admin);
-                }else{
+                } else {
                     remittedToText.setText(rem.getSupervisor().getName());
                 }
 
 
                 if (rem.getProof() != null && !rem.getProof().isEmpty()) {
-                String[] imgs = rem.getProof().split(",");
-                for (String im : imgs) {
-                    DrawableManager drm = new DrawableManager();
-                    View viewImage = getLayoutInflater().inflate(R.layout.report_images_single_item, null);
-                    final ImageView reportImage = viewImage.findViewById(R.id.reportImage);
-                    drm.fetchDrawableOnThread(getString(R.string.server_url) + im, reportImage);
-                    reportImage.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Util.viewImage(cxt, reportImage);
-                        }
-                    });
+                    String[] imgs = rem.getProof().split(",");
+                    for (String im : imgs) {
+                        DrawableManager drm = new DrawableManager();
+                        View viewImage = getLayoutInflater().inflate(R.layout.report_images_single_item, null);
+                        final FrameLayout loadingFrame = viewImage.findViewById(R.id.loadingImageFrame);
+                        final ImageView reportImage = viewImage.findViewById(R.id.reportImage);
+                        String fullImageUrl = getString(R.string.server_url) + im;
 
-                    proofMediaLayout.addView(viewImage);
+                        final String imageName = ImageUtils.getImageNameFromUrlWithExtension(fullImageUrl);
+                        //Toast.makeText(cxt,imageName,Toast.LENGTH_LONG).show();
+                        final ImageUtils.ImageStorage storage = new ImageUtils.ImageStorage(new Remittance());
+                        if (storage.imageExists(imageName)) {
+                            if (storage.getImage(imageName) != null) {
+                                reportImage.setImageURI(Uri.parse(storage.getImage(imageName).getAbsolutePath()));
+                                reportImage.setOnClickListener(view1 -> Util.viewImages(cxt, reportImage, imageList));
+                                imageList.add(storage.getImage(imageName).getAbsolutePath());
+                            }
+                        } else {
+
+
+                            @SuppressLint("StaticFieldLeak")
+                            final ImageUtils.GetImages getImages = new ImageUtils.GetImages(new Remittance(), fullImageUrl, imageName) {
+                                @Override
+                                protected void onPreExecute() {
+                                    super.onPreExecute();
+                                    loadingFrame.setVisibility(View.VISIBLE);
+                                }
+
+                                @Override
+                                protected void onPostExecute(Object obj) {
+                                    super.onPostExecute(obj);
+
+                                    reportImage.setImageBitmap((Bitmap) obj);
+                                    if (storage.getImage(imageName) == null) return;
+
+                                    imageList.add(storage.getImage(imageName).getAbsolutePath());
+
+                                    loadingFrame.setVisibility(View.GONE);
+                                    reportImage.setOnClickListener(view1 -> Util.viewImages(cxt, reportImage, imageList));
+
+
+                                }
+                            };
+                            getImages.execute();
+                        }
+                        proofMediaLayout.addView(viewImage);
+                    }
+
+
                 }
-            }
+
                 return view;
             }
         };
+
         listView.setAdapter(remAdapter);
 
 

@@ -107,7 +107,7 @@
             android:theme="@style/AppTheme.DarkActionBar" />
         <activity
             android:name=".supervisor.activities.ActivityAssignTask"
-            android:label="Assign Task"
+            android:label="New Route Plan"
             android:theme="@style/AppTheme.DarkActionBar" />
         <activity
             android:name=".supervisor.activities.ActivityViewReport"
@@ -128,7 +128,7 @@
         <activity android:name=".supervisor.activities.ActivityAttendanceReport" />
         <activity
             android:name=".supervisor.activities.ActivityTaskListing"
-            android:label="Task Listing"
+            android:label="Route Plans"
             android:theme="@style/AppTheme.DarkActionBar" />
         <activity
             android:name=".LoginActivity"

@@ -92,12 +92,14 @@ public class FieldMonitorReportUploadService extends Service {
         postData.put("video",String.format("videos/%s",new File(video).getName()));
         postData.put("audio", String.format("audio/%s", new File(audio).getName()));
 
-        if (video == null || Objects.equals(video,"")) {
-            NUM_ACTIONS = 3;
-        }
+        if (images == null)
+            if (video == null || Objects.equals(video,"")) {
+                NUM_ACTIONS = 3;
+                uploadImages();
+            } else {
 
-        uploadVideo();
-
+                uploadVideo();
+            }
 
 
         return START_STICKY;
@@ -110,6 +112,13 @@ public class FieldMonitorReportUploadService extends Service {
         imageUploader.execute(images);
     }
 
+    private void uploadAudio() {
+        ArrayList<String> audios = new ArrayList<>();
+        audios.add(audio);
+        AudioUploader audioUploader = new AudioUploader(this, String.format("%s%s", getString(R.string.api_url), getString(R.string.audio_upload_url)));
+        audioUploader.execute(audios);
+    }
+
     private void uploadVideo(){
 
         ArrayList<String> videos = new ArrayList<>();
@@ -118,13 +127,7 @@ public class FieldMonitorReportUploadService extends Service {
         videoUploader.execute(videos);
     }
 
-    private void uploadAudio() {
-        ArrayList<String> audios = new ArrayList<>();
-        audios.add(audio);
-        AudioUploader audioUploader = new AudioUploader(this, String.format("%s%s", getString(R.string.api_url), getString(R.string.audio_upload_url)));
-        audioUploader.execute(audios);
 
-    }
 
     private void sendReport() {
         try {
@@ -225,8 +228,7 @@ public class FieldMonitorReportUploadService extends Service {
             super.onPostExecute(strings);
             if (strings == null) return;
             actionCount++;
-            if (video != null || Objects.equals(video, ""))
-
+//            if (video != null || Objects.equals(video, ""))
                 uploadAudio();
             if (actionCount == NUM_ACTIONS) {
                 notifyCompletion();

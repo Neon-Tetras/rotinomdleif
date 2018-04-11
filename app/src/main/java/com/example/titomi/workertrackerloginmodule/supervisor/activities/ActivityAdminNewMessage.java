@@ -233,7 +233,7 @@ public class ActivityAdminNewMessage extends AppCompatActivity implements View.O
 
     @SuppressLint("StaticFieldLeak")
     private void loadUserSpinner(int userType){
-        String url = "supervisor/view.php?view=get_workers&id="+ Entity.TEST_USER_ID;
+        String url = "supervisor/view.php?view=get_workers&id="+loggedInUser.getId();
 
 
         new android.os.AsyncTask<String,Void,String>(){

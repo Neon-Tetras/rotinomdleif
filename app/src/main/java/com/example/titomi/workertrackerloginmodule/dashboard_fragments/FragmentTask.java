@@ -148,6 +148,7 @@ public class FragmentTask extends Fragment implements SwipeRefreshLayout.OnRefre
         data.setValueTextSize(40f);
         data.setValueTextColor(Color.YELLOW);
 
+        pieChart.setUsePercentValues(false);
         pieChart.setData(data);
         pieChart.requestLayout();
         // pieChart.refreshDrawableState();

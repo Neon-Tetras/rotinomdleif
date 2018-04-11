@@ -269,7 +269,17 @@ public class ActivityViewReport extends AppCompatActivity implements View.OnClic
                         audiPlayer.setDataSource(audioUrl);
                         audiPlayer.prepare();
 
-                        audiPlayer.start();
+                        Thread t = new Thread(){
+                            @Override
+                            public void run() {
+                                super.run();
+                                if(!audiPlayer.isPlaying()) {
+                                    audiPlayer.start();
+                                }
+                            }
+                        };
+
+                        t.start();
 
                         audioPlaybackSnack = Snackbar.make(findViewById(R.id.parent),"Playing audio",Snackbar.LENGTH_INDEFINITE);
                         if(audiPlayer.isPlaying()) {

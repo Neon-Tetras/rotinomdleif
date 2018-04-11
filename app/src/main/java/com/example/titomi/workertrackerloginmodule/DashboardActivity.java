@@ -154,9 +154,10 @@ SharedPrefManager sharedPrefManager;
                 })
                 .build();
 
+/*
 
         mProfile = new PrimaryDrawerItem().withIdentifier(1).withName("My Profile").withIcon(R.drawable.ic_person_black_24dp);
-        mTask = new PrimaryDrawerItem().withIdentifier(2).withName("Tasks").withIcon(R.drawable.task_nav_icon_512);
+      //  mTask = new PrimaryDrawerItem().withIdentifier(2).withName("Route Plans").withIcon(R.drawable.task_nav_icon_512);
         mInventory = new PrimaryDrawerItem().withIdentifier(3).withName("Inventory Manager");
         mAttendance = new PrimaryDrawerItem().withIdentifier(4).withName("Attendance Report");
         mWorkerTrack = new PrimaryDrawerItem().withIdentifier(5).withName("Worker Tracking");
@@ -172,21 +173,22 @@ SharedPrefManager sharedPrefManager;
         supervisorTasks = new PrimaryDrawerItem().withIdentifier(15).withName("Tasks");
         leaveApplication = new PrimaryDrawerItem().withIdentifier(16).withName("Leave Application");
         institutionManager = new PrimaryDrawerItem().withIdentifier(17).withName("Institution Manager");
+*/
 
         mProfile = new PrimaryDrawerItem().withIdentifier(1).withName("My Profile")
-                .withTextColor(getResources().getColor(R.color.primary_dark));
-        mTask = new PrimaryDrawerItem().withIdentifier(2).withName("Tasks")
-                .withTextColor(getResources().getColor(R.color.primary_dark));
+                .withTextColor(getResources().getColor(R.color.primary_dark)).withIcon(R.drawable.ic_person_black_24dp);
+        mTask = new PrimaryDrawerItem().withIdentifier(2).withName("Route Plans")
+                .withTextColor(getResources().getColor(R.color.primary_dark)).withIcon(R.drawable.task_nav_icon_512);
         mInventory = new PrimaryDrawerItem().withIdentifier(3).withName("Inventory Manager")
-                .withTextColor(getResources().getColor(R.color.primary_dark));
+                .withTextColor(getResources().getColor(R.color.primary_dark)).withIcon(R.drawable.inventory_checklist);
         mAttendance = new PrimaryDrawerItem().withIdentifier(4).withName("Attendance Report")
-                .withTextColor(getResources().getColor(R.color.primary_dark));
+                .withTextColor(getResources().getColor(R.color.primary_dark)).withIcon(R.drawable.attendance);
         mWorkerTrack = new PrimaryDrawerItem().withIdentifier(5).withName("Worker Tracking")
                 .withTextColor(getResources().getColor(R.color.primary_dark));
         mSupervisorManager = new PrimaryDrawerItem().withIdentifier(6).withName("Supervisor Manager")
                 .withTextColor(getResources().getColor(R.color.primary_dark));
         mMessage = new PrimaryDrawerItem().withIdentifier(7).withName("Message & Notice")
-                .withTextColor(getResources().getColor(R.color.primary_dark));
+                .withTextColor(getResources().getColor(R.color.primary_dark)).withIcon(R.drawable.message);
         mAlert = new PrimaryDrawerItem().withIdentifier(8).withName("Alert Manager")
                 .withTextColor(getResources().getColor(R.color.primary_dark));
         mLiveChat = new PrimaryDrawerItem().withIdentifier(9).withName("Live Chat")
@@ -196,17 +198,17 @@ SharedPrefManager sharedPrefManager;
         mSettings = new SecondaryDrawerItem().withIdentifier(11).withName("General Settings")
                 .withTextColor(getResources().getColor(R.color.primary_dark));
         mLogout = new SecondaryDrawerItem().withIdentifier(12).withName("Logout")
-                .withTextColor(getResources().getColor(R.color.primary_dark));
+                .withTextColor(getResources().getColor(R.color.primary_dark)).withIcon(R.drawable.logout);
         supervisorInventoryRequest = new PrimaryDrawerItem().withIdentifier(13).withName("Inventory Requests")
                 .withTextColor(getResources().getColor(R.color.primary_dark));
         supervisorReports  = new PrimaryDrawerItem().withIdentifier(14).withName("Reports")
-                .withTextColor(getResources().getColor(R.color.primary_dark));
-        supervisorTasks = new PrimaryDrawerItem().withIdentifier(15).withName("Tasks")
-                .withTextColor(getResources().getColor(R.color.primary_dark));
+                .withTextColor(getResources().getColor(R.color.primary_dark)).withIcon(R.drawable.report);
+        supervisorTasks = new PrimaryDrawerItem().withIdentifier(15).withName("Route Plans")
+                .withTextColor(getResources().getColor(R.color.primary_dark)).withIcon(R.drawable.task_nav_icon_512);
         leaveApplication = new PrimaryDrawerItem().withIdentifier(16).withName("Leave Application")
-                .withTextColor(getResources().getColor(R.color.primary_dark));
+                .withTextColor(getResources().getColor(R.color.primary_dark)).withIcon(R.drawable.leave);
         institutionManager = new PrimaryDrawerItem().withIdentifier(17).withName("Institution Manager")
-                .withTextColor(getResources().getColor(R.color.primary_dark));
+                .withTextColor(getResources().getColor(R.color.primary_dark)).withIcon(R.drawable.insitution);
 
 
         DrawerBuilder drawerBuilder = new DrawerBuilder();

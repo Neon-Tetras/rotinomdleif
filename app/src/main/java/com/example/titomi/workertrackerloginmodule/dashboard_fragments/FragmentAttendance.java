@@ -141,7 +141,7 @@ public class FragmentAttendance extends Fragment implements SwipeRefreshLayout.O
         PieDataSet dataSet = new PieDataSet(yValues, "Attendance");
         dataSet.setSliceSpace(3f);
         dataSet.setSelectionShift(5f);
-        dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
+        dataSet.setColors(ColorTemplate.createColors(new int[]{R.color.primary_dark,R.color.graylight}));
 
         PieData data = new PieData((dataSet));
         data.setValueTextSize(40f);

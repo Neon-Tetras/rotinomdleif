@@ -84,10 +84,10 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
 
         cxt = this;
         dateEditText = findViewById(R.id.dateText);
-        timeEditText = (EditText)findViewById(R.id.timeText);
-        workerSpinner = (Spinner)findViewById(R.id.workers);
-        stateSpinner = (Spinner)findViewById(R.id.state);
-        lgaSpinner = (Spinner)findViewById(R.id.lga);
+        timeEditText = findViewById(R.id.timeText);
+        workerSpinner = findViewById(R.id.workers);
+        stateSpinner = findViewById(R.id.state);
+        lgaSpinner = findViewById(R.id.lga);
         selectLocationText = findViewById(R.id.selectLocation);
         taskTitleEdit = findViewById(R.id.taskTitle);
         selfAssignCheck = findViewById(R.id.selfCheckBox);
@@ -515,7 +515,10 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
                     return;
 
                 }
-                lgaSpinner.setEnabled(true);
+                //don't want the user to be able to select the lga when an institution is selected
+                if(selectedInstitution != null) {
+                    lgaSpinner.setEnabled(true);
+                }
 
                 try {
 
@@ -642,6 +645,7 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
 
     }
 
+    @SuppressLint("StaticFieldLeak")
     private void sendToNetwork(final HashMap<String, String> taskData, String api_url) {
         new android.os.AsyncTask<String,Void,String>(){
 
