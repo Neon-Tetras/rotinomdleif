@@ -28,7 +28,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -37,13 +36,14 @@ import java.util.TimerTask;
  */
 
 public class FieldMonitorReportUploadService extends Service {
-    private static int actionCount = 0;
-    private static int NUM_ACTIONS = 4;
+    private  int mediaCount = 0;
+
     private final IBinder binder = new MyBinder();
     ArrayList<String> images;
     String video;
     String audio;
-    HashMap<String,String> postData;
+
+    HashMap<String, String> postData;
     User loggedInUser;
     NotificationManager notifManager;
     int submittingReportNotif = 001;
@@ -56,11 +56,11 @@ public class FieldMonitorReportUploadService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         if (intent == null) return START_STICKY;
-        postData = ( HashMap<String,String> )intent.getSerializableExtra("postData");
+        postData = (HashMap<String, String>) intent.getSerializableExtra("postData");
         images = intent.getStringArrayListExtra("images");
         video = intent.getStringExtra("video");
         audio = intent.getStringExtra("audio");
-        loggedInUser = (User)intent.getSerializableExtra(getString(R.string.loggedInUser));
+        loggedInUser = (User) intent.getSerializableExtra(getString(R.string.loggedInUser));
         cxt = this;
 
         notifManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -68,45 +68,60 @@ public class FieldMonitorReportUploadService extends Service {
 
         NotificationCompat.Builder notifBuilder =
                 new NotificationCompat
-                        .Builder(cxt,getString(R.string.submitting_report))
+                        .Builder(cxt, getString(R.string.submitting_report))
                         .setSmallIcon(R.mipmap.app_logo)
-                        .setContentText("Submitting report...,Please wait")
+                        .setContentText("Submitting report....Please wait")
                         .setContentTitle("Field monitor");
 
-
-
         notifBuilder.setAutoCancel(true);
-        notifBuilder.setLights(Color.GREEN,60000,60000);
+        notifBuilder.setLights(Color.GREEN, 60000, 60000);
         notifBuilder.setSound(Settings.System.DEFAULT_NOTIFICATION_URI);
         notifBuilder.setVibrate(new long[]{1000, 1000, 1000, 1000, 1000});
 
         notifManager.notify(submittingReportNotif, notifBuilder.build());
 
-        images = ImageUtils.compressImages(this,new Task(),images);
-        StringBuilder sb = new StringBuilder();
-        for (String img : images) {
-            sb.append(String.format("images/reports/%s,",new File(img).getName()));
-        }
-        sb.deleteCharAt(sb.toString().lastIndexOf(","));
-        postData.put("photo",sb.toString());
-        postData.put("video",String.format("videos/%s",new File(video).getName()));
-        postData.put("audio", String.format("audio/%s", new File(audio).getName()));
 
-        if (images == null)
-            if (video == null || Objects.equals(video,"")) {
-                NUM_ACTIONS = 3;
-                uploadImages();
-            } else {
 
-                uploadVideo();
+
+
+        /*
+        * Add media to postData hashmap if media was attached, then upload media*/
+        if (images != null && !images.isEmpty()) {
+
+            StringBuilder sb = new StringBuilder();
+            for (String img : images) {
+                sb.append(String.format("images/reports/%s,", new File(img).getName()));
             }
+            sb.deleteCharAt(sb.toString().lastIndexOf(","));
+            images = ImageUtils.compressImages(this, new Task(), images);
+            mediaCount++;
+            postData.put("photo", sb.toString());
+            uploadImages();
+        }
+        if (video != null && !video.equals("")) {
+            mediaCount++;
+            postData.put("video", String.format("videos/%s", new File(video).getName()));
+            uploadVideo();
+        }
+        if (audio != null && !audio.equals("")) {
+            mediaCount++;
+            postData.put("audio", String.format("audio/%s", new File(audio).getName()));
+            uploadAudio();
+        }
+
+        /**
+         * Send report  if no media was attached
+         */
+        if (mediaCount == 0) {
+            sendReport();
+        }
 
 
         return START_STICKY;
 
     }
 
-    private void uploadImages(){
+    private void uploadImages() {
 
         ImageUploader imageUploader = new ImageUploader(this, String.format("%s%s", getString(R.string.api_url), getString(R.string.image_upload_url)));
         imageUploader.execute(images);
@@ -119,14 +134,16 @@ public class FieldMonitorReportUploadService extends Service {
         audioUploader.execute(audios);
     }
 
-    private void uploadVideo(){
+    private void uploadVideo() {
 
         ArrayList<String> videos = new ArrayList<>();
-         videos.add(video);
-        VideoUploader videoUploader = new VideoUploader(this, String.format("%s%s", getString(R.string.api_url), getString(R.string.video_upload_url)));
+        videos.add(video);
+        VideoUploader videoUploader =
+                new VideoUploader(this,
+                        String.format("%s%s", getString(R.string.api_url),
+                                getString(R.string.video_upload_url)));
         videoUploader.execute(videos);
     }
-
 
 
     private void sendReport() {
@@ -135,9 +152,11 @@ public class FieldMonitorReportUploadService extends Service {
             String getData = Network.getPostDataString(postData);
             System.out.printf("Outputing get data: %s", getData);
 
-            network.execute(getString(R.string.api_url) + getString(R.string.clockOutUrl) + "?key=" + getString(R.string.field_worker_api_key) + "&" + getData);
-        }catch(UnsupportedEncodingException e){
-            Log.e(getClass().getName(),e.getMessage());
+            network.execute(getString(R.string.api_url) +
+                    getString(R.string.clockOutUrl) + "?key=" +
+                    getString(R.string.field_worker_api_key) + "&" + getData);
+        } catch (UnsupportedEncodingException e) {
+            Log.e(getClass().getName(), e.getMessage());
         }
     }
 
@@ -150,7 +169,7 @@ public class FieldMonitorReportUploadService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
 
-            return binder;
+        return binder;
     }
 
     private void notifyCompletion() {
@@ -195,11 +214,11 @@ public class FieldMonitorReportUploadService extends Service {
 
     }
 
-    private  class ReportSubmitNetwork extends AsyncTask<String,Void,String>{
+    private class ReportSubmitNetwork extends AsyncTask<String, Void, String> {
 
         @Override
         protected String doInBackground(String... strings) {
-            return Network.backgroundTask(null,strings[0]);//strings[0],this.postData);
+            return Network.backgroundTask(null, strings[0]);
         }
 
         @Override
@@ -207,18 +226,18 @@ public class FieldMonitorReportUploadService extends Service {
 
             super.onPostExecute(strings);
             System.out.println(strings);
-            if(strings == null) return;
-            actionCount++;
-            uploadImages();
+            if (strings == null) return;
 
-            if(actionCount == NUM_ACTIONS){
+
+
+            //Report has been submitted. Notify user, and stop service
                 notifyCompletion();
                 stopSelf();
-            }
+
         }
     }
 
-    class ImageUploader extends MediaUploader{
+    class ImageUploader extends MediaUploader {
         public ImageUploader(Context cxt, String uploadApiUrl) {
             super(cxt, uploadApiUrl);
         }
@@ -226,14 +245,11 @@ public class FieldMonitorReportUploadService extends Service {
         @Override
         protected void onPostExecute(List<String> strings) {
             super.onPostExecute(strings);
-            if (strings == null) return;
-            actionCount++;
-//            if (video != null || Objects.equals(video, ""))
-                uploadAudio();
-            if (actionCount == NUM_ACTIONS) {
-                notifyCompletion();
-                stopSelf();
-            }
+            upload_successes++;
+            uploadCompleteAction();
+
+
+
         }
     }
 
@@ -245,13 +261,10 @@ public class FieldMonitorReportUploadService extends Service {
         @Override
         protected void onPostExecute(List<String> strings) {
             super.onPostExecute(strings);
-            if (strings == null) return;
-            actionCount++;
-            uploadAudio();
-            if (actionCount == NUM_ACTIONS) {
-                notifyCompletion();
-                stopSelf();
-            }
+            upload_successes ++;
+            uploadCompleteAction();
+
+
         }
 
     }
@@ -264,14 +277,27 @@ public class FieldMonitorReportUploadService extends Service {
         @Override
         protected void onPostExecute(List<String> strings) {
             super.onPostExecute(strings);
-            if (strings == null) return;
-            actionCount++;
+            upload_successes++;
+            uploadCompleteAction();
 
-            sendReport();
-            if (actionCount == NUM_ACTIONS) {
-                notifyCompletion();
-                stopSelf();
-            }
+
         }
     }
+
+    private void uploadCompleteAction(){
+        /*
+        max upload_successes = 3 because there are only 3 kinds of media to upload
+        * if upload_successes == total number of attached media, then upload has completed */
+        if(upload_successes == mediaCount)
+        {
+            //set the upload_success count back to 0
+            upload_successes = 0;
+            //Media have uploaded successfully, now send report
+            sendReport();
+
+
+        }
+    }
+
+    private static int upload_successes = 0;
 }

@@ -331,7 +331,7 @@ System.out.println(this.getClass().getPackage());
                 break;
             case R.id.fab_send:
                 if(!NetworkChecker.haveNetworkConnection(cxt)){return;}
-
+                try {
 
                 Intent i = new Intent(cxt,FieldMonitorReportUploadService.class);
                 if (videoPath != null) {
@@ -339,11 +339,21 @@ System.out.println(this.getClass().getPackage());
                 } else {
                     i.putExtra("video", "");
                 }
-                i.putStringArrayListExtra("images",reportImages);
-                i.putExtra("audio", recordPath);
+               if(reportImages == null){
+                   i.putStringArrayListExtra("images",null);
+               } else{
+                   i.putStringArrayListExtra("images",reportImages);
+               }
+               if(recordPath == null){
+                   i.putExtra("audio", "");
+               }else{
+                   i.putExtra("audio", recordPath);
+               }
+
+
 
                 HashMap<String,String> postData = new HashMap<>();
-                try {
+
                     postData.put("user_id",String.format("%d",loggedInUser.getId()));
                     postData.put("task_id",String.format("%d",selectedTask.getId()));
                     String stopTime = DateFormat.getDateTimeInstance().format(new Date()).replaceAll("/","-");
@@ -395,7 +405,7 @@ System.out.println(this.getClass().getPackage());
                     if(!snackbar.isShown()){
                         finish();
                     }
-                } catch (InputValidator.InvalidInputException e) {
+                } catch(Exception e){
                     Toast.makeText(cxt,e.getMessage(),Toast.LENGTH_LONG).show();
                 }
 
