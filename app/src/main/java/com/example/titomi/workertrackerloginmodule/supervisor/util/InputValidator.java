@@ -1,6 +1,5 @@
 package com.example.titomi.workertrackerloginmodule.supervisor.util;
 
-import android.graphics.Color;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -72,6 +71,7 @@ public class InputValidator {
         }
 
     }
+
 
     /**
      * Validate a  Date from editText

@@ -68,6 +68,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.splunk.mint.Mint;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -111,6 +112,12 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //error reporting
+        Mint.setApplicationEnvironment(Mint.appEnvironmentTesting);
+
+        Mint.initAndStartSession(this.getApplication(), "fa0aaf30");
+
         setContentView(R.layout.activity_task_list_layout);
         cxt = this;
         initComponents();

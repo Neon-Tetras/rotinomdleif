@@ -25,6 +25,7 @@ import com.example.titomi.workertrackerloginmodule.supervisor.util.InputValidato
 import com.example.titomi.workertrackerloginmodule.supervisor.util.MediaUploader;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.Network;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.Util;
+import com.splunk.mint.Mint;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,6 +47,12 @@ public class ActivityAddRemit extends AppCompatActivity implements View.OnClickL
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //error reporting
+        Mint.setApplicationEnvironment(Mint.appEnvironmentTesting);
+
+        Mint.initAndStartSession(this.getApplication(), "fa0aaf30");
+
         cxt = this;
         setContentView(R.layout.activity_add_remit);
         amountText = findViewById(R.id.amountEdit);

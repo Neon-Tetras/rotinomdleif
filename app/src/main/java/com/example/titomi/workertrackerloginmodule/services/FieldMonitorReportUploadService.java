@@ -150,7 +150,7 @@ public class FieldMonitorReportUploadService extends Service {
         try {
             ReportSubmitNetwork network = new ReportSubmitNetwork();
             String getData = Network.getPostDataString(postData);
-            System.out.printf("Outputing get data: %s", getData);
+            System.out.printf("Outputting get data: %s", getData);
 
             network.execute(getString(R.string.api_url) +
                     getString(R.string.clockOutUrl) + "?key=" +

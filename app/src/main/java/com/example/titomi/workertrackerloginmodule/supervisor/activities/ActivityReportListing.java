@@ -33,6 +33,7 @@ import com.example.titomi.workertrackerloginmodule.supervisor.util.DrawableManag
 import com.example.titomi.workertrackerloginmodule.supervisor.util.ExcelExporter;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.Network;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.Util;
+import com.splunk.mint.Mint;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -60,6 +61,11 @@ public class ActivityReportListing extends AppCompatActivity implements AdapterV
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //error reporting
+        Mint.setApplicationEnvironment(Mint.appEnvironmentTesting);
+
+        Mint.initAndStartSession(this.getApplication(), "fa0aaf30");
+
         setContentView(R.layout.activity_report_listing);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

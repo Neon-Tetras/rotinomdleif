@@ -16,6 +16,7 @@ import com.example.titomi.workertrackerloginmodule.shared_pref_manager.SharedPre
 import com.example.titomi.workertrackerloginmodule.supervisor.User;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.InputValidator;
 import com.example.titomi.workertrackerloginmodule.supervisor.util.Network;
+import com.splunk.mint.Mint;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,6 +49,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //error reporting
+        Mint.setApplicationEnvironment(Mint.appEnvironmentTesting);
+
+        Mint.initAndStartSession(this.getApplication(), "fa0aaf30");
+
         setContentView(R.layout.activity_users_login_trival);
         cxt = this;
         lineIdEdit = findViewById(R.id.line_id);
@@ -104,43 +111,49 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             try {
                 JSONObject obj = new JSONObject(s);
                 if (obj.getInt("statusCode") == User.STATUS_OK) {
-                    User user = new User();
+                    if (obj.getInt("roleId") != User.ADMIN) {
+                        User user = new User();
 
-                    user.setId(obj.getInt("id"));
-                    user.setEmail(obj.getString("email"));
-                    user.setRole(obj.getString("role"));
-                    user.setRoleId(obj.getInt("roleId"));
-                    user.setUsername(obj.getString("username"));
-                    user.setLineId(obj.getString("line_id"));
-                    user.setSupervisorId(obj.getLong("supervisor_id"));
-                    user.setActive(obj.getInt("active") != 0);
-                    user.setFullName(String.format("%s %s", obj.getString("last_name"), obj.getString("first_name")));
-                    user.setAddress(obj.getString("user_address"));
-                    user.setCity(obj.getString("user_city"));
-                    user.setState(obj.getString("user_state"));
-                    user.setCountry(obj.getString("user_country"));
-                    user.setWorkType(obj.getString("work_type"));
-                    user.setPhoneNumber(obj.getString("phone_number"));
-                    user.setFeaturedImage(obj.getString("photo"));
-                    user.setState(obj.getString("status"));
-                    user.setStatusCode(obj.getInt("statusCode"));
+                        user.setId(obj.getInt("id"));
+                        user.setEmail(obj.getString("email"));
+                        user.setRole(obj.getString("role"));
+                        user.setRoleId(obj.getInt("roleId"));
+                        user.setUsername(obj.getString("username"));
+                        user.setLineId(obj.getString("line_id"));
+                        user.setSupervisorId(obj.getLong("supervisor_id"));
+                        user.setActive(obj.getInt("active") != 0);
+                        user.setFullName(String.format("%s %s", obj.getString("last_name"), obj.getString("first_name")));
+                        user.setAddress(obj.getString("user_address"));
+                        user.setCity(obj.getString("user_city"));
+                        user.setState(obj.getString("user_state"));
+                        user.setCountry(obj.getString("user_country"));
+                        user.setWorkType(obj.getString("work_type"));
+                        user.setPhoneNumber(obj.getString("phone_number"));
+                        user.setFeaturedImage(obj.getString("photo"));
+                        user.setState(obj.getString("status"));
+                        user.setStatusCode(obj.getInt("statusCode"));
 
-                    SharedPrefManager sharedPrefManager = new SharedPrefManager(cxt);
-                    sharedPrefManager.setSavedCity(user.getCity());
-                    sharedPrefManager.setSavedEmail(user.getEmail());
-                    sharedPrefManager.setSavedAddress(user.getAddress());
-                    sharedPrefManager.setUserFullname(user.getFullName());
-                    sharedPrefManager.setSavedLineId(user.getLineId());
-                    sharedPrefManager.setSavedPhoneNumber(user.getPhoneNumber());
-                    sharedPrefManager.setSavedPhoto(user.getFeaturedImage());
-                    sharedPrefManager.setSavedRole(user.getRole());
-                    sharedPrefManager.setSavedSupervisorId(user.getSupervisorId());
-                    Long userId = user.getId();
-                    sharedPrefManager.setSavedUserId(userId.intValue());
-                    sharedPrefManager.setSavedRoleId(user.getRoleId());
+                        SharedPrefManager sharedPrefManager = new SharedPrefManager(cxt);
+                        sharedPrefManager.setSavedCity(user.getCity());
+                        sharedPrefManager.setSavedEmail(user.getEmail());
+                        sharedPrefManager.setSavedAddress(user.getAddress());
+                        sharedPrefManager.setUserFullname(user.getFullName());
+                        sharedPrefManager.setSavedLineId(user.getLineId());
+                        sharedPrefManager.setSavedPhoneNumber(user.getPhoneNumber());
+                        sharedPrefManager.setSavedPhoto(user.getFeaturedImage());
+                        sharedPrefManager.setSavedRole(user.getRole());
+                        sharedPrefManager.setSavedSupervisorId(user.getSupervisorId());
+                        Long userId = user.getId();
+                        sharedPrefManager.setSavedUserId(userId.intValue());
+                        sharedPrefManager.setSavedRoleId(user.getRoleId());
 
 
-                    goToDashBoard(user);
+                        goToDashBoard(user);
+                    } else {
+
+                        Toast.makeText(cxt, "Please Log in as a registered\n\t Nurse or Supervisor", Toast.LENGTH_SHORT).show();
+                        findViewById(R.id.loginInfo).setVisibility(View.VISIBLE);
+                    }
 
                 }else{
         Toast.makeText(cxt,"Login failed\nIncorrect user credentials",Toast.LENGTH_LONG).show();
@@ -149,11 +162,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
               findViewById(R.id.loginInfo).setVisibility(View.VISIBLE);
                 e.printStackTrace();
                 System.err.println(s);
-
-
-
             }
-
         }
     }
 }

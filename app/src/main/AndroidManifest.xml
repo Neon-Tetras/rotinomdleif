@@ -45,7 +45,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".UsersLoginTrivalActivity" />
         <activity android:name=".DashboardActivity" />
         <activity android:name=".TabActivity" />
         <activity
@@ -83,7 +82,6 @@
         <activity android:name=".alert_manager.alert_sub_menu.LowStockActivity" />
         <activity android:name=".alert_manager.alert_sub_menu.AbsentActivity" />
         <activity android:name=".alert_manager.alert_sub_menu.LowBatteryActivity" />
-        <activity android:name=".UserLoginActivity" />
         <activity android:name=".message_and_notice.MessagesActivity" />
         <activity android:name=".supervisor.activities.MainActivity" />
         <activity

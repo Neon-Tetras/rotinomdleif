@@ -33,10 +33,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:editable="false"
                 android:inputType="none"
                 android:labelFor="@+id/taskType" />
-            `
 
             <TextView
                 android:layout_width="wrap_content"
@@ -51,9 +49,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:editable="false"
                 android:inputType="none"
-
                 android:singleLine="true" />
 
             <TextView
@@ -69,7 +65,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:editable="false"
                 android:inputType="none"
                 android:singleLine="true" />
 
@@ -86,7 +81,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:editable="false"
                 android:inputType="none"
                 android:singleLine="true" />
 
@@ -112,10 +106,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:editable="false"
                 android:enabled="false"
                 android:inputType=""
-
                 android:singleLine="true" />
 
             <TextView
@@ -131,7 +123,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:editable="false"
                 android:inputType="none"
                 android:singleLine="true" />
 
@@ -142,14 +133,12 @@
                 android:layout_marginBottom="10dp"
                 android:alignmentMode="alignBounds"
                 android:columnCount="3"
-
                 android:rowCount="2"
                 android:useDefaultMargins="true">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-
                     android:text="State:"
                     android:textColor="@color/black"
                     android:textSize="12sp" />
@@ -158,13 +147,11 @@
                     android:id="@+id/lgaLoading"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-
                     android:visibility="invisible" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-
                     android:text="LGA:"
                     android:textColor="@color/black"
                     android:textSize="12sp" />
@@ -173,7 +160,6 @@
                     android:id="@+id/state"
                     android:layout_width="130dp"
                     android:layout_height="wrap_content"
-                    android:editable="false"
                     android:gravity="center"
                     android:inputType="none"
 
@@ -192,7 +178,6 @@
                     android:id="@+id/lga"
                     android:layout_width="130dp"
                     android:layout_height="wrap_content"
-                    android:editable="false"
                     android:gravity="center"
                     android:inputType="none"
 
@@ -216,8 +201,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:editable="false"
-                android:inputType="none"
+                android:inputType="number"
                 android:singleLine="true"
                 android:visibility="gone" />
 
@@ -235,8 +219,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:editable="false"
-                android:inputType="none"
+                android:inputType="textPersonName"
                 android:singleLine="true" />
 
 
@@ -246,7 +229,6 @@
                 android:layout_marginBottom="10dp"
                 android:text="Contact Number:"
                 android:textColor="@color/black"
-
                 android:textSize="12sp" />
 
             <EditText
@@ -254,8 +236,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:editable="false"
-                android:inputType="none"
+                android:inputType="phone"
                 android:singleLine="true" />
 
             <GridLayout
@@ -269,18 +250,14 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-
                     android:layout_gravity="top|start"
                     android:text="Date assigned:"
                     android:textColor="@color/black"
-
-
                     android:textSize="12sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-
                     android:layout_gravity="top|center"
                     android:text="Time:"
                     android:textColor="@color/black"
@@ -292,26 +269,22 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom|start"
                     android:drawableEnd="@android:drawable/arrow_down_float"
-                    android:editable="false"
                     android:focusable="false"
                     android:gravity="center_horizontal"
                     android:hint="@string/date_format"
-                    android:inputType="none" />
+                    android:inputType="date" />
 
 
                 <EditText
                     android:id="@+id/timeText"
                     android:layout_width="130dp"
                     android:layout_height="wrap_content"
-
                     android:layout_gravity="center|bottom"
                     android:drawableEnd="@android:drawable/arrow_down_float"
-                    android:editable="false"
                     android:focusable="false"
-                    android:gravity="center_horizontal"
                     android:hint="@string/date_format"
-
-                    android:inputType="none" />
+                    android:gravity="center_horizontal"
+                    android:inputType="time" />
 
             </GridLayout>
 
@@ -338,7 +311,6 @@
                     android:layout_gravity="top|end"
                     android:layout_marginBottom="10dp"
                     android:text="Quantity distributed/sold"
-
                     android:textColor="@color/black"
                     android:textSize="12sp" />
 
@@ -347,6 +319,7 @@
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
+                    android:hint="0"
                     android:gravity="center_horizontal"
                     android:inputType="number"
                     android:singleLine="true" />
@@ -376,6 +349,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
+                android:inputType=""
                 android:lines="3" />
 
 

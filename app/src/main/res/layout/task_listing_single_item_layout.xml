@@ -62,7 +62,6 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
                 android:text="Distribution of always Ultra in secondary schools"
                 android:textColor="@color/black"
                 android:paddingStart="5dp"
@@ -267,7 +266,6 @@
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-
                     android:id="@+id/userImage"/>
 
 

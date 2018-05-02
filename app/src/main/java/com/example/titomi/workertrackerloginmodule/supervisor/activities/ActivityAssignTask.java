@@ -34,6 +34,7 @@ import com.example.titomi.workertrackerloginmodule.supervisor.util.Util;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
+import com.splunk.mint.Mint;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -79,6 +80,11 @@ public class ActivityAssignTask extends AppCompatActivity implements View.OnClic
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //error reporting
+        Mint.setApplicationEnvironment(Mint.appEnvironmentTesting);
+
+        Mint.initAndStartSession(this.getApplication(), "fa0aaf30");
 
         setContentView(R.layout.activity_assign_task);
 

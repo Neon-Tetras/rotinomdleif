@@ -7,9 +7,7 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-/**
- * Created by NeonTetras on 13-Feb-18.
- */
+
 public abstract class Entity implements Serializable {
 
     public static final int STATUS_OK = 0;

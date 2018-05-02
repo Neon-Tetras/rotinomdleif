@@ -41,6 +41,7 @@ import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
+import com.splunk.mint.Mint;
 
 public class DashboardActivity extends AppCompatActivity {
 
@@ -84,6 +85,12 @@ SharedPrefManager sharedPrefManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //error reporting
+        Mint.setApplicationEnvironment(Mint.appEnvironmentTesting);
+
+        Mint.initAndStartSession(this.getApplication(), "fa0aaf30");
+
         setContentView(R.layout.activity_dashboard);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

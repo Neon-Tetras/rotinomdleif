@@ -40,6 +40,7 @@ import com.example.titomi.workertrackerloginmodule.supervisor.util.NetworkChecke
 import com.example.titomi.workertrackerloginmodule.supervisor.util.Util;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
+import com.splunk.mint.Mint;
 
 import java.io.File;
 import java.io.IOException;
@@ -110,6 +111,10 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //error reporting
+        Mint.setApplicationEnvironment(Mint.appEnvironmentTesting);
+
+        Mint.initAndStartSession(this.getApplication(), "fa0aaf30");
         setContentView(R.layout.activity_report);
        /* Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);*/
