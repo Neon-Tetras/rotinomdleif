@@ -26,6 +26,9 @@ allprojects {
         maven {
             url uri('mint-plugin-repo-5.2.2')
         }
+        maven {
+            url "https://maven.google.com"
+        }
     }
 }
 

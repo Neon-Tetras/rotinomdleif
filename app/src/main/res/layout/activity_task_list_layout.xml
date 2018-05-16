@@ -23,19 +23,87 @@
         android:id="@+id/swipeRefresh">
 
 
-            <ListView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/taskList"/>
-
-
-
+        <ListView
+            android:id="@+id/taskList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/newTaskButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="30dp"
+        android:layout_marginEnd="16dp"
+        app:backgroundTint="@color/colorPrimary"
+        app:rippleColor="@color/colorPrimary"
+
+        app:srcCompat="@drawable/ic_add_white_24dp" />
 
 
+</RelativeLayout>
+
+    <!--
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+     android:layout_height="match_parent" android:layout_width="match_parent">
+
+    <FrameLayout
+        android:id="@+id/frame_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+    <android.support.design.widget.BottomNavigationView android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_gravity="bottom"
+        android:background="?android:attr/windowBackground"
+        android:id="@+id/bottom_navigation_view"
+        app:itemBackground="@color/primary"
+        app:itemTextColor="@android:color/white"
+        app:itemIconTint="@android:color/white"
+        app:menu="@menu/menu_task_listing_bottom_navigation"/>
+
+</android.support.design.widget.CoordinatorLayout>
+
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/no_task"
+        android:layout_centerInParent="true"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:gravity="center"
+        android:visibility="gone"
+        android:id="@+id/noTaskNotif"/>
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/swipeRefresh">
+
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/taskList"/>
+
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:layout_width="wrap_content"
@@ -50,4 +118,7 @@
 
         android:layout_marginBottom="60dp"/>
 
+
+
 </RelativeLayout>
+-->

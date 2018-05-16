@@ -68,7 +68,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.splunk.mint.Mint;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -96,7 +95,7 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
         SwipeRefreshLayout.OnRefreshListener, AdapterView.OnItemLongClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
-    private static Context cxt;
+    private static final String TAG = MainActivity.class.getSimpleName();
     private static ListView taskListView;
     private static TextView noTaskNotif;
     private static SwipeRefreshLayout swipeRefreshLayout;
@@ -108,37 +107,37 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
     private User loggedInUser;
     private Task selectedTask;
     private TextView clockInText;
+    private static final int REQUEST_PERMISSIONS_LOCATION_SETTINGS_REQUEST_CODE = 33;
 
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        //error reporting
-        Mint.setApplicationEnvironment(Mint.appEnvironmentTesting);
-
-        Mint.initAndStartSession(this.getApplication(), "fa0aaf30");
-
-        setContentView(R.layout.activity_task_list_layout);
-        cxt = this;
-        initComponents();
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        Bundle extras = getIntent().getExtras();
-        if(extras != null){
-            loggedInUser = (User)extras.getSerializable(getString(R.string.loggedInUser));
-        }
-
-//        if(loggedInUser != null && loggedInUser.getRoleId() != User.SUPERVISOR){
-//            findViewById(R.id.newTaskButton).setVisibility(View.GONE);
+//    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
+//        @Override
+//        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+//            Fragment fragment;
+//            switch (item.getItemId()){
+//                case R.id.bottom_nav_pending:
+//                    fragment = new PendingFragment();
+//                    loadFragment(fragment);
+//                    return true;
+//                case R.id.bottom_nav_Ongoing:
+//                    fragment = new OngoingFragment();
+//                    loadFragment(fragment);
+//                    return true;
+//                case R.id.bottom_nav_approval:
+//                    fragment = new ApprovedFragment();
+//                    loadFragment(fragment);
+//                    return true;
+//            }
+//
+//            return false;
 //        }
-        googleApiClient = new GoogleApiClient.Builder(this, this, this).addApi(LocationServices.API).build();
+//    };
 
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-
-        checkForLocationRequest();
-        checkForLocationSettings();
-
-    }
+//    private void loadFragment(Fragment fragment) {
+//        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+//        transaction.replace(R.id.frame_container, fragment);
+//        transaction.addToBackStack(null);
+//        transaction.commit();
+//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -168,11 +167,7 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
         }*/
     }
 
-    @Override
-    protected void onStop() {
-      //  googleApiClient.disconnect();
-        super.onStop();
-    }
+    private static final int REQUEST_PERMISSIONS_LAST_LOCATION_REQUEST_CODE = 34;
 
     @Override
     protected void onResume() {
@@ -212,95 +207,9 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
         }
     }
 
-
-
-    public void callCurrentLocation(View view) {
-        try {
-            if (
-                    ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                            ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                    ) {
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                requestPermissions(REQUEST_PERMISSIONS_CURRENT_LOCATION_REQUEST_CODE);
-                return;
-            }
-
-            mFusedLocationClient.requestLocationUpdates(locationRequest, new LocationCallback() {
-                @Override
-                public void onLocationResult(LocationResult locationResult) {
-
-                    currentLocation = (Location) locationResult.getLastLocation();
-                mLastLocation = currentLocation;
-                    String result = "Current Location Latitude is " +
-                            currentLocation.getLatitude() + "\n" +
-                            "Current location Longitude is " + currentLocation.getLongitude();
-
-                  //  resultTextView.setText(result);
-                }
-            }, null);
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    public void checkForLocationRequest(){
-        locationRequest = LocationRequest.create();
-        locationRequest.setInterval(MIN_UPDATE_INTERVAL);
-        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-    }
-
-
-
-    //Check for location settings.
-    public void checkForLocationSettings() {
-        try {
-            LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder().addLocationRequest(locationRequest);
-            builder.addLocationRequest(locationRequest);
-            SettingsClient settingsClient = LocationServices.getSettingsClient(cxt);
-
-            settingsClient.checkLocationSettings(builder.build())
-                    .addOnSuccessListener(ActivityTaskListing.this, new OnSuccessListener<LocationSettingsResponse>() {
-                        @Override
-                        public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
-                            //Setting is success...
-                           // Toast.makeText(cxt, "Enabled the Location successfully. Now you can press the buttons..", Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .addOnFailureListener(ActivityTaskListing.this, new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-
-
-                            int statusCode = ((ApiException) e).getStatusCode();
-                            switch (statusCode) {
-                                case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
-
-                                    try {
-                                        // Show the dialog by calling startResolutionForResult(), and check the
-                                        // result in onActivityResult().
-                                        ResolvableApiException rae = (ResolvableApiException) e;
-                                        rae.startResolutionForResult(ActivityTaskListing.this, REQUEST_PERMISSIONS_LOCATION_SETTINGS_REQUEST_CODE);
-                                    } catch (IntentSender.SendIntentException sie) {
-                                        sie.printStackTrace();
-                                    }
-                                    break;
-                                case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
-                                   // Toast.makeText(cxt, "Setting change is not available.Try in another device.", Toast.LENGTH_LONG).show();
-                            }
-
-                        }
-                    });
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
+    private static final int REQUEST_PERMISSIONS_CURRENT_LOCATION_REQUEST_CODE = 35;
+    public static Context cxt;
+    protected static long MIN_UPDATE_INTERVAL = 15 * 1000; // 1  minute is the minimum Android recommends, but we use 15 seconds
 
 
 
@@ -440,6 +349,135 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
 
     }
 
+    private GoogleApiClient googleApiClient;
+    private FusedLocationProviderClient mFusedLocationClient;
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+//        error reporting
+//        Mint.setApplicationEnvironment(Mint.appEnvironmentTesting);
+//
+//        Mint.initAndStartSession(this.getApplication(), "fa0aaf30");
+
+        setContentView(R.layout.activity_task_list_layout);
+        cxt = this;
+        initComponents();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            loggedInUser = (User) extras.getSerializable(getString(R.string.loggedInUser));
+        }
+
+//        if(loggedInUser != null && loggedInUser.getRoleId() != User.SUPERVISOR){
+//            findViewById(R.id.newTaskButton).setVisibility(View.GONE);
+//        }
+        googleApiClient = new GoogleApiClient.Builder(this, this, this).addApi(LocationServices.API).build();
+
+//        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation_view);
+//        bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+        checkForLocationRequest();
+        checkForLocationSettings();
+
+    }
+
+    @Override
+    protected void onStop() {
+        //  googleApiClient.disconnect();
+        super.onStop();
+    }
+
+    public void callCurrentLocation(View view) {
+        try {
+            if (
+                    ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                            ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    ) {
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                requestPermissions(REQUEST_PERMISSIONS_CURRENT_LOCATION_REQUEST_CODE);
+                return;
+            }
+
+            mFusedLocationClient.requestLocationUpdates(locationRequest, new LocationCallback() {
+                @Override
+                public void onLocationResult(LocationResult locationResult) {
+
+                    currentLocation = (Location) locationResult.getLastLocation();
+                    mLastLocation = currentLocation;
+                    String result = "Current Location Latitude is " +
+                            currentLocation.getLatitude() + "\n" +
+                            "Current location Longitude is " + currentLocation.getLongitude();
+
+                    //  resultTextView.setText(result);
+                }
+            }, null);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void checkForLocationRequest() {
+        locationRequest = LocationRequest.create();
+        locationRequest.setInterval(MIN_UPDATE_INTERVAL);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+    }
+
+    //Check for location settings.
+    public void checkForLocationSettings() {
+        try {
+            LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder().addLocationRequest(locationRequest);
+            builder.addLocationRequest(locationRequest);
+            SettingsClient settingsClient = LocationServices.getSettingsClient(cxt);
+
+            settingsClient.checkLocationSettings(builder.build())
+                    .addOnSuccessListener(ActivityTaskListing.this, new OnSuccessListener<LocationSettingsResponse>() {
+                        @Override
+                        public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
+                            //Setting is success...
+                            // Toast.makeText(cxt, "Enabled the Location successfully. Now you can press the buttons..", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnFailureListener(ActivityTaskListing.this, new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+
+
+                            int statusCode = ((ApiException) e).getStatusCode();
+                            switch (statusCode) {
+                                case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+
+                                    try {
+                                        // Show the dialog by calling startResolutionForResult(), and check the
+                                        // result in onActivityResult().
+                                        ResolvableApiException rae = (ResolvableApiException) e;
+                                        rae.startResolutionForResult(ActivityTaskListing.this, REQUEST_PERMISSIONS_LOCATION_SETTINGS_REQUEST_CODE);
+                                    } catch (IntentSender.SendIntentException sie) {
+                                        sie.printStackTrace();
+                                    }
+                                    break;
+                                case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                                    // Toast.makeText(cxt, "Setting change is not available.Try in another device.", Toast.LENGTH_LONG).show();
+                            }
+
+                        }
+                    });
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
     @Override
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
         ListAdapter listAdapter = taskListView.getAdapter();
@@ -448,16 +486,16 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
 
         final AlertDialog alertDialog = new AlertDialog.Builder(cxt).create();
         View promptView = View.inflate(cxt,R.layout.task_listing_long_click_menu_layout,null);
-         alertDialog.setView(promptView);
+        alertDialog.setView(promptView);
 
-         TextView viewReport  = promptView.findViewById(R.id.viewReportText);
-         final TextView deleteTask = promptView.findViewById(R.id.deleteTask);
-         //TextView approveReport = promptView.findViewById(R.id.approveReport);
-         TextView editTask = promptView.findViewById(R.id.editTask);
-         clockInText = promptView.findViewById(R.id.clock_in);
+        TextView viewReport = promptView.findViewById(R.id.viewReportText);
+        final TextView deleteTask = promptView.findViewById(R.id.deleteTask);
+        //TextView approveReport = promptView.findViewById(R.id.approveReport);
+        TextView editTask = promptView.findViewById(R.id.editTask);
+        clockInText = promptView.findViewById(R.id.clock_in);
 
 
-         /*
+        /*
          * if user has uploaded images, then the selectedTask has been done
          *So the selectedTask cannot be deleted or edited*/
      /*    switch (selectedTask.getStatus()){
@@ -473,56 +511,56 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
                  break;
          }*/
 
-      switch (loggedInUser.getRoleId()){
-          case User.SUPERVISOR:
-              switch (selectedTask.getStatus()){
-                  case Task.PENDING:
-                      if(selectedTask.getWorker().getId() == loggedInUser.getId()) {
-                          clockInText.setVisibility(View.VISIBLE);
-                          clockInText.setTag(getString(R.string.clockIn));
-                      }
-                      editTask.setVisibility(View.VISIBLE);
-                      deleteTask.setVisibility(View.VISIBLE);
+        switch (loggedInUser.getRoleId()) {
+            case User.SUPERVISOR:
+                switch (selectedTask.getStatus()) {
+                    case Task.PENDING:
+                        if (selectedTask.getWorker().getId() == loggedInUser.getId()) {
+                            clockInText.setVisibility(View.VISIBLE);
+                            clockInText.setTag(getString(R.string.clockIn));
+                        }
+                        editTask.setVisibility(View.VISIBLE);
+                        deleteTask.setVisibility(View.VISIBLE);
 
-                      break;
-                  case Task.ONGOING:
-                      if(selectedTask.getWorker().getId() == loggedInUser.getId()) {
-                          clockInText.setVisibility(View.VISIBLE);
-                          clockInText.setText(getString(R.string.writeReport));
-                          clockInText.setTag(getString(R.string.clockOut));
+                        break;
+                    case Task.ONGOING:
+                        if (selectedTask.getWorker().getId() == loggedInUser.getId()) {
+                            clockInText.setVisibility(View.VISIBLE);
+                            clockInText.setText(getString(R.string.writeReport));
+                            clockInText.setTag(getString(R.string.clockOut));
 
-                      }
-                      break;
-                  case Task.PENDING_APPROVAL:
-                  case Task.COMPLETED:
-                      viewReport.setVisibility(View.VISIBLE);
-                      break;
-              }
-              break;
-          case User.NURSE:
-              switch (selectedTask.getStatus()){
-                  case Task.PENDING:
-                      if(selectedTask.getWorker().getId() == loggedInUser.getId()) {
-                          clockInText.setVisibility(View.VISIBLE);
-                          clockInText.setTag(getString(R.string.clockIn));
-                      }
+                        }
+                        break;
+                    case Task.PENDING_APPROVAL:
+                    case Task.COMPLETED:
+                        viewReport.setVisibility(View.VISIBLE);
+                        break;
+                }
+                break;
+            case User.NURSE:
+                switch (selectedTask.getStatus()) {
+                    case Task.PENDING:
+                        if (selectedTask.getWorker().getId() == loggedInUser.getId()) {
+                            clockInText.setVisibility(View.VISIBLE);
+                            clockInText.setTag(getString(R.string.clockIn));
+                        }
 
 
-                      break;
-                  case Task.ONGOING:
-                      if(selectedTask.getWorker().getId() == loggedInUser.getId()) {
-                          clockInText.setVisibility(View.VISIBLE);
-                          clockInText.setText(getString(R.string.writeReport));
-                          clockInText.setTag(getString(R.string.clockOut));
-                      }
-                      break;
-                  case Task.PENDING_APPROVAL:
-                  case Task.COMPLETED:
-                      viewReport.setVisibility(View.VISIBLE);
-                      break;
-              }
-              break;
-      }
+                        break;
+                    case Task.ONGOING:
+                        if (selectedTask.getWorker().getId() == loggedInUser.getId()) {
+                            clockInText.setVisibility(View.VISIBLE);
+                            clockInText.setText(getString(R.string.writeReport));
+                            clockInText.setTag(getString(R.string.clockOut));
+                        }
+                        break;
+                    case Task.PENDING_APPROVAL:
+                    case Task.COMPLETED:
+                        viewReport.setVisibility(View.VISIBLE);
+                        break;
+                }
+                break;
+        }
         /*if(selectedTask.getWorker().getId() == loggedInUser.getId()){
 
             switch (selectedTask.getStatus()){
@@ -565,19 +603,18 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
         }*/
 
 
-
-            if (clockInText.getTag().toString().equalsIgnoreCase(getString(R.string.clockIn))) {
-                alertType = 0;
-            } else {
-                alertType = 1;
-            }
+        if (clockInText.getTag().toString().equalsIgnoreCase(getString(R.string.clockIn))) {
+            alertType = 0;
+        } else {
+            alertType = 1;
+        }
 
 
         clockInText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                    alertDialog.dismiss();
+                alertDialog.dismiss();
 
 
                 if (ContextCompat.checkSelfPermission(cxt,
@@ -586,9 +623,9 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
 
                     final AlertDialog alertDialog = new AlertDialog.Builder(cxt).create();
 
-                  if  (mLastLocation == null) {
-                      callCurrentLocation(null);
-                      Toast.makeText(cxt,"Sorry we could not ascertain your location.\nPlease try again",Toast.LENGTH_LONG).show();
+                    if (mLastLocation == null) {
+                        callCurrentLocation(null);
+                        Toast.makeText(cxt, "Sorry we could not ascertain your location.\nPlease try again", Toast.LENGTH_LONG).show();
                         return;
                     }
                     if (isWithinClockInRange(selectedTask.getLatitude(), selectedTask.getLongitude(), mLastLocation.getLatitude(), mLastLocation.getLongitude())) {
@@ -682,7 +719,7 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
                         alertDialog.show();
 
 
-                }
+                    }
                 }
                 else{
                     ActivityCompat.requestPermissions(((Activity)cxt),
@@ -690,19 +727,19 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
                             PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
                 }
 
-                }
+            }
 
         });
-         viewReport.setOnClickListener(new View.OnClickListener() {
-             @Override
-             public void onClick(View view) {
-                 Intent i = new Intent(cxt,ActivityViewReport.class);
-                 i.putExtra(getString(R.string.loggedInUser),loggedInUser);
-                 i.putExtra("task", selectedTask);
-                 startActivity(i);
-                 alertDialog.dismiss();
-             }
-         });
+        viewReport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(cxt, ActivityViewReport.class);
+                i.putExtra(getString(R.string.loggedInUser), loggedInUser);
+                i.putExtra("task", selectedTask);
+                startActivity(i);
+                alertDialog.dismiss();
+            }
+        });
 
         editTask.setOnClickListener(view1 -> {
             Intent i1 = new Intent(cxt,ActivityAssignTask.class);
@@ -711,20 +748,20 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
             startActivity(i1);
             alertDialog.dismiss();
         });
-         deleteTask.setOnClickListener(new View.OnClickListener() {
-             @Override
-             public void onClick(View view) {
-                 final AlertDialog confirm = new AlertDialog.Builder(cxt).create();
-                  confirm.setButton(DialogInterface.BUTTON_NEGATIVE, "No", (dialogInterface, i12) -> confirm.dismiss());
-                  confirm.setButton(DialogInterface.BUTTON_POSITIVE, "Yes", (dialogInterface, i13) -> deleteTask());
+        deleteTask.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final AlertDialog confirm = new AlertDialog.Builder(cxt).create();
+                confirm.setButton(DialogInterface.BUTTON_NEGATIVE, "No", (dialogInterface, i12) -> confirm.dismiss());
+                confirm.setButton(DialogInterface.BUTTON_POSITIVE, "Yes", (dialogInterface, i13) -> deleteTask());
 
-                  confirm.setMessage("Are you sure you want to delete this Task?");
-                  confirm.show();
+                confirm.setMessage("Are you sure you want to delete this Task?");
+                confirm.show();
 
-             }
+            }
 
-             @SuppressLint("StaticFieldLeak")
-             private void deleteTask() {
+            @SuppressLint("StaticFieldLeak")
+            private void deleteTask() {
                 new AssignedTaskNetwork(){
                     ProgressDialog progressDialog ;
 
@@ -759,18 +796,23 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
 
                     }
                 }.execute(getString(R.string.api_url)+getString(R.string.delete_task_url)+"?key="+getString(R.string.field_worker_api_key)+"&id="+ selectedTask.getId());
-             }
-         });
+            }
+        });
 
         if(loggedInUser.getRoleId() == User.SUPERVISOR && selectedTask.getStatus() == Task.ONGOING && selectedTask.getWorker().getId() != loggedInUser.getId()) {
-         return false;
+            return false;
         }
 
-      //  if(alertDialog.) {
-            alertDialog.show();
-      //  }
+        //  if(alertDialog.) {
+        alertDialog.show();
+        //  }
 
         return false;
+    }
+
+    public boolean isWithinClockInRange(Double taskLat, Double taskLng, Double nurseLat, Double nurseLng) {
+        Location.distanceBetween(taskLat, taskLng, nurseLat, nurseLng, results);
+        return results[0] <= 200;
     }
 
     private void getLocation(final Task task) {
@@ -787,16 +829,17 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
         try {
 
             Criteria criteria = new Criteria();
-
-            criteria.setAccuracy(Criteria.ACCURACY_COARSE);
-            criteria.setPowerRequirement(Criteria.POWER_LOW);
+            criteria.setAccuracy(Criteria.ACCURACY_FINE);
+            criteria.setPowerRequirement(Criteria.POWER_HIGH);
             criteria.setAltitudeRequired(false);
-            criteria.setBearingRequired(false);
             criteria.setSpeedRequired(true);
             criteria.setCostAllowed(true);
+            criteria.setBearingRequired(false);
+
+            //API level 9 and up
             criteria.setHorizontalAccuracy(Criteria.ACCURACY_HIGH);
-            criteria.setVerticalAccuracy(Criteria.ACCURACY_MEDIUM);
-            criteria.setBearingAccuracy(Criteria.ACCURACY_LOW);
+            criteria.setVerticalAccuracy(Criteria.ACCURACY_HIGH);
+            criteria.setBearingAccuracy(Criteria.ACCURACY_HIGH);
             criteria.setSpeedAccuracy(Criteria.ACCURACY_HIGH);
 
             mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -945,9 +988,14 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
 
     }
 
-    public boolean isWithinClockInRange(Double taskLat, Double taskLng, Double nurseLat, Double nurseLng) {
-        Location.distanceBetween(taskLat, taskLng, nurseLat, nurseLng, results);
-        return results[0] <= 200;
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
     }
 
     @Override
@@ -956,13 +1004,13 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
 
         if (grantResults.length > 0
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-    if(mLastLocation != null) {
+            if (mLastLocation != null) {
 
-    double lat = mLastLocation.getLatitude(), lon = mLastLocation.getLongitude();
+                double lat = mLastLocation.getLatitude(), lon = mLastLocation.getLongitude();
 
 
-   // Toast.makeText(cxt, "" + lat + "\t" + lon, Toast.LENGTH_LONG).show();
-    }
+                // Toast.makeText(cxt, "" + lat + "\t" + lon, Toast.LENGTH_LONG).show();
+            }
 
         } else {
             Toast.makeText(cxt, "You need to grant location permission", Toast.LENGTH_LONG).show();
@@ -977,22 +1025,17 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
         }
     }
 
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+    private void showSnackbar(String text) {
+        Snackbar snackbar = Snackbar.make(findViewById(R.id.parent), text, Snackbar.LENGTH_LONG);
+        snackbar.show();
 
     }
 
     private class AssignedTaskNetwork extends android.os.AsyncTask<String,Void,String>{
 
 
-         ArrayList<Task> taskList = new ArrayList<>();
-         ArrayAdapter<Task> taskArrayAdapter;
+        ArrayList<Task> taskList = new ArrayList<>();
+        ArrayAdapter<Task> taskArrayAdapter;
 
         @Override
         protected String doInBackground(String... strings) {
@@ -1088,7 +1131,7 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
 
 
                     if(task.getStatus() == Task.ONGOING){
-                       clockedInTasks++;
+                        clockedInTasks++;
                     }
 
 
@@ -1128,7 +1171,7 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
                         TextView getDirections = convertView.findViewById(R.id.getDirection);
 
 
-                          institutionName.setText(task.getInstitution_name());
+                        institutionName.setText(task.getInstitution_name());
                         taskType.setText(String.format("(%s)",task.getWorkType()));
                         taskDescription.setText(task.getDescription());
                         locationText.setText(String.format("%s, %s, %s",task.getAddress(),task.getLga(),task.getState()).replaceAll("\n","").replaceAll("\r",""));
@@ -1137,9 +1180,9 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
 
 
                         /*
-                        * If the worker has not uploaded images, then the selectedTask is pending
-                        * if images have been uploaded then status is pending approval
-                        * if the supervisor has approved the selectedTask done, then the status is completed */
+                         * If the worker has not uploaded images, then the selectedTask is pending
+                         * if images have been uploaded then status is pending approval
+                         * if the supervisor has approved the selectedTask done, then the status is completed */
 
 
                         String status = cxt.getResources().getStringArray(R.array.task_status)[task.getStatus()];
@@ -1163,10 +1206,10 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
                             try {
                                 String location = URLEncoder.encode(task.getLocation(),"UTF-8");
 
-                            Uri gmmIntentUri = Uri.parse("google.navigation:q="+location);
-                            Intent intent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                            intent.setPackage("com.google.android.apps.maps");
-                            ActivityTaskListing.cxt.startActivity(intent);
+                                Uri gmmIntentUri = Uri.parse("google.navigation:q=" + location);
+                                Intent intent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                                intent.setPackage("com.google.android.apps.maps");
+                                ActivityTaskListing.cxt.startActivity(intent);
                             } catch (UnsupportedEncodingException e) {
                                 e.printStackTrace();
                             }
@@ -1188,22 +1231,6 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
         }
     }
 
-    private void showSnackbar(String text){
-        Snackbar snackbar = Snackbar.make(findViewById(R.id.parent),text,Snackbar.LENGTH_LONG);
-        snackbar.show();
-
-    }
-    private GoogleApiClient googleApiClient;
-    private static final String TAG = MainActivity.class.getSimpleName();
-
-    private static final int REQUEST_PERMISSIONS_LOCATION_SETTINGS_REQUEST_CODE = 33;
-    private static final int REQUEST_PERMISSIONS_LAST_LOCATION_REQUEST_CODE = 34;
-    private static final int REQUEST_PERMISSIONS_CURRENT_LOCATION_REQUEST_CODE = 35;
-
-    private FusedLocationProviderClient mFusedLocationClient;
-
-    protected static long MIN_UPDATE_INTERVAL = 30 * 1000; // 1  minute is the minimum Android recommends, but we use 30 seconds
-
     protected Location mLastLocation;
 
     private TextView resultTextView;
@@ -1212,3 +1239,213 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
     Location currentLocation = null;
     private  boolean isClockedInOnATask;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+package com.example.titomi.workertrackerloginmodule.supervisor.activities;
+
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.example.titomi.workertrackerloginmodule.R;
+import com.example.titomi.workertrackerloginmodule.supervisor.Task;
+import com.example.titomi.workertrackerloginmodule.supervisor.User;
+import com.example.titomi.workertrackerloginmodule.task_listing_fragments.ApprovedFragment;
+import com.example.titomi.workertrackerloginmodule.task_listing_fragments.OngoingFragment;
+import com.example.titomi.workertrackerloginmodule.task_listing_fragments.PendingFragment;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
+
+import de.hdodenhof.circleimageview.CircleImageView;
+
+
+*/
+/**
+ * Created by NeonTetras on 24-Feb-18.
+ *//*
+
+
+public class ActivityTaskListing extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+
+    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
+    public static Context cxt;
+    private static ListView taskListView;
+    private static TextView noTaskNotif;
+    private static SwipeRefreshLayout swipeRefreshLayout;
+    ProgressDialog pg;
+    float results[] = new float[3];
+    int alertType = 0;
+    LatLng latLng;
+    private GoogleApiClient googleApiClient;
+    private CircleImageView userImage;
+    private User loggedInUser;
+    private Task selectedTask;
+    private TextView clockInText;
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+//        error reporting
+//        Mint.setApplicationEnvironment(Mint.appEnvironmentTesting);
+//
+//        Mint.initAndStartSession(this.getApplication(), "fa0aaf30");
+
+        setContentView(R.layout.activity_task_list_layout);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation_view);
+        bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        googleApiClient = new GoogleApiClient.Builder(cxt, this, this).addApi(LocationServices.API).build();
+    }
+
+    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            Fragment fragment;
+            switch (item.getItemId()){
+                case R.id.bottom_nav_pending:
+                    fragment = new PendingFragment();
+                    loadFragment(fragment);
+                    return true;
+                case R.id.bottom_nav_Ongoing:
+                    fragment = new OngoingFragment();
+                    loadFragment(fragment);
+                    return true;
+                case R.id.bottom_nav_approval:
+                    fragment = new ApprovedFragment();
+                    loadFragment(fragment);
+                    return true;
+            }
+
+            return false;
+        }
+    };
+
+    private void loadFragment(Fragment fragment) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.frame_container, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+       */
+/* if (googleApiClient != null) {
+            googleApiClient.connect();
+        }*//*
+
+    }
+
+    @Override
+    protected void onStop() {
+      //  googleApiClient.disconnect();
+        super.onStop();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
+        int result = googleApiAvailability.isGooglePlayServicesAvailable(this);
+
+        if (result != ConnectionResult.SUCCESS && result != ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED) {
+            Toast.makeText(this, "This Application needs Google Api client to run.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if(loggedInUser != null) {
+            outState.putSerializable(getString(R.string.loggedInUser), loggedInUser);
+        }
+        if(selectedTask != null){
+            outState.putSerializable(getString(R.string.task),selectedTask);
+        }
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if(savedInstanceState != null) {
+            loggedInUser = (User) savedInstanceState.getSerializable(getString(R.string.loggedInUser));
+        }
+
+        if(savedInstanceState.getSerializable(getString(R.string.task)) != null){
+            selectedTask = (Task)savedInstanceState.getSerializable(getString(R.string.task));
+        }
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+}
+*/

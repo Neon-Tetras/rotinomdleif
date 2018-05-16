@@ -19,12 +19,12 @@
 
     <application
         android:allowBackup="true"
+        android:hardwareAccelerated="false"
         android:icon="@mipmap/app_logo"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:hardwareAccelerated="false"
-        android:largeHeap="true"
         android:theme="@style/AppTheme">
         <meta-data
             android:name="com.google.android.gms.version"
@@ -172,21 +172,24 @@
             android:name=".report_module.ActivityNurseViewReport"
             android:label="View Report"
             android:theme="@style/AppTheme.DarkActionBar" />
-
-        <activity android:name=".supervisor.activities.ActivityInstitutionListing"
-            android:theme="@style/AppTheme"
-            android:label="Institutions"/>
-
-        <activity android:name=".supervisor.activities.ActivityAddInstitution"
+        <activity
+            android:name=".supervisor.activities.ActivityInstitutionListing"
+            android:label="Institutions"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".supervisor.activities.ActivityAddInstitution"
             android:label="New Institution"
-            android:theme="@style/AppTheme.DarkActionBar"/>
+            android:theme="@style/AppTheme.DarkActionBar" />
 
         <service
             android:name=".services.FieldMonitorTaskService"
             android:enabled="true"
-            android:label="FieldMonitorTaskService"
-            android:exported="true"/>
-
+            android:exported="true"
+            android:label="FieldMonitorTaskService" />
+        <service
+            android:name=".services.FieldMonitorLocationService"
+            android:enabled="true"
+            android:exported="false"></service>
     </application>
 
 </manifest>

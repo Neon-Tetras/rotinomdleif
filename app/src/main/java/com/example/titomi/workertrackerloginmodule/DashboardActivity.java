@@ -1,9 +1,12 @@
 package com.example.titomi.workertrackerloginmodule;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +23,7 @@ import com.example.titomi.workertrackerloginmodule.dashboard_fragments.FragmentT
 import com.example.titomi.workertrackerloginmodule.dashboard_fragments.ViewPagerAdapter;
 import com.example.titomi.workertrackerloginmodule.inventory_module.InventoryActivity;
 import com.example.titomi.workertrackerloginmodule.report_module.ReportMainActivity;
+import com.example.titomi.workertrackerloginmodule.services.FieldMonitorLocationService;
 import com.example.titomi.workertrackerloginmodule.services.FieldMonitorMessagingService;
 import com.example.titomi.workertrackerloginmodule.shared_pref_manager.SharedPrefManager;
 import com.example.titomi.workertrackerloginmodule.supervisor.User;
@@ -44,6 +48,8 @@ import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.splunk.mint.Mint;
 
 public class DashboardActivity extends AppCompatActivity {
+
+    public FieldMonitorLocationService locationService;
 
     private static Context cxt;
     Toolbar toolbar;
@@ -82,11 +88,32 @@ SharedPrefManager sharedPrefManager;
         return true;
     }
 
+    private ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            String className = name.getClassName();
+
+            if (className.endsWith("FieldMonitorLocationService")) {
+                locationService = ((FieldMonitorLocationService.LocationServiceBinder) service).getService();
+
+                locationService.startUpdatingLocation();
+            }
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            if (name.getClassName().equals("FieldMonitorLocationService")) {
+                locationService.stopUpdatingLocation();
+                locationService = null;
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //error reporting
+        //Crash Analytic API call. via Splunk at mint.splunk.com
         Mint.setApplicationEnvironment(Mint.appEnvironmentTesting);
 
         Mint.initAndStartSession(this.getApplication(), "fa0aaf30");
@@ -373,6 +400,10 @@ SharedPrefManager sharedPrefManager;
             return true;
         });
         Drawer mDrawer = drawerBuilder.build();
+
+        final Intent serviceStart = new Intent(this.getApplication(), FieldMonitorLocationService.class);
+        this.getApplication().startService(serviceStart);
+        this.getApplication().bindService(serviceStart, serviceConnection, Context.BIND_AUTO_CREATE);
     }
 
 
