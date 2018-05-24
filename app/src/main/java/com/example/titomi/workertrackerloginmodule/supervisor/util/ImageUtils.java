@@ -17,6 +17,7 @@ import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.titomi.workertrackerloginmodule.R;
 import com.example.titomi.workertrackerloginmodule.supervisor.Entity;
@@ -344,9 +345,22 @@ public class ImageUtils {
             if (file == null) return false;
             String path = file.getAbsolutePath();
 
-            b = BitmapFactory.decodeFile(path);
-            if (b == null || b.equals("")) {
-                return false;
+
+            try {
+                //Related to Fixing OutOfMemory Craashes
+
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inJustDecodeBounds = false;
+                options.inPreferredConfig = Bitmap.Config.RGB_565;
+                options.inDither = true;
+
+                b = BitmapFactory.decodeFile(path, options);
+                if (b == null || b.equals("")) {
+                    return false;
+                }
+            } catch (OutOfMemoryError e) {
+                e.printStackTrace();
+                Toast.makeText(cxt, "" + e.getMessage().trim().toString(), Toast.LENGTH_SHORT).show();
             }
             return true;
         }
