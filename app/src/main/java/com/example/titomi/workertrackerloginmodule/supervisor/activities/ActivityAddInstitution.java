@@ -4,8 +4,8 @@ import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -34,7 +34,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
@@ -44,6 +43,7 @@ import static com.example.titomi.workertrackerloginmodule.supervisor.util.Networ
 public class ActivityAddInstitution extends AppCompatActivity implements View.OnClickListener {
 
     User loggedInUser;
+    ProgressDialog progressDialog;
     private EditText institutionNameEdit,
              locationEdit;
     private Spinner stateSpinner, lgaSpinner, institutionType;
@@ -283,6 +283,23 @@ public class ActivityAddInstitution extends AppCompatActivity implements View.On
         }.execute(getString(R.string.api_url)+getString(R.string.state_api_url)+"?view=lga&state="+selectedState);
     }
 
+    private void showProgressDialog() {
+        if (progressDialog == null) {
+            progressDialog = new ProgressDialog(cxt);
+            progressDialog.setMessage("Please wait...");
+            progressDialog.setIndeterminate(false);
+            progressDialog.setCancelable(false);
+        }
+        progressDialog.show();
+    }
+
+    private void dismissProgressDialog() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+    }
+
+
     private class InstitutionNetwork extends android.os.AsyncTask<String,Void,String>{
 
         ProgressDialog progressDialog;
@@ -294,17 +311,21 @@ public class ActivityAddInstitution extends AppCompatActivity implements View.On
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progressDialog = new ProgressDialog(cxt);
+
+            showProgressDialog();
+            /*progressDialog = new ProgressDialog(cxt);
             progressDialog.setMessage("Please wait...");
-            progressDialog.show();
+            progressDialog.show();*/
         }
 
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            if(progressDialog.isShowing()){
+            dismissProgressDialog();
+
+            /*if(progressDialog.isShowing()){
                 progressDialog.dismiss();
-            }
+            }*/
 
             if(s == null || s.equalsIgnoreCase("null")){
                 return;

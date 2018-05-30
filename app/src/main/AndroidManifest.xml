@@ -180,16 +180,19 @@
             android:name=".supervisor.activities.ActivityAddInstitution"
             android:label="New Institution"
             android:theme="@style/AppTheme.DarkActionBar" />
+        <activity
+            android:name=".supervisor.activities.ActivityTaskMap"
+            android:label="Map Activity in Task Listing"
+            android:theme="@style/AppTheme.DarkActionBar" />
 
         <service
             android:name=".services.FieldMonitorTaskService"
             android:enabled="true"
-            android:exported="true"
             android:label="FieldMonitorTaskService" />
         <service
             android:name=".services.FieldMonitorLocationService"
             android:enabled="true"
-            android:exported="false"></service>
+            android:exported="false" />
     </application>
 
 </manifest>

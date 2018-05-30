@@ -24,6 +24,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,6 +66,10 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResponse;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.location.SettingsClient;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -92,22 +98,25 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ActivityTaskListing extends AppCompatActivity implements View.OnClickListener,
         AdapterView.OnItemClickListener,
-        SwipeRefreshLayout.OnRefreshListener, AdapterView.OnItemLongClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+        SwipeRefreshLayout.OnRefreshListener, AdapterView.OnItemLongClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback {
 
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final String TAG = MainActivity.class.getSimpleName();
     private static ListView taskListView;
     private static TextView noTaskNotif;
     private static SwipeRefreshLayout swipeRefreshLayout;
+    TextView usernameText;
     ProgressDialog pg;
     float results[] = new float[3];
     int alertType = 0;
     LatLng latLng;
     private CircleImageView userImage;
     private User loggedInUser;
+    GoogleMap mMaps;
     private Task selectedTask;
     private TextView clockInText;
     private static final int REQUEST_PERMISSIONS_LOCATION_SETTINGS_REQUEST_CODE = 33;
+    private boolean mLocationPermissionGranted;
 
 //    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
 //        @Override
@@ -140,13 +149,38 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
 //    }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case android.R.id.home:
                 finish();
                 break;
+            case R.id.mapFragment:
+                Intent intent = new Intent(ActivityTaskListing.this, ActivityTaskMap.class);
+                startActivity(intent);
+                break;
+
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void openMapFragment() {
+
+        Log.d(TAG, "openMapFragment: okay!!");
+
+        SupportMapFragment mapFragment;
+        mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+
+        final AlertDialog alertDialog = new AlertDialog.Builder(cxt).create();
+        View view = View.inflate(cxt, R.layout.task_listing_map, null);
+        alertDialog.setView(view);
+        Log.d(TAG, "alert dialog: created");
     }
 
     private void initComponents(){
@@ -644,7 +678,8 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
                             startActivity(i);
                             return;
                         }else if (clockInText.getTag().toString().equalsIgnoreCase(getString(R.string.clockIn))){
-                            if(isClockedInOnATask){
+                            if (isClockedInOnATask && loggedInUser.getRoleId() == (User.NURSE)) {
+                                Log.w(TAG, "onClick: condition successful");
                                 Toast.makeText(cxt,
                                         "Please complete the ongoing task first before beginning another",
                                         Toast.LENGTH_LONG).show();
@@ -1002,12 +1037,15 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
+        mLocationPermissionGranted = false;
+
         if (grantResults.length > 0
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             if (mLastLocation != null) {
 
                 double lat = mLastLocation.getLatitude(), lon = mLastLocation.getLongitude();
 
+                mLocationPermissionGranted = true;
 
                 // Toast.makeText(cxt, "" + lat + "\t" + lon, Toast.LENGTH_LONG).show();
             }
@@ -1029,6 +1067,58 @@ public class ActivityTaskListing extends AppCompatActivity implements View.OnCli
         Snackbar snackbar = Snackbar.make(findViewById(R.id.parent), text, Snackbar.LENGTH_LONG);
         snackbar.show();
 
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMaps = googleMap;
+
+        updateLocationUI();
+
+        getDeviceLocation();
+    }
+
+    private void getDeviceLocation() {
+
+        try {
+            if (mLocationPermissionGranted) {
+                com.google.android.gms.tasks.Task locationResult = mFusedLocationClient.getLastLocation();
+                locationResult.addOnCompleteListener(this, new OnCompleteListener() {
+                    @Override
+                    public void onComplete(@NonNull com.google.android.gms.tasks.Task task) {
+                        if (task.isSuccessful()) {
+                            mLastLocation = (Location) task.getResult();
+                            mMaps.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), 15));
+                        } else {
+                            Log.d(TAG, "Current location is null. Using default");
+                            Log.e(TAG, "Exception: %s", task.getException());
+                            mMaps.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(0, 0), 15));
+                            mMaps.getUiSettings().setMyLocationButtonEnabled(true);
+                        }
+                    }
+                });
+            }
+        } catch (SecurityException e) {
+            Log.e("Exception: %s", e.getMessage());
+        }
+    }
+
+    private void updateLocationUI() {
+        if (mMaps == null) {
+            return;
+        }
+        try {
+            if (mLocationPermissionGranted) {
+                mMaps.setMyLocationEnabled(true);
+                mMaps.getUiSettings().setMyLocationButtonEnabled(true);
+            } else {
+                mMaps.setMyLocationEnabled(false);
+                mMaps.getUiSettings().setMyLocationButtonEnabled(false);
+
+            }
+        } catch (SecurityException e) {
+            Log.e("Exception: %s", e.getMessage());
+        }
     }
 
     private class AssignedTaskNetwork extends android.os.AsyncTask<String,Void,String>{
